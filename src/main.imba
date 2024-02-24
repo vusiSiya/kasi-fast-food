@@ -1,8 +1,4 @@
 
-import "./pages/login.imba"
-import "./pages/bought-items.imba"                                                                                      
-import "./pages/item-detail.imba"
-import "./pages/menu-items.imba"
 import "./components/layout.imba"
 import {data} from "../data.js"
 

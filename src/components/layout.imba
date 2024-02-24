@@ -1,10 +1,10 @@
 
 import {
-	getBoughtItems,
 	getTotalPrice,
 	getTotalCount,
+	getAllItems,
 	removeItem
-}from "../../data.js"
+}from "../../api.js"
 
 import "../pages/login.imba"
 import "../pages/bought-items.imba"                                                                                      
@@ -25,36 +25,37 @@ css
 
 	.count bgc: #c51950 p: .25em .5em rd: 100% c: white
 
-###
-	const getAllItems =do data.items
-	const getBoughtItems = do data.items.filter do(item)item.count
-	const getTotalCount = do getBoughtItems().reduce do(sum=0,item) sum + item.count
-	const getTotalPrice = do getBoughtItems().reduce do(sum=0,item) sum + item.price * item.count
-###
-const getChildElement = do(element) element
-
 tag layout
 	prop pathname = document.location.pathname
-	prop getParamsId = do Number(pathname[pathname.length - 1])
-	def logStuffOut thing
-		console.log thing
+	prop paramsId = Number(pathname[pathname.length - 1]) || Number(Math.floor(Math.random!*7) + 1)
+
+	prop items = getAllItems()
+
+	def getBoughtItems
+		items.filter do(item) item.count;
 
 	<self>
 		<nav [p:1em pos:fixed top:0]>
 			<ul>
-				<li [c:white]>
-					<a href="/bought-items"> 
-						"🛒"
-						<span.count> getTotalCount()
-				<li.total-price [p:.5em]> "Total: R{getTotalPrice()}"
+				<li [c:white]> 
+					<a route-to="/bought-items"> 
+						"🛒" 
+						<span.count> getTotalCount!
 
-				<li>
-					<a href="/login"> "Login"
-				<li> 
-					<a href="/items"> "Menu Items"
-				<li>
-					<a href="/items/{Number(Math.floor(Math.random()*7) + 1)}"> "Random Item"
+				<li.total-price [p:.5em]> "Total: R{getTotalPrice!}"
+				<li> <a route-to="/login"> "Login"
+				<li> <a route-to="/items"> "Menu Items"
+				<li> <a route-to="/items/{paramsId}" @mouseover.log(paramsId)> "Random Item"
 		<main[d:vflex mt:10rem]>
+
+			if pathname === "/items/{paramsId}"
+				<item-detail route="/items/{paramsId}" itemId=paramsId>
+
+			<login route="/login">
+			<menu-items route="/items">
+			<bought-items route="/bought-items" boughtItems=getBoughtItems!>
+
+		###
 			if pathname ==="/" or pathname ==="/items"
 				<menu-items>
 
@@ -70,6 +71,7 @@ tag layout
 				
 			else if pathname === "/login"
 				<login>
+		###
 
 			
 			
