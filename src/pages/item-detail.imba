@@ -1,16 +1,12 @@
 import {getAllItems} from "../../api.js"
 	 
-const pathname = document.location.pathname
-const getParamsId = do Number(pathname[pathname.length - 1])
-
-
 css .cart-btn 
 	bd: 2px solid black rd: .25rem fs: larger fw: bold p: .325rem .9em c:inherit @hover:white bgc:white @hover:black 
 
 
 tag item-detail
-
-	prop itemId = getParamsId!# id will be recieved from params.id
+	prop pathname = document.location.pathname
+	prop itemId = Number(pathname[pathname.length - 1]) 
 	prop item = getAllItems().find do(item) item.id === Number(itemId) # would be an api call 
    
 	def handleChange e
@@ -35,6 +31,4 @@ tag item-detail
 						<button> "Remove"
 
 					else 
-						<button.cart-btn @click=item.count++> "Add To Cart"
-						<a route-to="/bought-items/count?={item.count}">
-							<span.count [m:0]> "{item.count}"			
+						<button.cart-btn @click=item.count++> "Add To Cart"		

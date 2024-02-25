@@ -27,6 +27,7 @@ global css
 		ta: center fs: medium  w: auto p: .25em .5em m:0
 
 tag app
+
 	prop items = getAllItems!
 	prop pathname = document.location.pathname
 	prop paramsId = Number(pathname[pathname.length - 1]) || Number(Math.floor(Math.random! * items.length) + 1)
@@ -34,14 +35,18 @@ tag app
 	def getBoughtItems
 		items.filter do(item) item.count
 
+	def handleItemClick e
+		console.log e.detail
+	
 	<self>
-		<layout pathname=pathname paramsId=paramsId>
-			if pathname === "/items/{paramsId}"
-				<item-detail route="/items/{paramsId}" itemId=paramsId>
-
+		<layout pathname=pathname paramsId=paramsId @itemClicked.log("item has been clicked")>
+			unless pathname === "/items/{paramsId}"
+				<item-detail route="/items/:id" itemId=paramsId>
+				
 			<login route="/login">
 			<menu-items route="/items">
-			<bought-items route="/bought-items" boughtItems=getBoughtItems!>
-		
+			<bought-items route="/bought-items" boughtItems=getBoughtItems>
+
+
 imba.router.alias("/", "/items");
 imba.mount do <app>
