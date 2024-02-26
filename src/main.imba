@@ -41,7 +41,7 @@ tag app
 	<self>
 		<layout pathname=pathname paramsId=paramsId @itemClicked.log("item has been clicked")>
 			unless pathname === "/items/{paramsId}"
-				<item-detail route="/items/:id" itemId=paramsId>
+				<item-detail route="/items/:id/" itemId=paramsId>
 				
 			<login route="/login">
 			<menu-items route="/items">

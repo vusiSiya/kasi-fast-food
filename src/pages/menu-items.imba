@@ -7,7 +7,7 @@ tag menu-items
 			unless i > 5
 				<a.menu-item
 					[d:grid g:1em p: .8em]
-					route-to="/items/{item.id}"
+					route-to="/items/{item.id}/"
 					id=item.id
 					@click=emit("itemClicked")
 				>
