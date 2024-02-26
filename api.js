@@ -8,7 +8,6 @@ const getTotalPrice = ()=>getBoughtItems().reduce((sum,item)=>(sum + item.price 
 const removeItem = (itemId)=>{
 	let item = getBoughtItems().find(item=>item.id === itemId);
 	item.count = 0;
-	render();
 }
 
 export {getAllItems, getBoughtItems, getTotalPrice,getTotalCount, removeItem}
