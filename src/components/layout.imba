@@ -10,7 +10,7 @@ import "../pages/item-detail.imba"
 import "../pages/menu-items.imba"
 
 css 
-	nav d: vflex m: 0 0 .8em c: white p: 0.5em 0 bgc: #75a1a1 fs: large 
+	nav d: vflex m: 0 0 .8em c: white p: 0.5em 0 bgc: #75a1a1
 		min-width: 100% pos:fixed top:0
 		
 	nav > ul m: 0 d: flex g: .6em 
@@ -34,10 +34,8 @@ tag layout
 					<a route-to="/bought-items"> 
 						"🛒" 
 						<span.count> getTotalCount!
-				<li.total-price [p:.5em]> "Total: R{getTotalPrice!}"
-				<li> <a route-to="/login"> "Login"
-				<li> <a route-to="/items"> "Menu Items"
-				<li> <a route-to="/items/{paramsId}" @mouseover.log(paramsId)> "Random Item"
+				<li> <a route-to="login"> "Login"
+				<li> <a route-to="items"> "Menu Items"
 		<main[d:vflex mt:7.5rem]>
 			<slot>
 

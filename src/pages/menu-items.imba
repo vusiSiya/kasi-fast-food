@@ -2,16 +2,18 @@ import{ getAllItems } from "../../api.js"
 
 tag menu-items
 	items = getAllItems()
-	<self.container [w:100% d:flex flex-wrap:wrap jc:center mt:2em]>
+	<self.container 
+		[d:grid @!700:vflex g: 2rem grid-template-columns:repeat(3, auto) w:100% jc:center m: 2rem auto 0]
+		
+	>
 		for item,i in items
 			unless i > 5
-				<a.menu-item
-					[d:grid g:1em p: .8em]
-					route-to="/items/{item.id}/"
+				<a.menu-item [d:grid max-width:max-content m:auto]
 					id=item.id
+					route-to="/items/{item.id}"
 					@click=emit("itemClicked")
 				>
-					<img.item-image [w:100%] src=item.imgUrl>
-					<div.item-content [g:0]>
+					<img.item-image [w:100%] src=item.imgUrl/>
+					<div.item-content>
 						<h2.item-name> item.name
 						<h3.item-price> "R {item.price}"
