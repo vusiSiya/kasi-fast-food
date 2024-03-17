@@ -14,7 +14,7 @@ tag login
 			bgc: #344544 @hover:orange 
 			
 	<self.container [margin:auto]>
-		<form>
+		<form @submit.prevent>
 			<h4 [ta:center] > "Login or Sign Up"
 			<input type="text" name="username" placeholder="name" required/>
 			<input type="password" name="password" placeholder="password" required />

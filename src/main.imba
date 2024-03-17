@@ -29,17 +29,17 @@ tag app
 
 	prop items = getAllItems!
 	prop pathname = document.location.pathname
-	prop paramsId = Number(pathname[pathname.length - 1]) || Number(Math.floor(Math.random! * items.length) + 1)
+	prop paramsId = Number(pathname[pathname.length - 1])
 
 	def getBoughtItems
 		const newArray = items.filter do(item) item.count
 		return newArray
 	
 	<self>
-		<layout pathname=pathname paramsId=paramsId>
-			<item-detail route="/items/:id" itemId=paramsId>
+		<layout pathname=pathname paramsId=paramsId />
 			<login route="/login"> 
 			<menu-items route="/items">
+			<item-detail route="/item-detail/:id" />
 			<bought-items route="/bought-items" boughtItems=getBoughtItems()>
 
 

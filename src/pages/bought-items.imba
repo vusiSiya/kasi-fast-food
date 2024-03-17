@@ -3,7 +3,8 @@ import {
 } from "../../api.js"
 
 tag bought-items
-	
+	prop boughtItems
+
 	def handleClick(itemId)
 		const item = boughtItems.find do(item) item.id === itemId
 		item.count = 0;
@@ -24,7 +25,9 @@ tag bought-items
 
 		<div [d:flex ai:center]>	
 			<h1 [m:.8em 2rem c:white]> "Bought Items" 
-			<p.total-price> "Total: R{getTotalPrice!}"
+			<p.total-price>
+				<i.fa-solid .fa-coins .fa-beat-fade>
+				" R{getTotalPrice!}"
 
 		<div.container [d:vflex]>
 			for item in boughtItems
@@ -42,4 +45,5 @@ tag bought-items
 								bind=item.count
 								@change=handleChange(e)
 							/>
-							<button.item-count-icon @click=handleClick(item.id)> "Remove"
+							<button.item-count-icon @click=handleClick(item.id) >
+								<i.fa-solid .fa-trash-can>
