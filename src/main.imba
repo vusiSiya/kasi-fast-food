@@ -25,6 +25,10 @@ global css
 		bd:4px solid #537f7b @hover:4px #689F38 rd: .25rem
 		ta: center fs: medium  w: auto p: .25em .5em m:0
 
+	.cart-btn 
+		bd: 2px solid black rd: .25rem fs: larger fw: bold 
+		p: .325rem .9em c:inherit @hover:white bgc:white @hover:black 
+
 tag app
 
 	prop items = getAllItems!
@@ -58,7 +62,7 @@ tag app
 								if item-detail.count > 3
 									<input.item-count-input
 										type="number"
-										value=item-detail.count 
+										bind=item-detail.count 
 										@change=(do(e)item-detail.count = Number(e.target.value))
 									/>
 									<button> "Remove"

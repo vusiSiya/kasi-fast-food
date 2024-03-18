@@ -10,7 +10,7 @@ tag menu-items
 		[d:grid @!700:vflex g: 2rem grid-template-columns:repeat(3, auto) w:100% jc:center m: 2rem auto 0]
 	>
 		for item,i of items
-				<a.menu-item [d:vflex m:auto]
+				<a.menu-item [d:grid m:auto]
 					id=item.id
 					route-to="/item-detail/{item.id}"
 					@click.emit("itemClick", item)

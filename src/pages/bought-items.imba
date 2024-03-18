@@ -31,7 +31,7 @@ tag bought-items
 
 		<div.container [d:vflex]>
 			for item in boughtItems
-				<div.menu-item [td:none ai:flex-end g:1em m: .5em 3.2em]>
+				<div.menu-item [td:none ai:flex-end g:1em mx: 3.2em @!760: auto mt: .5em]>
 					<img.item-image src=item.imgUrl />
 
 					<div.item-content [ai:end g:1.4em]>
@@ -42,7 +42,7 @@ tag bought-items
 							<input.item-count-input
 								type="number"
 								id=item.id 	
-								value=item.count
+								bind=item.count
 								@change=handleChange(e)
 							/>
 							<button.item-count-icon @click=handleClick(item.id) >
