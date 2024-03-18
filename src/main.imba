@@ -28,19 +28,44 @@ global css
 tag app
 
 	prop items = getAllItems!
-	prop pathname = document.location.pathname
-	prop paramsId = Number(pathname[pathname.length - 1])
+	prop item-detail
 
 	def getBoughtItems
 		const newArray = items.filter do(item) item.count
 		return newArray
-	
+
+	def handleItemClick e
+		item-detail = e.detail
+		return
+
 	<self>
-		<layout pathname=pathname paramsId=paramsId />
+		<layout @itemClick=handleItemClick>
 			<login route="/login"> 
 			<menu-items route="/items">
-			<item-detail route="/item-detail/:id" />
 			<bought-items route="/bought-items" boughtItems=getBoughtItems()>
+			
+			item-detail && (
+				<div.container [d:vflex g:0] route="/item-detail/:id">
+					<a route-to="/items" [m:1rem c:white] > "← back to menu"
+
+					<div.menu-item [ai:flex-end g:1em m:.5em 3.2em w:auto min-width:max-content]>
+						<img.item-image src=item-detail.imgUrl alt="{item-detail.name}"/>
+						<div.item-content>
+							<h2.item-name> item-detail.name
+							<p.item-price> "R {item-detail.price}"
+							
+							<div [d:flex ai:center g: .75em]>
+								if item-detail.count > 3
+									<input.item-count-input
+										type="number"
+										value=item-detail.count 
+										@change=(do(e)item-detail.count = Number(e.target.value))
+									/>
+									<button> "Remove"
+								else 
+									<button.cart-btn @click=item-detail.count++> "Add To Cart"
+									<span.count .fa-beat> item-detail.count	
+			)
 
 
 imba.router.alias("/", "/items");

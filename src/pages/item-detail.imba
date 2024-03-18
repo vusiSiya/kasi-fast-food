@@ -5,18 +5,25 @@ css .cart-btn
 		p: .325rem .9em c:inherit @hover:white bgc:white @hover:black 
 
 tag item-detail
-	pathname = document.location.pathname
-	itemId = Number(pathname[pathname.length - 1])
+	
+	prop itemId = 0
+	item = getAllItems()[itemId]
 
-	item = getAllItems().find do(item) item.id == itemId
-   
+	def getPathname do document.location.pathname
+
+	def getItemId 
+		const newArray = getPathname().split("/")
+		return Number(newArray[newArray.length - 1])
 
 	def handleChange e
 		item.count = Number(e.target.value)
 
 	<self.container [d:vflex g:0] >
 		<a route-to="/items" [m:1rem c:white] > "← back to menu"
-		<div.menu-item [ai:flex-end g:1em m:.5em 3.2em w:auto min-width:max-content]>
+		<div.menu-item 
+			[ai:flex-end g:1em m:.5em 3.2em w:auto min-width:max-content]
+			@itemClicked.log("item-detail also detected a click")
+		>
 			<img.item-image src=item.imgUrl alt="{item.name}"/>
 			<div.item-content>
 				<h2.item-name> item.name

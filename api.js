@@ -31,9 +31,7 @@ function getImage(filePath) {
 				break;
 		}
 	}
-
 	return(fetchImage(filePath, images))
-
 }
 
 export const images = {

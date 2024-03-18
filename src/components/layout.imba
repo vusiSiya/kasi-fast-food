@@ -25,8 +25,6 @@ css
 	.count bgc: #c51950 p: .20rem .5rem rd: 100% c: white
 
 tag layout
-	prop pathname 
-	prop paramsId
 	<self>
 		<nav>
 			<ul>

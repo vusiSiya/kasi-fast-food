@@ -42,7 +42,7 @@ tag bought-items
 							<input.item-count-input
 								type="number"
 								id=item.id 	
-								bind=item.count
+								value=item.count
 								@change=handleChange(e)
 							/>
 							<button.item-count-icon @click=handleClick(item.id) >
