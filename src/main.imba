@@ -35,22 +35,24 @@ tag app
 	prop item-detail
 
 	def getBoughtItems
-		const newArray = items.filter do(item) item.count
+		const newArray = items?.filter do(item) item.count
 		return newArray
 
 	def handleItemClick e
-		item-detail = e.detail
-		return
+		# console.log getSingleItem()
+		imba.commit!
+		return item-detail = e.detail
+
 
 	<self>
 		<layout @itemClick=handleItemClick>
 			<login route="/login"> 
 			<menu-items route="/items">
-			<bought-items route="/bought-items" boughtItems=getBoughtItems()>
+			<bought-items route="/bought-items">
 			
 			item-detail && (
 				<div.container [d:vflex g:0] route="/item-detail/:id">
-					<a route-to="/items" [m:1rem c:white] > "← back to menu"
+					<a route-to="/items" [m:1rem 1.8rem c:white] > "← back to menu"
 
 					<div.menu-item [ai:flex-end g:1em m:.5em 3.2em w:auto min-width:max-content]>
 						<img.item-image src=item-detail.imgUrl alt="{item-detail.name}"/>
@@ -70,7 +72,6 @@ tag app
 									<button.cart-btn @click=item-detail.count++> "Add To Cart"
 									<span.count .fa-beat> item-detail.count	
 			)
-
 
 imba.router.alias("/", "/items");
 imba.mount do <app>

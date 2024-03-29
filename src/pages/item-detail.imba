@@ -6,37 +6,32 @@ css .cart-btn
 
 tag item-detail
 	
-	prop itemId = 0
-	item = getAllItems()[itemId]
-
-	def getPathname do document.location.pathname
-
-	def getItemId 
-		const newArray = getPathname().split("/")
-		return Number(newArray[newArray.length - 1])
+	prop item
 
 	def handleChange e
 		item.count = Number(e.target.value)
 
 	<self.container [d:vflex g:0] >
-		<a route-to="/items" [m:1rem c:white] > "← back to menu"
-		<div.menu-item 
-			[ai:flex-end g:1em m:.5em 3.2em w:auto min-width:max-content]
-			@itemClicked.log("item-detail also detected a click")
-		>
-			<img.item-image src=item.imgUrl alt="{item.name}"/>
-			<div.item-content>
-				<h2.item-name> item.name
-				<p.item-price> "R {item.price}"
-				
-				<div [d:flex ai:center g: .75em]>
-					if item.count > 3
-						<input.item-count-input
-							type="number"
-							value=item.count 
-							@change=handleChange(e)
-						/>
-						<button> "Remove"
-					else 
-						<button.cart-btn @click=item.count++> "Add To Cart"
-						<span.count .fa-beat> item.count		
+		unless item != null
+			<a route-to="/items" [m:1rem c:white] > "← back to menu"
+
+			<div.menu-item 
+				[ai:flex-end g:1em m:.5em 3.2em w:auto min-width:max-content]
+				@itemClicked.log("item-detail also detected a click")
+			>
+				<img.item-image src=item.imgUrl alt="{item.name}"/>
+				<div.item-content>
+					<h2.item-name> item.name
+					<p.item-price> "R {item.priceRange[0]}"
+					
+					<div [d:flex ai:center g: .75em]>
+						if item.count > 3
+							<input.item-count-input
+								type="number"
+								value=item.count 
+								@change=handleChange(e)
+							/>
+							<button> "Remove"
+						else 
+							<button.cart-btn @click=item.count++> "Add To Cart"
+							<span.count .fa-beat> item.count		

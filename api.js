@@ -1,8 +1,40 @@
 //@ts-nocheck
 //import { fileURLToPath } from "url";
+//import { URL } from "url";
 import {data} from "./data"
 
-const getAllItems =()=>data.items;
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, getDocs, addDoc, query, getDocsFromServer } from "firebase/firestore";
+
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBsFammEWm4YtfZfZ-Xy2Gy1f1AE4fp720",
+  authDomain: "imba-menu-app.firebaseapp.com",
+  projectId: "imba-menu-app",
+  storageBucket: "imba-menu-app.appspot.com",
+  messagingSenderId: "911793695166",
+  appId: "1:911793695166:web:fdbe46a00ce94a2a6931ef"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+
+const itemsCollectionRef = collection(db,"items")
+
+const getAllItems = async ()=>{
+
+	const querySnapshot = await getDocs(itemsCollectionRef)
+	const dataArray = await querySnapshot?.docs.map(doc =>{
+		return {...doc.data(), id: doc.id}
+	});
+	return dataArray;
+}
 
 const getBoughtItems = ()=>data.items.filter(item=>item.count);
 const getTotalCount = ()=>getBoughtItems().reduce((sum,item)=>(sum + item.count), 0);
@@ -13,37 +45,4 @@ const removeItem = (itemId)=>{
 	item.count = 0;
 }
 
-function getImage(filePath) {
-	const allImageUrls = getAllItems().map(item => item.imgUrl)
-	const getUrl =(filePath)=> allImageUrls.find(imageUrl => imageUrl === filePath)
-	const images = {
-		"burger": {img:async ()=> await import("./Images/burger.jpg")},
-		"kota": {img: async()=> await import("./Images/kota.jpg")}
-	}
-
-	const fetchImage = (filePath, images)=>{
-		//const arr = filePath.split()
-		switch (filePath) {
-			case "burger":
-				return images.burger.img()
-				break;
-			default:
-				break;
-		}
-	}
-	return(fetchImage(filePath, images))
-}
-
-export const images = {
-	"burger": {img:()=> import("./Images/burger.jpg")},
-	"kota": {img: ()=> import("./Images/kota.jpg")},
-	"fried_chips": {img: ()=> import("./Images/fried-chips.jpg")}
-}
-
-const secondGetImage = (path)=>{
-	console.log(path)
-	//import image from path
-	//return image
-}
-
-export {getAllItems, getBoughtItems, getTotalPrice, getTotalCount, getImage, secondGetImage, removeItem}
+export {getAllItems, getBoughtItems, getTotalPrice, getTotalCount, removeItem}

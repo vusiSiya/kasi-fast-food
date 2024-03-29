@@ -1,7 +1,15 @@
 import{ getAllItems} from "../../api.js"
 
 tag menu-items
-	items = getAllItems()
+	items = getData()
+
+	def getItems data
+		return data
+
+	def getData
+		const newArray = await getAllItems();
+		items = getItems(newArray) 
+		imba.commit!
 
 	# def handleItemClick itemId
 	#	document.location.replace("/item-detail/{itemId}")
@@ -9,7 +17,8 @@ tag menu-items
 	<self.container 
 		[d:grid @!700:vflex g: 2rem grid-template-columns:repeat(3, auto) w:100% jc:center m: 2rem auto 0]
 	>
-		for item,i of items
+		if items != null
+			for item,i in items
 				<a.menu-item [d:grid m:auto]
 					id=item.id
 					route-to="/item-detail/{item.id}"

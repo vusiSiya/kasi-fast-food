@@ -1,9 +1,9 @@
 import {
-	getTotalPrice,
+	getTotalPrice,getBoughtItems
 } from "../../api.js"
 
 tag bought-items
-	prop boughtItems
+	prop boughtItems = getBoughtItems()
 
 	def handleClick(itemId)
 		const item = boughtItems.find do(item) item.id === itemId
@@ -16,13 +16,7 @@ tag bought-items
 	
 	css .total-price p:.5em fw: bold rd:.28rem bgc: #fffff1 @hover:black c: black @hover: white
 
-	### div.container@!760 
-			grid-template-columns: auto auto
-			grid-template-rows: repeat(auto-fit,minmax(23rem,1fr));
-	###
-
 	<self[d:grid g:.5em]>
-
 		<div [d:flex ai:center]>	
 			<h1 [m:.8em 2rem c:white]> "Bought Items" 
 			<p.total-price>

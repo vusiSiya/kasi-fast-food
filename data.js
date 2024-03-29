@@ -1,12 +1,10 @@
 
-//console.log(db)
-
 const data = {
 	items: [{
 		id: 1,
 		imgUrl: "https://s3.amazonaws.com/yomzansi.com/wp-content/uploads/2023/05/17132126/yomzansi-kfc-kota-menu-1024x793.jpg",
 		name: "Kota",
-		price: 22,
+		price: 25,
 		count: 5
 	}, {
 		id: 2,
@@ -18,13 +16,13 @@ const data = {
 		id: 3,
 		imgUrl: "https://www.tastingtable.com/img/gallery/the-origin-of-french-fries-might-surprise-you/l-intro-1642720908.jpg",
 		name: "Chips",
-		price: 22,
+		price: 15,
 		count: 5
 	}, {
 		id: 4,
 		imgUrl: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2F3.bp.blogspot.com%2F-h_s6B2N7uhM%2FUZ9SjVfi1tI%2FAAAAAAAAA4U%2FetCa-kSnTLA%2Fs1600%2FIMG_5528_edit%2B(Large).JPG&f=1&nofb=1&ipt=5c78f6c9123fe5ec3590b1dc201b683a59de744d662880a8424cc23911ce9177&ipo=images",
-		name: "MaFeti",
-		price: 15,
+		name: "Vetkoek",
+		price: 3,
 		count: 5
 	}, {
 		id: 5,
@@ -40,5 +38,6 @@ const data = {
 		count: 5
 	}]
 };
+
 
 export {data}

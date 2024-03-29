@@ -13,7 +13,7 @@ tag login
 			fw: bold p: 1em 1.5em bd: none rd: .5rem c: inherit
 			bgc: #344544 @hover:orange 
 			
-	<self.container [margin:auto]>
+	<self [margin:auto]>
 		<form @submit.prevent>
 			<h4 [ta:center] > "Login or Sign Up"
 			<input type="text" name="username" placeholder="name" required/>
