@@ -25,7 +25,12 @@ css
 	.count bgc: #c51950 p: .20rem .5rem rd: 100% c: white
 
 tag layout
-	<self>
+
+	def getYear
+		const date = new Date!
+		date.getFullYear!
+
+	<self [d:grid]>
 		<nav>
 			<ul>
 				<li> 
@@ -36,6 +41,9 @@ tag layout
 				<li> <a route-to="items"> "Menu Items"
 		<main[d:vflex mt:7.5rem]>
 			<slot>
+		# <footer [m:1em auto c:white]> "© {getYear!} Siyabonga"
+			
+
 
 
 			

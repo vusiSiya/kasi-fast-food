@@ -1,6 +1,6 @@
 
 import "./components/layout.imba"
-import {getAllItems} from "../api.js"
+import {saveToLocalStorage} from "../api.js"
 
 global css 
 	html,body m:0
@@ -29,49 +29,26 @@ global css
 		bd: 2px solid black rd: .25rem fs: larger fw: bold 
 		p: .325rem .9em c:inherit @hover:white bgc:white @hover:black 
 
-tag app
 
-	prop items = getAllItems!
+tag app
+	# prop items = (do await getAllItems!)().then do(data) items = data
+
 	prop item-detail
 
-	def getBoughtItems
-		const newArray = items?.filter do(item) item.count
-		return newArray
-
 	def handleItemClick e
-		# console.log getSingleItem()
+		const {id} = e.detail
+		# saveToLocalStorage(id,id)
 		imba.commit!
-		return item-detail = e.detail
+		item-detail = e.detail
 
 
 	<self>
 		<layout @itemClick=handleItemClick>
 			<login route="/login"> 
-			<menu-items route="/items">
+			<menu-items route="/items" >
 			<bought-items route="/bought-items">
-			
-			item-detail && (
-				<div.container [d:vflex g:0] route="/item-detail/:id">
-					<a route-to="/items" [m:1rem 1.8rem c:white] > "← back to menu"
+			<item-detail route="/item-detail/:id" bind:item=item-detail>
 
-					<div.menu-item [ai:flex-end g:1em m:.5em 3.2em w:auto min-width:max-content]>
-						<img.item-image src=item-detail.imgUrl alt="{item-detail.name}"/>
-						<div.item-content>
-							<h2.item-name> item-detail.name
-							<p.item-price> "R {item-detail.price}"
-							
-							<div [d:flex ai:center g: .75em]>
-								if item-detail.count > 3
-									<input.item-count-input
-										type="number"
-										bind=item-detail.count 
-										@change=(do(e)item-detail.count = Number(e.target.value))
-									/>
-									<button> "Remove"
-								else 
-									<button.cart-btn @click=item-detail.count++> "Add To Cart"
-									<span.count .fa-beat> item-detail.count	
-			)
 
 imba.router.alias("/", "/items");
 imba.mount do <app>

@@ -1,15 +1,12 @@
 import{ getAllItems} from "../../api.js"
 
 tag menu-items
-	items = getData()
-
-	def getItems data
-		return data
+	items = getData().then do(data) items = data
 
 	def getData
 		const newArray = await getAllItems();
-		items = getItems(newArray) 
 		imba.commit!
+		return newArray
 
 	# def handleItemClick itemId
 	#	document.location.replace("/item-detail/{itemId}")
