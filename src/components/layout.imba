@@ -5,7 +5,7 @@ import {
 } from "../../api.js"
 
 import "../pages/login.imba"
-import "../pages/bought-items.imba"                                                                                      
+import "../pages/cart-items.imba"                                                                                      
 import "../pages/item-detail.imba"
 import "../pages/menu-items.imba"
 
@@ -34,7 +34,7 @@ tag layout
 		<nav>
 			<ul>
 				<li> 
-					<a route-to="/bought-items" [d:flex ai:center g:.25em] > 
+					<a route-to="/items-on-cart" [d:flex ai:center g:.25em] > 
 						<i.fa-solid .fa-cart-shopping>
 						<span.count> getTotalCount!
 				<li> <a route-to="login"> "Login"

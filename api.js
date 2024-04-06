@@ -7,8 +7,7 @@ import {
 	collection,
 	getDocs,
 	getDoc,
-	doc,
-	query
+	doc
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -28,7 +27,6 @@ const db = getFirestore(app);
 const itemsCollectionRef = collection(db,"items")
 
 const getAllItems = async ()=>{
-
 	const querySnapshot = await getDocs(itemsCollectionRef)
 	const dataArray = await querySnapshot?.docs.map(doc =>{
 		return {...doc.data(), id: doc.id}
@@ -36,7 +34,7 @@ const getAllItems = async ()=>{
 	return dataArray;
 }
 
-const getBoughtItems = ()=>data.items.filter(item=>item.count);
+const getCartItems = ()=>data.items.filter(item=>item.count);
 
 const getSingleItem = async (itemId)=>{
 	const docRef = doc(db, "items", itemId.toString());
@@ -44,15 +42,23 @@ const getSingleItem = async (itemId)=>{
 	return {...itemSnapShot.data(), id: itemSnapShot.id};
 }
 
-export const saveToLocalStorage = (key="",data)=>localStorage.setItem(key,data)
+const saveToLocalStorage = (key="",data)=>localStorage.setItem(key,data)
 
-const getTotalCount = ()=>getBoughtItems().reduce((sum,item)=>(sum + item.count), 0);
-const getTotalPrice = ()=>getBoughtItems().reduce((sum,item)=>(sum + item.price * item.count), 0);
+const getTotalCount = ()=>getCartItems().reduce((sum,item)=>(sum + item.count), 0);
+const getTotalPrice = ()=>getCartItems().reduce((sum,item)=>(sum + item.price * item.count), 0);
 
 
 const removeItem = (itemId)=>{
-	let item = getBoughtItems().find(item=>item.id === itemId);
+	let item = getCartItems().find(item=>item.id === itemId);
 	item.count = 0;
 }
 
-export {getAllItems,getSingleItem, getBoughtItems, getTotalPrice, getTotalCount, removeItem}
+export {
+	getAllItems,
+	getSingleItem,
+	getCartItems,
+	getTotalPrice,
+	getTotalCount,
+	removeItem,
+	saveToLocalStorage
+}

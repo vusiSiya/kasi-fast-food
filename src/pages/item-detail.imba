@@ -1,31 +1,15 @@
-import {getSingleItem} from "../../api.js"
-	 
+ 
 css .cart-btn 
 		bd: 2px solid black rd: .25rem fs: larger fw: bold 
 		p: .325rem .9em c:inherit @hover:white bgc:white @hover:black 
 
-const getStoredData = do()
-	const unknownKey = localStorage.key(0)
-	const data = localStorage.getItem unknownKey
-	localStorage.clear()
-	localStorage.clear()
-	imba.commit!
-	return data
 
 tag item-detail
-	prop itemId  = getStoredData!
 	prop item
-	# item = (do getData())!
-
-	def snatchData info
-		return info
-	def getData
-		const id = itemId || getStoredData!
-		const newItem = await getSingleItem(id)
-		item = snatchData(newItem)
-		
+	
 	def handleChange e
 		item.count = Number(e.target.value)
+
 
 	<self.container [d:vflex g:0] >
 		<a route-to="/items" [m:1rem 2rem @!760:1rem c:white] > "← back to menu"

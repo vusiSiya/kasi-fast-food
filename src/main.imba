@@ -1,6 +1,6 @@
 
 import "./components/layout.imba"
-import {saveToLocalStorage} from "../api.js"
+import {getSingleItem} from "../api.js"
 
 global css 
 	html,body m:0
@@ -11,12 +11,12 @@ global css
 	.container d:flex jc:center g:1rem w:100%
 	.count bgc: #c51950 rd: 100%  c: white p: .25em .5em fw:bold
 
-	.menu-item d:flex g:1rem p:.5em bgc: #ffffe0c2 c:black max-width:53rem
+	.menu-item d:flex g:1rem p:.5em bgc: #ffffe0c2 c:black max-width:45rem
 		rd: .5rem box-shadow: none @hover: 0 0 18px 8px #344544 
 
 	.menu-item@!760 d:grid ai:flex-end m:0 auto max-width: max-content 
 	
-	.item-image w:100% max-width:19rem aspect-ratio:1  rd:.27rem 
+	.item-image w:100% max-width:16rem aspect-ratio:1  rd:.27rem 
 
 	.item-content d:grid g:1rem
 	.item-name, .item-price m: .75rem 0 .125rem
@@ -26,7 +26,7 @@ global css
 		ta: center fs: medium  w: auto p: .25em .5em m:0
 
 	.cart-btn 
-		bd: 2px solid black rd: .25rem fs: larger fw: bold 
+		bd: 1px solid black rd: .25rem fs: larger fw: bold 
 		p: .325rem .9em c:inherit @hover:white bgc:white @hover:black 
 
 
@@ -39,15 +39,15 @@ tag app
 		const {id} = e.detail
 		# saveToLocalStorage(id,id)
 		imba.commit!
-		item-detail = e.detail
+		item-detail = await getSingleItem(id);
 
 
 	<self>
 		<layout @itemClick=handleItemClick>
 			<login route="/login"> 
 			<menu-items route="/items" >
-			<bought-items route="/bought-items">
-			<item-detail route="/item-detail/:id" bind:item=item-detail>
+			<cart-items route="/items-on-cart">
+			<item-detail route="/item-detail/:id" item=item-detail>
 
 
 imba.router.alias("/", "/items");
