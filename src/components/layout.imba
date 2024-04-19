@@ -1,6 +1,6 @@
 
 import {
-	getTotalPrice,
+	authSignOut,
 	getTotalCount,
 } from "../../api.js"
 
@@ -25,20 +25,26 @@ css
 	.count bgc: #c51950 p: .20rem .5rem rd: 100% c: white
 
 tag layout
+	prop isLoggedIn
 
 	def getYear
 		const date = new Date!
 		date.getFullYear!
 
+	def handleLogout
+		isLoggedIn = authSignOut!
+
+	
 	<self [d:grid]>
 		<nav>
 			<ul>
 				<li> 
-					<a route-to="/items-on-cart" [d:flex ai:center g:.25em] > 
+					<a route-to="items-on-cart" [d:flex ai:center g:.25em] > 
 						<i.fa-solid .fa-cart-shopping>
 						<span.count> getTotalCount!
-				<li> <a route-to="login"> "Login"
 				<li> <a route-to="items"> "Menu Items"
+				<li> <a route-to="login"> "Login"
+				<li> <a route-to="login" @click=handleLogout > "Logout"
 		<main[d:vflex mt:7.5rem]>
 			<slot>
 		# <footer [m:1em auto c:white]> "© {getYear!} Siyabonga"
