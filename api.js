@@ -55,11 +55,10 @@ export const getAllItems = async ()=>{
 
 
 export const getSingleItem = async (itemId)=>{
-	
 	const cartItemRef = doc(db, "items-on-cart", itemId.toString());
 	const generalItemRef = doc(db, "items", itemId.toString());
 
-	const docRef = cartItemRef || generalItemRef;
+	const docRef = generalItemRef; // || cartItemRef 
 	const itemSnapShot = await getDoc(docRef);
 	return {
 		...itemSnapShot.data(),
@@ -68,40 +67,36 @@ export const getSingleItem = async (itemId)=>{
 }
 
 
-export const removeItem = async (itemId)=>{
-	//find item with id === itemId
-	//write to the database, that the item.count is now zero.
-	const itemRef = doc(db, "items-on-cart", itemId.toString());
-	await updateDoc(itemRef, {
-		count: 0
-	});
-}
-
 export const addItemToCart = async (itemData, itemCount)=>{
 	const itemRef = doc(db, "items-on-cart", itemData.id.toString());
 	await setDoc(itemRef, {
 		...itemData,
-		count: itemCount
+		count: Number(itemCount)
 	});
 }
 
 export const updateItemCount= async (itemId, itemCount)=>{
 	const itemRef = doc(db, "items-on-cart", itemId.toString());
 	await updateDoc(itemRef, {
-		count: itemCount
+		count: Number(itemCount)
+	});
+}
+
+export const removeItem = async (itemId)=>{
+	const itemRef = doc(db, "items-on-cart", itemId.toString());
+	await updateDoc(itemRef, {
+		count: 0
 	});
 }
 
 export const getCartItems = async()=>{
-
 	const cartItemsCollectionRef = collection(db,"items-on-cart");
 	const querySnapshot = await getDocs(cartItemsCollectionRef);
-	const cartItems = await querySnapshot?.docs.map(doc =>{
+	const cartItems = querySnapshot?.docs.map(doc =>{
 		return {
 			...doc.data()
 		}
 	});
-
 	return cartItems;
 };
 
@@ -109,13 +104,13 @@ export const getCartItems = async()=>{
 export const getTotalCount = async()=>{
 	const cartItems = await getCartItems();
 	const count = cartItems?.reduce((sum,item)=>(sum + item.count), 0);
-	return count || 0;
+	return count
 }
 
 export const getTotalPrice = async()=>{
 	const cartItems = await getCartItems();
 	const totalPrice = cartItems?.reduce((sum,item)=>(sum + item.price * item.count), 0);
-	return totalPrice || 0;
+	return totalPrice
 }
 
 

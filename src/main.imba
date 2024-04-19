@@ -34,7 +34,9 @@ global css
 tag app
 
 	prop item-detail
-	prop isLoggedIn = getAuthState!
+	prop count = 0
+	# prop isLoggedIn = getAuthState!
+
 
 	def handleItemClick e
 		const {id} = e.detail
@@ -46,8 +48,8 @@ tag app
 		<layout @itemClick=handleItemClick>
 			<login route="/login" bind:isVerifiedUser=isLoggedIn> 
 			<menu-items route="/items" >
-			isLoggedIn && <cart-items route="/items-on-cart">
-			<item-detail route="/item-detail/:id" item=item-detail>
+			<cart-items route="/items-on-cart" cart-items-count=count>
+			<item-detail route="/item-detail/:id" item=item-detail cart-items-count=count>
 
 
 imba.router.alias("/", "/login");

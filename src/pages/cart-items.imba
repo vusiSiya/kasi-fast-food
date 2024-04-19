@@ -1,4 +1,4 @@
-import {getTotalPrice, getCartItems} from "../../api.js"
+import {getTotalPrice, getCartItems, removeItem} from "../../api.js"
 
 
 css .total-price 
@@ -6,11 +6,20 @@ css .total-price
 		p:.5em fw: bold rd:.28rem 
 
 tag cart-items
-	prop cartItems = getCartItems!
+	prop cartItems = getData!
+	prop cart-items-count
+	prop total = 0
 
-	def handleClick itemId
-		const item = cartItems.find do(item) item.id === itemId
-		item.count = 0;
+	def getData
+		let items = await getCartItems!
+		total = items.length
+		imba.commit!
+		return items
+
+	def handleClick e
+		const item = cartItems.find do(item) item.id === e.target.id
+		item.count = 0; # this line may just be redundant
+		removeItem(item.id)
 
 	def handleChange e
 		const item = cartItems.find do(item) item.id === e.target.id
@@ -38,8 +47,8 @@ tag cart-items
 								<input.item-count-input
 									type="number"
 									id=item.id 	
-									bind=item.count
-									@change=handleChange(e)
+									value=item.count
+									@change=handleChange
 								/>
-								<button.item-count-icon @click=handleClick(item.id) >
+								<button.item-count-icon id=item.id @click=handleClick >
 									<i.fa-solid .fa-trash-can>

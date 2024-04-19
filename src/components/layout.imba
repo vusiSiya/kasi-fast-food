@@ -27,6 +27,8 @@ css
 tag layout
 	prop isLoggedIn
 
+	prop count = 0
+
 	def getYear
 		const date = new Date!
 		date.getFullYear!
@@ -41,12 +43,12 @@ tag layout
 				<li> 
 					<a route-to="items-on-cart" [d:flex ai:center g:.25em] > 
 						<i.fa-solid .fa-cart-shopping>
-						<span.count> getTotalCount!
+						<span.count> count
 				<li> <a route-to="items"> "Menu Items"
 				<li> <a route-to="login"> "Login"
 				<li> <a route-to="login" @click=handleLogout > "Logout"
 		<main[d:vflex mt:7.5rem]>
-			<slot>
+			<slot bind:count=count>
 		# <footer [m:1em auto c:white]> "© {getYear!} Siyabonga"
 			
 

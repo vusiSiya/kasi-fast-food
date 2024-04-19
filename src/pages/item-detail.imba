@@ -9,7 +9,7 @@ css .cart-btn
 
 tag item-detail
 	prop item
-	prop count = item?.count || 0
+	prop count = 0
 
 	def handleChange e
 		count = Number(e.target.value)
@@ -24,18 +24,18 @@ tag item-detail
 			addItemToCart({...item}, count)
 			imba.commit!
 		else
-			let newCount = (id === "update-plus") ? count++ : count-- 
-			updateItemCount({...item}, newCount)
+			let newCount = (id === "update_plus") ? count++ : count-- 
+			updateItemCount(item.id, newCount)
 			imba.commit!
 		
 
 	<self.container [d:vflex g:0] >
 		<a route-to="/items" [m:1rem 2rem @!760:1rem c:white] > "← back to menu"
+
 		if !item
 			<section [m:5em auto c:white]> 
 				<p> "loading " 
 					<i .fa-solid .fa-spinner .fa-spin-pulse>
-
 		else
 			<div.menu-item [m:.5em 3.2em @!760:auto ai:flex-end w:auto g:1em min-width:max-content]>
 				<img.item-image src=item.imgUrl alt=item.name />
@@ -54,10 +54,10 @@ tag item-detail
 							
 						else 
 							count && (
-								<button.update-count id="update-plus" @click=handleClick> "+"
+								<button.update-count id="update_plus" @click=handleClick> "+"
 							) || <button.cart-btn id="add" @click=handleClick> "Add To Cart"
 
 							<span.count .fa-beat> count
-							<button.count .update-count id="update-minus" @click=handleClick> "-"
+							<button.count .update-count id="update_minus" @click=handleClick> "-"
 			
 			
