@@ -1,4 +1,4 @@
-import{ getAllItems} from "../../api.js"
+import{ getAllItems, user} from "../../api.js"
 
 tag menu-items
 	items = getData().then do(data) items = data
@@ -14,7 +14,9 @@ tag menu-items
 	<self.container 
 		[d:grid @!700:vflex g: 2rem grid-template-columns:repeat(3, auto) w:100% jc:center m: 2rem auto 0]
 	>
-		if items != null
+		if !items
+			<loading-spinner>
+		else 
 			for item,i in items
 				<a.menu-item [d:grid m:auto]
 					id=item.id
@@ -25,3 +27,4 @@ tag menu-items
 					<div.item-content>
 						<h2.item-name> item.name
 						<h3.item-price> "R {item.price}"
+		

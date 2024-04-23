@@ -4,7 +4,7 @@ css .cart-btn
 		bd: 2px solid black rd: .25rem fs: larger fw: bold 
 		p: .325rem .9em c:inherit @hover:white bgc:white @hover:black
 
-	.update-count bgc:white b:1px solid black
+	.update-count bgc:white b:1px solid black c:black
 
 
 tag item-detail
@@ -12,20 +12,22 @@ tag item-detail
 	prop count = 0
 
 	def handleChange e
-		count = Number(e.target.value)
+		let count = Number(e.target.value)
+		await updateItemCount(count)
 
 	def handleClick e
 		const {id} = e.target 
 		if id === "remove"
-			removeItem(item.id)
+			await removeItem(item.id)
 
 		else if id === "add"
-			count = 1 
-			addItemToCart({...item}, count)
+			await addItemToCart({...item})
+			count = 1
 			imba.commit!
 		else
-			let newCount = (id === "update_plus") ? count++ : count-- 
-			updateItemCount(item.id, newCount)
+			let newCount = (id === "update_plus") ? count++ : count--
+			await updateItemCount(item.id, newCount)
+			count = newCount;
 			imba.commit!
 		
 
@@ -33,9 +35,7 @@ tag item-detail
 		<a route-to="/items" [m:1rem 2rem @!760:1rem c:white] > "← back to menu"
 
 		if !item
-			<section [m:5em auto c:white]> 
-				<p> "loading " 
-					<i .fa-solid .fa-spinner .fa-spin-pulse>
+			<loading-spinner>
 		else
 			<div.menu-item [m:.5em 3.2em @!760:auto ai:flex-end w:auto g:1em min-width:max-content]>
 				<img.item-image src=item.imgUrl alt=item.name />

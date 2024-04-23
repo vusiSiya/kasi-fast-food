@@ -1,6 +1,6 @@
 
 import "./components/layout.imba"
-import {getSingleItem, getAuthState} from "../api.js"
+import {getSingleItem, getAuthState, user} from "../api.js"
 
 global css 
 	html,body m:0
@@ -16,7 +16,7 @@ global css
 
 	.menu-item@!760 d:grid ai:flex-end m:0 auto max-width: max-content 
 	
-	.item-image w:100% max-width:16rem @!760:100% aspect-ratio:1  rd:.27rem ff:italic
+	.item-image w:100% max-width:16rem @!760:auto aspect-ratio:1  rd:.27rem ff:italic
 
 	.item-content d:grid g:1rem
 	.item-name, .item-price m: .75rem 0 .125rem
@@ -29,27 +29,22 @@ global css
 		bd: 1px solid black rd: .25rem fs: larger fw: bold 
 		p: .325rem .9em c:inherit @hover:white bgc:white @hover:black 
 
-	form-style d: grid g: 1em bgc: #ffffe0c5 min-width: 15em m: .5em auto p: 1em 
-		c: white bd: none rd: .5rem fs:1.5rem @!700:medium 
 tag app
 
 	prop item-detail
 	prop count = 0
-	# prop isLoggedIn = getAuthState!
-
 
 	def handleItemClick e
 		const {id} = e.detail
 		imba.commit!
 		item-detail = await getSingleItem(id)
 
-
 	<self>
 		<layout @itemClick=handleItemClick>
-			<login route="/login" bind:isVerifiedUser=isLoggedIn> 
+			<login route="/login"> 
 			<menu-items route="/items" >
-			<cart-items route="/items-on-cart" cart-items-count=count>
-			<item-detail route="/item-detail/:id" item=item-detail cart-items-count=count>
+			<cart-items route="/items-on-cart">
+			<item-detail route="/item-detail/:id" item=item-detail>
 
 
 imba.router.alias("/", "/login");

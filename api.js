@@ -11,7 +11,10 @@ import {
 	getDoc,
 	doc,
 	setDoc,
-	updateDoc 
+	addDoc,
+	updateDoc, 
+	query,
+	where
 } from "firebase/firestore";
 
 // authentication
@@ -42,7 +45,9 @@ const auth = getAuth(app)
 const provider = new GoogleAuthProvider()
 
 const itemsCollectionRef = collection(db,"items");
+const cartItemsCollection = collection(db, "items-on-cart")
 
+export const user = auth.currentUser
 
 // functions
 export const getAllItems = async ()=>{
@@ -55,24 +60,34 @@ export const getAllItems = async ()=>{
 
 
 export const getSingleItem = async (itemId)=>{
-	const cartItemRef = doc(db, "items-on-cart", itemId.toString());
-	const generalItemRef = doc(db, "items", itemId.toString());
-
-	const docRef = generalItemRef; // || cartItemRef 
-	const itemSnapShot = await getDoc(docRef);
-	return {
-		...itemSnapShot.data(),
-		id: itemSnapShot.id
-	};
+	const cartItems = await getCartItems();
+	const item = cartItems.find(item=> item.id === Number(itemId))
+	if (item != null) {
+		return item
+	}
+	else {
+		const generalItemsRef = doc(db, "items", itemId.toString());
+		const itemSnapShot = await getDoc(generalItemsRef);
+		return {
+			...itemSnapShot.data(),
+			id: itemSnapShot.id
+		};
+	}
 }
 
 
-export const addItemToCart = async (itemData, itemCount)=>{
+export const addItemToCart = async (itemData)=>{
 	const itemRef = doc(db, "items-on-cart", itemData.id.toString());
-	await setDoc(itemRef, {
-		...itemData,
-		count: Number(itemCount)
-	});
+	try {
+		await addDoc(collection(db, "items-on-cart"), {
+			...itemData,
+			count: Number(1),
+			uid: auth.currentUser.uid
+		});
+		
+	} catch (err) {
+		console.error(err.message)
+	}
 }
 
 export const updateItemCount= async (itemId, itemCount)=>{
@@ -85,32 +100,43 @@ export const updateItemCount= async (itemId, itemCount)=>{
 export const removeItem = async (itemId)=>{
 	const itemRef = doc(db, "items-on-cart", itemId.toString());
 	await updateDoc(itemRef, {
-		count: 0
+		count: Number(0)
 	});
 }
 
 export const getCartItems = async()=>{
-	const cartItemsCollectionRef = collection(db,"items-on-cart");
-	const querySnapshot = await getDocs(cartItemsCollectionRef);
-	const cartItems = querySnapshot?.docs.map(doc =>{
-		return {
-			...doc.data()
-		}
-	});
-	return cartItems;
+	try{
+		const cartItemsCollectionRef = collection(db,"items-on-cart");
+
+		const userId = auth.currentUser.uid || localStorage.getItem("user-uid");
+		const q = query(cartItemsCollectionRef, where("uid", "==", userId))
+
+		const querySnapshot = await getDocs(q);
+		const cartItems = querySnapshot?.docs.map(doc =>{
+			return {
+				...doc.data()
+			}
+		});
+		//console.log(cartItems)
+		return cartItems
+	}
+	catch(err){
+		console.log(err.message);
+		return null
+	}
 };
 
 
 export const getTotalCount = async()=>{
 	const cartItems = await getCartItems();
 	const count = cartItems?.reduce((sum,item)=>(sum + item.count), 0);
-	return count
+	return count || 0
 }
 
 export const getTotalPrice = async()=>{
 	const cartItems = await getCartItems();
 	const totalPrice = cartItems?.reduce((sum,item)=>(sum + item.price * item.count), 0);
-	return totalPrice
+	return totalPrice || 0
 }
 
 
@@ -119,12 +145,15 @@ let loggedInState
 onAuthStateChanged(auth, (user) => {
 	if (user) {
 	  const uid = user.uid;
+	  localStorage.setItem("user-uid", uid)
 	  console.log(user.emailVerified)
-	  alert("'logged in")
+	  //alert("'logged in")
 	  loggedInState = true
 	} else {
-	  loggedInState = false
-	  alert("logged out")
+	
+		localStorage.removeItem("user-uid");
+		loggedInState = false
+	  //alert("logged out")
 	}
   });
 

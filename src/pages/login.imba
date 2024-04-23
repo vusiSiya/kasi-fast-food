@@ -18,43 +18,42 @@ tag login
 			fw: bold p: 1em 1.5em bd: none rd: .5rem c: inherit
 			bgc: #354645 @hover:orange
 
+	prop isSignedIn
 
-	prop isVerifiedUser = true
+	def getFormData e
+		e.preventDefault!
+		new FormData(e.target.parentElement)
 
-	def getFormData
-		const form-tag = document.querySelector "form"
-		new FormData(form-tag)
-
-	def handleSignInWithEmail
-		const formData = getFormData!
+	def handleSignInWithEmail e
+		const formData = getFormData(e)
 		const email = formData.get("email")
 		const password = formData.get("password")
-		const isSignedIn = await signInWithEmail(email, password)
-		isVerifiedUser = isSignedIn
-	
-	def handleSignInWithGoogle
-		const isSignedIn = await authSignInWithGoogle!
+		isSignedIn = await signInWithEmail(email, password)
+		emit("signed-in", isSignedIn)
 		imba.commit!
-		isVerifiedUser = isSignedIn
+	
+	def handleSignInWithGoogle e
+		e.preventDefault!
+		isSignedIn = await authSignInWithGoogle!
+		imba.commit!
 
-	def handleSignUp
-		const formData = getFormData!
+	def handleSignUp e
+		const formData = getFormData(e)
 		const email = formData.get("email")
 		const password = formData.get("password")
-		authCreateAccountWithEmail(email, password)
+		await authCreateAccountWithEmail(email, password)
 
 
 	<self [m:auto]>
-		# (isVerifiedUser === false) && <p> "It looks like you don't have an account. Sign Up instead!"
-		<form @submit>
+		if (isSignedIn === false) then <span> "Oops invalid credentials"
+		<form>
 			<h4 [ta:center]> "Login or Sign Up"
 			<input type="text" name="email" placeholder="email" required/>
 			<input type="password" name="password" placeholder="password" required />
 			<button
 				type="submit"
 				@click=handleSignInWithEmail
-			> <a route-to=(isVerifiedUser ? "/items-on-cart" : "/login")> "Log in"
-			# <div [d:grid w:100% g: .25rem gtc: 1fr 1fr]>
+			> "Log in"
 			<button type="submit" @click=handleSignUp> "Create Account"
 			<button type="submit" @click=handleSignInWithGoogle [d:flex ai:center jc:center]>
 				<img [w:2rem] src="https://logos-world.net/wp-content/uploads/2020/09/Google-Symbol-700x394.png" />

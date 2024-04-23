@@ -6,8 +6,7 @@ css .total-price
 		p:.5em fw: bold rd:.28rem 
 
 tag cart-items
-	prop cartItems = getData!
-	prop cart-items-count
+	cartItems = getData().then do(data) cartItems = data
 	prop total = 0
 
 	def getData
@@ -31,24 +30,27 @@ tag cart-items
 			<h1 [m:.8em 3.2rem c:white]> "On your cart" 
 			<p.total-price> 
 				<i.fa-solid .fa-coins .fa-beat-fade> 
-				" R{getTotalPrice!}"
+				" R{await getTotalPrice!}"
 				
 		<div.container [d:vflex]>
-			for item in cartItems
-				if item.count
-					<div.menu-item [td:none ai:flex-end g:1em mx: 3.2em @!760: auto mt: .5em]>
-						<img.item-image src=item.imgUrl />
+			if !cartItems
+				<loading-spinner>
+			else
+				for item in cartItems
+					if item.count
+						<div.menu-item [td:none ai:flex-end g:1em mx: 3.2em @!760: auto mt: .5em]>
+							<img.item-image src=item.imgUrl />
 
-						<div.item-content [ai:end g:1.4em]>
-							<h3.item-name> item.name
-							<p.item-price> "R {item.price}"
+							<div.item-content [ai:end g:1.4em]>
+								<h3.item-name> item.name
+								<p.item-price> "R {item.price}"
 
-							<div [d:flex ai:center g: .5em]>
-								<input.item-count-input
-									type="number"
-									id=item.id 	
-									value=item.count
-									@change=handleChange
-								/>
-								<button.item-count-icon id=item.id @click=handleClick >
-									<i.fa-solid .fa-trash-can>
+								<div [d:flex ai:center g: .5em]>
+									<input.item-count-input
+										type="number"
+										id=item.id 	
+										value=item.count
+										@change=handleChange
+									/>
+									<button.item-count-icon id=item.id @click=handleClick >
+										<i.fa-solid .fa-trash-can>

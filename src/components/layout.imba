@@ -4,10 +4,12 @@ import {
 	getTotalCount,
 } from "../../api.js"
 
+import "./loading-spinner.imba"
 import "../pages/login.imba"
 import "../pages/cart-items.imba"                                                                                      
 import "../pages/item-detail.imba"
 import "../pages/menu-items.imba"
+
 
 css 
 	nav d: vflex m: 0 0 .8em c: white p: 0.5em 0 bgc: #75a1a1
@@ -25,16 +27,13 @@ css
 	.count bgc: #c51950 p: .20rem .5rem rd: 100% c: white
 
 tag layout
-	prop isLoggedIn
-
-	prop count = 0
 
 	def getYear
 		const date = new Date!
 		date.getFullYear!
 
 	def handleLogout
-		isLoggedIn = authSignOut!
+		await authSignOut!
 
 	
 	<self [d:grid]>
@@ -43,7 +42,7 @@ tag layout
 				<li> 
 					<a route-to="items-on-cart" [d:flex ai:center g:.25em] > 
 						<i.fa-solid .fa-cart-shopping>
-						<span.count> count
+						<span.count> (await getTotalCount!)
 				<li> <a route-to="items"> "Menu Items"
 				<li> <a route-to="login"> "Login"
 				<li> <a route-to="login" @click=handleLogout > "Logout"
