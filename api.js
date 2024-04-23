@@ -79,9 +79,10 @@ export const getSingleItem = async (itemId)=>{
 export const addItemToCart = async (itemData)=>{
 	const itemRef = doc(db, "items-on-cart", itemData.id.toString());
 	try {
-		await addDoc(collection(db, "items-on-cart"), {
+		await setDoc(itemRef, {
 			...itemData,
 			count: Number(1),
+			id: Number(itemData.id),
 			uid: auth.currentUser.uid
 		});
 		
@@ -108,7 +109,7 @@ export const getCartItems = async()=>{
 	try{
 		const cartItemsCollectionRef = collection(db,"items-on-cart");
 
-		const userId = auth.currentUser.uid || localStorage.getItem("user-uid");
+		const userId = auth.currentUser?.uid || localStorage.getItem("user-uid");
 		const q = query(cartItemsCollectionRef, where("uid", "==", userId))
 
 		const querySnapshot = await getDocs(q);

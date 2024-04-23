@@ -6,12 +6,13 @@ css .total-price
 		p:.5em fw: bold rd:.28rem 
 
 tag cart-items
-	cartItems = getData().then do(data) cartItems = data
+	cartItems = getData().then do(data) 
+		imba.commit!
+		cartItems = data
 	prop total = 0
 
 	def getData
 		let items = await getCartItems!
-		total = items.length
 		imba.commit!
 		return items
 
