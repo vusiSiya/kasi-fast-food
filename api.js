@@ -141,26 +141,22 @@ export const getTotalPrice = async()=>{
 
 
 // auth
-let loggedInState
 onAuthStateChanged(auth, (user) => {
 	if (user) {
 	  const uid = user.uid;
 	  localStorage.setItem("user-uid", uid)
-	  console.log(user.emailVerified)
-	  //alert("'logged in")
-	  loggedInState = true
+	  alert("Signed In");
 	} else {
 	
 		localStorage.removeItem("user-uid");
-		loggedInState = false
-	  //alert("logged out")
+	  alert("Signed out")
 	}
   });
 
-export const getAuthState = ()=>{
+/*export const getAuthState = ()=>{
 	return loggedInState
 }
-
+*/
 
 export const authCreateAccountWithEmail = async (email, password)=>{
 	try{
@@ -169,10 +165,8 @@ export const authCreateAccountWithEmail = async (email, password)=>{
 		alert("account successfully created!");
 	}
 	catch(error){
-		const errorCode = error.code;
-		const errorMessage = error.message;
 		console.error(error.message)
-		alert(`${errorMessage}`) 
+		alert(`${error.message}`) 
 	}
 }
 
@@ -180,38 +174,26 @@ export const authCreateAccountWithEmail = async (email, password)=>{
 export const signInWithEmail = async (email, password)=>{
 	// do I need to recive an isloggedIn boolean parameter? to return ?
 	try{
-		const userCredential = await signInWithEmailAndPassword(auth, email, password)
-		const user = userCredential.user;
-		return true
+		await signInWithEmailAndPassword(auth, email, password)
 	}
 	catch(error){
-		const errorCode = error.code;
-		const errorMessage = error.message;
 		console.error(error.message)
-		return false
 	}
 }
 
 
 export const authSignInWithGoogle= async()=> {
     try{
-        const result = await signInWithPopup(auth, provider)
-		const user = result.user
-        alert("Signed in with Google")
-		return true
+      await signInWithPopup(auth, provider)
     }
     catch(error){
-		const errorCode = error.code;
-		const errorMessage = error.message;
-        console.log(error.message)
-		return false
+      console.log(error.message)
     }
 }
 
 export const authSignOut= async()=>{
 	try{
 		await signOut(auth)
-		return false
 	}
 	catch(error){
         console.error(error.message)

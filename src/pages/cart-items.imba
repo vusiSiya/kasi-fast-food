@@ -6,22 +6,18 @@ css .total-price
 		p:.5em fw: bold rd:.28rem 
 
 tag cart-items
-	cartItems = getData().then do(data) cartItems = data
-
-	def getData
-		let items = await getCartItems!
-		imba.commit!
-		return items
+	prop cartItems = getCartItems().then do(data) cartItems = data
 
 	def handleClick e
-		const item = cartItems.find do(item) item.id === e.target.id
+		const item = cartItems.find do(item) item.id === Number(e.target.id)
 		item.count = 0; # this line may just be redundant
 		await removeItem(item.id)
 
 	def handleChange e
-		const item = cartItems.find do(item) item.id === e.target.id
-		item.count = e.target.value	
-		await updateItemCount(item.id, item.count)
+		const item = cartItems.find do(item) item.id === Number(e.target.id)
+		let new-count = Number(e.target.value)	
+		await updateItemCount(item.id, new-count)
+		item.count = new-count
 
 
 	<self[d:grid g:.5em]>
@@ -35,8 +31,9 @@ tag cart-items
 			if !cartItems
 				<loading-spinner>
 			else
+
 				for item in cartItems
-					if item.count
+					unless !item.count
 						<div.menu-item [td:none ai:flex-end g:1em mx: 3.2em @!760: auto mt: .5em]>
 							<img.item-image src=item.imgUrl />
 
@@ -51,5 +48,5 @@ tag cart-items
 										value=item.count
 										@change=handleChange
 									/>
-									<button.item-count-icon id=item.id @click=handleClick >
+									<button.item-count-icon id=item.id @click.wait(1s)=handleClick >
 										<i.fa-solid .fa-trash-can>

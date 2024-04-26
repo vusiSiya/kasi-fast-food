@@ -8,6 +8,7 @@ css
 
 	.update-count bgc:white px:.75rem py:.25rem fs:small bd:1px solid black rd:.25rem c:black
 
+
 tag item-detail
 	prop item
 
@@ -29,8 +30,9 @@ tag item-detail
 			imba.commit!
 			
 		else
-			let newCount = (id === "update_plus") ? item.count++ : item.count--
-			await updateItemCount(item.id, newCount)
+			let new-count = (id === "update_plus") ? item.count + 1 : item.count -1
+			await updateItemCount(item.id, new-count)
+			item.count = new-count
 			imba.commit!
 		
 
@@ -51,10 +53,10 @@ tag item-detail
 							<button.cart-btn id="add" @click=handleClick> "Add To Cart"
 						else
 							
-							if(item.count < 3) 
-								<button.update-count id="update_plus" @click=handleClick > "+"
+							if (item.count < 4) 
+								<button.update-count id="update_plus" @click.wait(1.2s)=handleClick > "+"
 								<span.count .fa-beat> item.count
-								<button .update-count id="update_minus" @click=handleClick > "-"
+								<button .update-count id="update_minus" @click.wait(1.2s)=handleClick > "-"
 							else
 								<input.item-count-input
 									type="number"
@@ -65,6 +67,3 @@ tag item-detail
 							<button  id="remove" @click=handleClick route-to="/" > "Remove"
 							
 
-							
-			
-			

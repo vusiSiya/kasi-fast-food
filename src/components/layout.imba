@@ -33,12 +33,11 @@ tag layout
 		date.getFullYear!
 
 	def handleLogout
-		await authSignOut!
+		authSignOut().finally do emit("signed-out")
 
 	
 	<self [d:grid]>
-		<nav>
-			<ul>
+		<nav><ul>
 				<li> 
 					<a route-to="items-on-cart" [d:flex ai:center g:.25em] > 
 						<i.fa-solid .fa-cart-shopping>
@@ -46,9 +45,11 @@ tag layout
 				<li> <a route-to="items"> "Menu Items"
 				<li> <a route-to="login"> "Login"
 				<li> <a route-to="login" @click=handleLogout > "Logout"
+
 		<main[d:vflex mt:7.5rem]>
-			<slot bind:count=count>
-		# <footer [m:1em auto c:white]> "© {getYear!} Siyabonga"
+			<slot>
+		###<footer [m:1em auto c:white]> 
+			<section> "© {getYear!} Siyabonga Mahlalela"
 			
 
 
