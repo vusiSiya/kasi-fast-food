@@ -1,6 +1,7 @@
 
 import "./components/layout.imba"
-import {getSingleItem,getSingleCartItem, user as currentUser} from "../api.js"
+import {getSingleItem, getSingleCartItem} from "../api.js"
+
 
 global css 
 	html,body m:0
@@ -29,9 +30,12 @@ global css
 		bd: 1px solid black rd: .25rem fs: larger fw: bold 
 		p: .325rem .9em c:inherit @hover:white bgc:white @hover:black 
 
+
 tag app
 
 	prop item-detail = {}
+	prop signedIn
+
 
 	def handleItemClick e
 		const {id} = e.detail
@@ -42,16 +46,19 @@ tag app
 
 
 	<self>
-		<layout @itemClick=handleItemClick>
+		<layout 
+			@itemClick=handleItemClick 
+			@signed-in=(do signedIn=true)
+			@signed-out=(do signedIn=false)
+		>
+			if signedIn
+				<menu-items route="/items">
+				<cart-items route="/items-on-cart">
+				<item-detail
+					route="/item-detail/:id"
+					item=item-detail
+				>
 			<login route="/login">
-			<menu-items route="/items">
-			<cart-items route="/items-on-cart">
-			<item-detail
-				route="/item-detail/:id"
-				item=item-detail
-			>
-				
-
-
+	
 imba.router.alias("/", "/login");
 imba.mount do <app>

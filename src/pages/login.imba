@@ -33,13 +33,17 @@ tag login
 		const formData = 	getFormData(e)
 		const email = formData.get("email")
 		const password = formData.get("password")
-		isSignedIn = await signInWithEmail(email, password)
 		e.target.parentElement.reset!
-		imba.commit!
+		signInWithEmail(email, password).finally do()
+			isSignedIn = true
+			emit("signed-in")
+			imba.commit!
 
 	def handleSignInWithGoogle e
-		isSignedIn = await authSignInWithGoogle!
-		imba.commit!
+		authSignInWithGoogle().finally do()
+			isSignedIn = true
+			emit("signed-in")
+			imba.commit!
 
 	def handleSignUp e
 		const formData = getFormData(e)
@@ -55,8 +59,8 @@ tag login
 
 		<form>
 			<h4 [ta:center]> "Login or Sign Up"
-			<input type="text" name="email" placeholder="email" required />
-			<input type="password" name="password" placeholder="password" required />
+			<input type="text" name="email" placeholder="email" required autocomplete="off" />
+			<input type="password" name="password" placeholder="password" required autocomplete="off" />
 			<button
 				type="submit"
 				@click=handleSignInWithEmail
