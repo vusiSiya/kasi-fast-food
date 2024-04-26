@@ -1,6 +1,3 @@
-
-import {data} from "./data"
-
 import { initializeApp } from "firebase/app";
 
 // firestore
@@ -60,28 +57,32 @@ export const getAllItems = async ()=>{
 
 
 export const getSingleItem = async (itemId)=>{
-	const cartItems = await getCartItems();
-	const item = cartItems.find(item=> item.id === Number(itemId))
-	if (item != null) {
-		return item
-	}
-	else {
-		const generalItemsRef = doc(db, "items", itemId.toString());
-		const itemSnapShot = await getDoc(generalItemsRef);
-		return {
-			...itemSnapShot.data(),
-			id: itemSnapShot.id
-		};
+	const generalItemsRef = doc(db, "items", itemId.toString());
+	const itemSnapShot = await getDoc(generalItemsRef);
+	return {
+		...itemSnapShot.data(),
+		id: itemSnapShot.id
+	};
+}
+
+export const getSingleCartItem = async (itemId)=>{
+	try {
+		const cartItems = await getCartItems();
+		return cartItems.find(item=> item.id === Number(itemId));
+	} 
+	catch (err) {
+		console.error(err.message);
+		return null
 	}
 }
 
 
-export const addItemToCart = async (itemData)=>{
+export const addItemToCart = async (itemData, itemCount)=>{
 	const itemRef = doc(db, "items-on-cart", itemData.id.toString());
 	try {
 		await setDoc(itemRef, {
 			...itemData,
-			count: Number(1),
+			count: itemCount,
 			id: Number(itemData.id),
 			uid: auth.currentUser.uid
 		});
@@ -108,17 +109,15 @@ export const removeItem = async (itemId)=>{
 export const getCartItems = async()=>{
 	try{
 		const cartItemsCollectionRef = collection(db,"items-on-cart");
-
 		const userId = auth.currentUser?.uid || localStorage.getItem("user-uid");
-		const q = query(cartItemsCollectionRef, where("uid", "==", userId))
 
+		const q = query(cartItemsCollectionRef, where("uid", "==", userId))
 		const querySnapshot = await getDocs(q);
 		const cartItems = querySnapshot?.docs.map(doc =>{
 			return {
 				...doc.data()
 			}
 		});
-		//console.log(cartItems)
 		return cartItems
 	}
 	catch(err){
@@ -219,12 +218,4 @@ export const authSignOut= async()=>{
 	}
 }
 
-/* To dos
- * create logInWithGooge UI and modify login-page
- * find a way to access the items-on-cart Collection from Firebase
- * conditionally render the pages( cart-items and item-detail ??), depending on whether user is signed in or not
- * add a testUser or anonymousUser to my users on Firebase.
- * fetch images from Github repo instead
-
-*/
 

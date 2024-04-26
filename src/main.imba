@@ -1,6 +1,6 @@
 
 import "./components/layout.imba"
-import {getSingleItem, getAuthState, user} from "../api.js"
+import {getSingleItem,getSingleCartItem, user as currentUser} from "../api.js"
 
 global css 
 	html,body m:0
@@ -31,20 +31,26 @@ global css
 
 tag app
 
-	prop item-detail
-	prop count = 0
+	prop item-detail = {}
 
 	def handleItemClick e
 		const {id} = e.detail
+		const cartItem = await getSingleCartItem(id)
+		const generalItem = await getSingleItem(id)
 		imba.commit!
-		item-detail = await getSingleItem(id)
+		item-detail = cartItem or generalItem
+
 
 	<self>
 		<layout @itemClick=handleItemClick>
-			<login route="/login"> 
-			<menu-items route="/items" >
+			<login route="/login">
+			<menu-items route="/items">
 			<cart-items route="/items-on-cart">
-			<item-detail route="/item-detail/:id" item=item-detail>
+			<item-detail
+				route="/item-detail/:id"
+				item=item-detail
+			>
+				
 
 
 imba.router.alias("/", "/login");

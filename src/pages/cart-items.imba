@@ -1,4 +1,4 @@
-import {getTotalPrice, getCartItems, removeItem} from "../../api.js"
+import {getTotalPrice, getCartItems, removeItem, updateItemCount} from "../../api.js"
 
 
 css .total-price 
@@ -6,10 +6,7 @@ css .total-price
 		p:.5em fw: bold rd:.28rem 
 
 tag cart-items
-	cartItems = getData().then do(data) 
-		imba.commit!
-		cartItems = data
-	prop total = 0
+	cartItems = getData().then do(data) cartItems = data
 
 	def getData
 		let items = await getCartItems!
@@ -19,11 +16,12 @@ tag cart-items
 	def handleClick e
 		const item = cartItems.find do(item) item.id === e.target.id
 		item.count = 0; # this line may just be redundant
-		removeItem(item.id)
+		await removeItem(item.id)
 
 	def handleChange e
 		const item = cartItems.find do(item) item.id === e.target.id
 		item.count = e.target.value	
+		await updateItemCount(item.id, item.count)
 
 
 	<self[d:grid g:.5em]>

@@ -8,11 +8,8 @@ tag menu-items
 		imba.commit!
 		return newArray
 
-	# def handleItemClick itemId
-	#	document.location.replace("/item-detail/{itemId}")
-
 	<self.container 
-		[d:grid @!700:vflex g: 2rem grid-template-columns:repeat(3, auto) w:100% jc:center m: 2rem auto 0]
+		[d:grid @!700:vflex g: 2rem gtc:repeat(3, auto) w:100% jc:center m: 2rem auto 0]
 	>
 		if !items
 			<loading-spinner>
