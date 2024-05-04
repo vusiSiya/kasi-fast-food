@@ -1,6 +1,6 @@
 
 import "./components/layout.imba"
-import {getSingleItem, getSingleCartItem} from "../api.js"
+import {getSingleItem, getSingleCartItem, getCartItems, getAllItems} from "../api.js"
 
 
 global css 
@@ -17,7 +17,7 @@ global css
 
 	.menu-item@!760 d:grid ai:flex-end m:0 auto max-width: max-content 
 	
-	.item-image w:100% max-width:16rem @!760:auto aspect-ratio:1  rd:.27rem ff:italic
+	.item-image w:100% max-width:16rem @!760:19rem aspect-ratio:1  rd:.27rem ff:italic
 
 	.item-content d:grid g:1rem
 	.item-name, .item-price m: .75rem 0 .125rem
@@ -31,11 +31,15 @@ global css
 		p: .325rem .9em c:inherit @hover:white bgc:white @hover:black 
 
 
+export def checkAuthState
+	const user-uid = localStorage.getItem("user-uid")
+	return user-uid ? true : false
+	
+
 tag app
-
 	prop item-detail = {}
-	prop signedIn
-
+	# prop cart-items = getCartItems().then do(data) cart-items = data
+	prop signedIn = checkAuthState!
 
 	def handleItemClick e
 		const {id} = e.detail
@@ -46,19 +50,21 @@ tag app
 
 
 	<self>
-		<layout 
-			@itemClick=handleItemClick 
-			@signed-in=(do signedIn=true)
-			@signed-out=(do signedIn=false)
-		>
+		<layout @itemClick=handleItemClick>
 			if signedIn
-				<menu-items route="/items">
-				<cart-items route="/items-on-cart">
+				<menu-items
+					route="/items"
+				>
+				<cart-items
+					route="/items-on-cart"
+					cartItems=(await getCartItems!)
+				>
 				<item-detail
 					route="/item-detail/:id"
 					item=item-detail
 				>
 			<login route="/login">
 	
-imba.router.alias("/", "/login");
+
+imba.router.alias("/", "/login")
 imba.mount do <app>

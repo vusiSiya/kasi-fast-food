@@ -47,7 +47,7 @@ tag layout
 				<li> <a route-to="login"> "Login"
 				<li> <a route-to="login" @click=handleLogout > "Logout"
 
-		<main[d:vflex mt:7.5rem]>
+		<main[d:vflex mt:7.5rem mb:2.5rem]>
 			<slot>
 		###<footer [m:1em auto c:white]> 
 			<section> "© {getYear!} Siyabonga Mahlalela"

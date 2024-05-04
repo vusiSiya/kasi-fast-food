@@ -23,7 +23,7 @@ css
 
 tag login
 
-	prop isSignedIn = null
+	prop signedIn = null
 
 	def getFormData e
 		e.preventDefault!
@@ -35,13 +35,13 @@ tag login
 		const password = formData.get("password")
 		e.target.parentElement.reset!
 		signInWithEmail(email, password).finally do()
-			isSignedIn = true
+			signedIn = true
 			emit("signed-in")
 			imba.commit!
 
 	def handleSignInWithGoogle e
 		authSignInWithGoogle().finally do()
-			isSignedIn = true
+			signedIn = true
 			emit("signed-in")
 			imba.commit!
 
@@ -54,8 +54,8 @@ tag login
 
 
 	<self [m:auto]>
-		unless isSignedIn === null
-			<p [m:auto c:red2 w:100%]> isSignedIn ? "Successully Signed In" : "Invalid Credentials!"
+		unless !signedIn
+			<p [m:auto c:red2 w:100%]> signedIn === true ? "Successully Signed In" : "Invalid Credentials!"
 
 		<form>
 			<h4 [ta:center]> "Login or Sign Up"

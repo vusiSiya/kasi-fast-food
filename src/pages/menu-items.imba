@@ -1,12 +1,10 @@
 import{ getAllItems, user} from "../../api.js"
 
 tag menu-items
-	items = getData().then do(data) items = data
-
-	def getData
-		const newArray = await getAllItems();
+	prop items = getAllItems!.then( do(data) 
 		imba.commit!
-		return newArray
+		items = data
+	) || null
 
 	<self.container 
 		[d:grid @!700:vflex g: 2rem gtc:repeat(3, auto) w:100% jc:center m: 2rem auto 0]

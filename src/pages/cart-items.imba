@@ -6,16 +6,19 @@ css .total-price
 		p:.5em fw: bold rd:.28rem 
 
 tag cart-items
-	prop cartItems = getCartItems().then do(data) cartItems = data
+	prop cartItems
 
 	def handleClick e
-		const item = cartItems.find do(item) item.id === Number(e.target.id)
-		item.count = 0; # this line may just be redundant
+		const {id} = e.target
+		const item = cartItems.find do(item) item.id === Number(id)
 		await removeItem(item.id)
+		item.count = 0 
+		imba.commit!
 
 	def handleChange e
 		const item = cartItems.find do(item) item.id === Number(e.target.id)
 		let new-count = Number(e.target.value)	
+		imba.commit!
 		await updateItemCount(item.id, new-count)
 		item.count = new-count
 
@@ -48,5 +51,5 @@ tag cart-items
 										value=item.count
 										@change=handleChange
 									/>
-									<button.item-count-icon id=item.id @click.wait(1s)=handleClick >
-										<i.fa-solid .fa-trash-can>
+									<button.fa-solid .fa-trash-can id=(item.id) @click=handleClick >
+										

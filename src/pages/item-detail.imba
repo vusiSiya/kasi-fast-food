@@ -7,7 +7,7 @@ css
 		@hover c:white bgc:black
 
 	.update-count bgc:white px:.75rem py:.25rem fs:small bd:1px solid black rd:.25rem c:black
-
+	.busy pointer-events:none opacity:40%
 
 tag item-detail
 	prop item
@@ -15,26 +15,25 @@ tag item-detail
 	def handleChange e
 		let newCount = Number(e.target.value)
 		item.count = newCount
-		await updateItemCount(newCount)
+		await updateItemCount(item.id, newCount)
 
-
-	def handleClick e
+	def handleClick e,item-id
 		const {id} = e.target 
 		if id === "remove"
-			await removeItem(item.id)
-			imba.commit!
-
+			await removeItem(item-id)
+			item.count = 0
+			
 		else if id === "add"
 			item.count = 1
-			await addItemToCart({...item}, item.count)
-			imba.commit!
-			
+			await addItemToCart(id, item.count)	
 		else
-			let new-count = (id === "update_plus") ? item.count + 1 : item.count -1
-			await updateItemCount(item.id, new-count)
+			const new-count = (id === "update-plus") ? item.count + 1 : item.count - 1
 			item.count = new-count
-			imba.commit!
-		
+			if (new-count === 0)
+				return await removeItem(item-id)
+			await updateItemCount(item-id, new-count)	
+			
+
 
 	<self.container [d:vflex g:0] >
 		<a route-to="/items" [m:1rem 2rem @!760:1rem c:white] > "← back to menu"
@@ -50,13 +49,19 @@ tag item-detail
 					
 					<div [d:flex ai:center g: .75em]>
 						if !item.count
-							<button.cart-btn id="add" @click=handleClick> "Add To Cart"
+							<button.cart-btn id="add" @click.wait(0.7s)=handleClick(e,item.id)> "Add To Cart"
 						else
 							
 							if (item.count < 4) 
-								<button.update-count id="update_plus" @click.wait(1.2s)=handleClick > "+"
+								<button.update-count
+									id="update-plus"
+									@click.flag("busy").wait(1.2s)=handleClick(e,item.id) 
+								> "+"
 								<span.count .fa-beat> item.count
-								<button .update-count id="update_minus" @click.wait(1.2s)=handleClick > "-"
+								<button.update-count
+									id="update-minus"
+									@click.flag("busy").wait(1.2s)=handleClick(e,item.id)
+								> "-"
 							else
 								<input.item-count-input
 									type="number"
@@ -64,6 +69,6 @@ tag item-detail
 									@change=handleChange
 								/>
 
-							<button  id="remove" @click=handleClick route-to="/" > "Remove"
+							<button.fa-solid .fa-trash-can id="remove" @click=handleClick(e, item.id)>
 							
 

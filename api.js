@@ -77,16 +77,23 @@ export const getSingleCartItem = async (itemId)=>{
 }
 
 
-export const addItemToCart = async (itemData, itemCount)=>{
-	const itemRef = doc(db, "items-on-cart", itemData.id.toString());
+export const addItemToCart = async (itemId="", itemCount)=>{
+
 	try {
-		await setDoc(itemRef, {
-			...itemData,
-			count: itemCount,
-			id: Number(itemData.id),
-			uid: auth.currentUser.uid
-		});
+		const itemRef = doc(db, "items-on-cart", itemId.toString());
+		const itemSnapShot = await getDoc(itemRef);
 		
+		const data = itemSnapShot.data();
+		const user_uid = auth.currentUser.uid || localStorage.getItem("user-uid");
+		
+		console.log(itemSnapShot.data())
+		await addDoc(collection(db, "items-on-cart"),
+			{
+				...data,
+				count: Number(itemCount),
+				uuid: user_uid
+			}
+		)
 	} catch (err) {
 		console.error(err.message)
 	}
@@ -102,7 +109,7 @@ export const updateItemCount= async (itemId, itemCount)=>{
 export const removeItem = async (itemId)=>{
 	const itemRef = doc(db, "items-on-cart", itemId.toString());
 	await updateDoc(itemRef, {
-		count: Number(0)
+		count:0
 	});
 }
 
@@ -145,18 +152,11 @@ onAuthStateChanged(auth, (user) => {
 	if (user) {
 	  const uid = user.uid;
 	  localStorage.setItem("user-uid", uid)
-	  alert("Signed In");
 	} else {
-	
 		localStorage.removeItem("user-uid");
-	  alert("Signed out")
 	}
-  });
+});
 
-/*export const getAuthState = ()=>{
-	return loggedInState
-}
-*/
 
 export const authCreateAccountWithEmail = async (email, password)=>{
 	try{
