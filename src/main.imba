@@ -1,6 +1,6 @@
 
 import "./components/layout.imba"
-import {getSingleItem, getSingleCartItem, getCartItems, getAllItems} from "../api.js"
+import {getSingleItem, getSingleCartItem, getCartItems,checkAuthState} from "../api.js"
 
 
 global css 
@@ -29,41 +29,34 @@ global css
 	.cart-btn 
 		bd: 1px solid black rd: .25rem fs: larger fw: bold 
 		p: .325rem .9em c:inherit @hover:white bgc:white @hover:black 
-
-
-export def checkAuthState
-	const user-uid = localStorage.getItem("user-uid")
-	return user-uid ? true : false
 	
+	.busy pointer-events:none opacity:40%
+
 
 tag app
-	prop item-detail = {}
-	# prop cart-items = getCartItems().then do(data) cart-items = data
+	prop item-detail
 	prop signedIn = checkAuthState!
 
 	def handleItemClick e
 		const {id} = e.detail
 		const cartItem = await getSingleCartItem(id)
 		const generalItem = await getSingleItem(id)
-		imba.commit!
 		item-detail = cartItem or generalItem
 
 
 	<self>
 		<layout @itemClick=handleItemClick>
-			if signedIn
-				<menu-items
-					route="/items"
-				>
-				<cart-items
-					route="/items-on-cart"
-					cartItems=(await getCartItems!)
-				>
-				<item-detail
-					route="/item-detail/:id"
-					item=item-detail
-				>
 			<login route="/login">
+			if checkAuthState!
+				<menu-items route="/items">
+				<cart-items route="/items-on-cart" cartItems=(await getCartItems!)>
+				<item-detail route="/item-detail/:id" item=item-detail>
+			### else
+				<section [m:5em auto p:2rem c:white]>
+					<h2 [m:auto]> "You are not signed in."
+			###
+			
+			
 	
 
 imba.router.alias("/", "/login")

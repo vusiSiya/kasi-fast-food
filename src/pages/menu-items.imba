@@ -2,7 +2,6 @@ import{ getAllItems, user} from "../../api.js"
 
 tag menu-items
 	prop items = getAllItems!.then( do(data) 
-		imba.commit!
 		items = data
 	) || null
 

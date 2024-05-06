@@ -2,7 +2,8 @@
 import {
 	authCreateAccountWithEmail,
 	signInWithEmail,
-	authSignInWithGoogle
+	authSignInWithGoogle,
+	checkAuthState
 } from "../../api"
 import google-logo from "../../Images/google-logo.png"
 
@@ -34,16 +35,13 @@ tag login
 		const email = formData.get("email")
 		const password = formData.get("password")
 		e.target.parentElement.reset!
-		signInWithEmail(email, password).finally do()
-			signedIn = true
-			emit("signed-in")
-			imba.commit!
+		await signInWithEmail(email, password)
+		signedIn = checkAuthState!
+		
 
 	def handleSignInWithGoogle e
-		authSignInWithGoogle().finally do()
-			signedIn = true
-			emit("signed-in")
-			imba.commit!
+		await authSignInWithGoogle!
+		signedIn = checkAuthState!
 
 	def handleSignUp e
 		const formData = getFormData(e)
@@ -54,9 +52,8 @@ tag login
 
 
 	<self [m:auto]>
-		unless !signedIn
+		unless signedIn === null
 			<p [m:auto c:red2 w:100%]> signedIn === true ? "Successully Signed In" : "Invalid Credentials!"
-
 		<form>
 			<h4 [ta:center]> "Login or Sign Up"
 			<input type="text" name="email" placeholder="email" required autocomplete="off" />

@@ -7,8 +7,9 @@ import {
 	getDocs,
 	getDoc,
 	doc,
-	setDoc,
+	deleteDoc, 
 	addDoc,
+	setDoc,
 	updateDoc, 
 	query,
 	where
@@ -80,18 +81,13 @@ export const getSingleCartItem = async (itemId)=>{
 export const addItemToCart = async (itemId="", itemCount)=>{
 
 	try {
-		const itemRef = doc(db, "items-on-cart", itemId.toString());
-		const itemSnapShot = await getDoc(itemRef);
-		
-		const data = itemSnapShot.data();
-		const user_uid = auth.currentUser.uid || localStorage.getItem("user-uid");
-		
-		console.log(itemSnapShot.data())
-		await addDoc(collection(db, "items-on-cart"),
+		const item = await getSingleItem(Number(itemId))
+		const user_uid = auth.currentUser?.uid || localStorage.getItem("user-uid");
+		return await setDoc(doc(db, "items-on-cart", itemId.toString()),
 			{
-				...data,
-				count: Number(itemCount),
-				uuid: user_uid
+				...item,
+				count: 1,
+				uid: user_uid
 			}
 		)
 	} catch (err) {
@@ -109,7 +105,7 @@ export const updateItemCount= async (itemId, itemCount)=>{
 export const removeItem = async (itemId)=>{
 	const itemRef = doc(db, "items-on-cart", itemId.toString());
 	await updateDoc(itemRef, {
-		count:0
+		count: 0
 	});
 }
 
@@ -128,7 +124,7 @@ export const getCartItems = async()=>{
 		return cartItems
 	}
 	catch(err){
-		console.log(err.message);
+		console.error(err.message);
 		return null
 	}
 };
@@ -156,6 +152,11 @@ onAuthStateChanged(auth, (user) => {
 		localStorage.removeItem("user-uid");
 	}
 });
+
+export const checkAuthState = ()=>{
+	const user_uid = localStorage.getItem("user-uid")
+	return user_uid ? true : false
+}
 
 
 export const authCreateAccountWithEmail = async (email, password)=>{
