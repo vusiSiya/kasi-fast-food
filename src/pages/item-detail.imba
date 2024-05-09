@@ -18,7 +18,7 @@ tag item-detail
 	def handleClick e
 		const {id} = e.target 
 		if id === "remove"
-			await removeItem(item-id)
+			await removeItem(item.id)
 			item.count = 0
 			
 		else if id === "add"
@@ -47,12 +47,12 @@ tag item-detail
 					
 					<div [d:flex ai:center g: .75em]>
 						if !item.count
-							<button.cart-btn id="add" @click.wait(0.7s)=handleClick> "Add To Cart"
+							<button.cart-btn id="add" @click.wait(0.5s)=handleClick> "Add To Cart"
 						
 						else if (item.count < 4) 
 							<button.update-count
 								id="update-plus"
-								@click.flag('busy').wait(1.2s)=handleClick
+								@click.flag('busy').wait(1.5s)=handleClick
 							> "+"
 							<span.count .fa-beat> item.count
 							<button.update-count

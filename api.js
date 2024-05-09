@@ -25,6 +25,7 @@ import {
 	onAuthStateChanged, 
 	signOut
 } from "firebase/auth";
+import { nanoid } from 'nanoid'
 
 
 const firebaseConfig = {
@@ -51,25 +52,27 @@ export const user = auth.currentUser
 export const getAllItems = async ()=>{
 	const querySnapshot = await getDocs(itemsCollectionRef)
 	const dataArray = await querySnapshot?.docs.map(doc =>{
-		return {...doc.data(), id: doc.id}
+		return {...doc.data(), id: doc.id + nanoid(10)}
 	});
 	return dataArray;
 }
 
 
-export const getSingleItem = async (itemId)=>{
-	const generalItemsRef = doc(db, "items", itemId.toString());
+export const getSingleItem = async (itemId="")=>{
+	const generalItemsRef = doc(db, "items", itemId[0].toString());
 	const itemSnapShot = await getDoc(generalItemsRef);
 	return {
 		...itemSnapShot.data(),
-		id: itemSnapShot.id
+		id: itemId
 	};
 }
 
 export const getSingleCartItem = async (itemId)=>{
 	try {
 		const cartItems = await getCartItems();
-		return cartItems.find(item=> item.id === Number(itemId));
+		console.log(Number(itemId[0]))
+		const item = cartItems.find(item=> item.id[0] === itemId[0]);
+		return item
 	} 
 	catch (err) {
 		console.error(err.message);
@@ -79,19 +82,17 @@ export const getSingleCartItem = async (itemId)=>{
 
 
 export const addItemToCart = async (itemId="", itemCount)=>{
-
 	try {
-		const item = await getSingleItem(Number(itemId))
+		const item = await getSingleItem(itemId);
 		const user_uid = auth.currentUser?.uid || localStorage.getItem("user-uid");
-		return await setDoc(doc(db, "items-on-cart", itemId.toString()),
-			{
-				...item,
-				count: 1,
-				uid: user_uid
-			}
-		)
-	} catch (err) {
-		console.error(err.message)
+		await setDoc(doc(db, "items-on-cart", itemId),{
+			...item,
+			count: 1,
+			uid: user_uid
+		})
+	} 
+	catch (err) {
+		console.error(err.message);
 	}
 }
 

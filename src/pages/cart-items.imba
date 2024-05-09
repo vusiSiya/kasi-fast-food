@@ -10,14 +10,15 @@ tag cart-items
 
 	def handleClick e
 		const {id} = e.target
-		const item = cartItems.find do(item) item.id === Number(id)
-		await removeItem(item.id)
+		const item = cartItems.find do(item) item.id === id
+		await removeItem(id)
 		item.count = 0 
 		imba.commit!
 
 	def handleChange e
-		const item = cartItems.find do(item) item.id === Number(e.target.id)
-		let new-count = Number(e.target.value)	
+		const {id,value} = e.target
+		const item = cartItems.find do(item) item.id === id[0]
+		let new-count = Number(value)	
 		imba.commit!
 		await updateItemCount(item.id, new-count)
 		item.count = new-count
