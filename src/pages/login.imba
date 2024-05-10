@@ -24,7 +24,7 @@ css
 
 tag login
 
-	prop signedIn = null
+	prop signedIn = checkAuthState! or null
 
 	def getFormData e
 		e.preventDefault!

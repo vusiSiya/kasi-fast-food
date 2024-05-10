@@ -1,13 +1,15 @@
 import{ getAllItems, user} from "../../api.js"
 
 tag menu-items
+
 	prop items = getAllItems!.then( do(data) 
 		items = data
+		imba.commit!
 	) || null
 
-	<self.container 
-		[d:grid @!700:vflex g: 2rem gtc:repeat(3, auto) w:100% jc:center m: 2rem auto 0]
-	>
+
+	<self.container [d:grid @!700:vflex g: 2rem gtc:repeat(3, auto) w:100% jc:center m: 2rem auto 0]>
+
 		if !items
 			<loading-spinner>
 		else 

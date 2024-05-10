@@ -1,14 +1,12 @@
 import {removeItem, addItemToCart, updateItemCount} from "../../api.js"
 
-css 
-	.cart-btn 
-		bd: 2px solid black rd: .25rem fs: larger fw: bold 
-		p: .325rem .9em c:inherit bgc:white
-		@hover c:white bgc:black
 
+css 
 	.update-count bgc:white px:.75rem py:.25rem fs:small bd:1px solid black rd:.25rem c:black
 
+
 tag item-detail
+
 	prop item
 
 	def handleChange e 
@@ -47,27 +45,32 @@ tag item-detail
 					
 					<div [d:flex ai:center g: .75em]>
 						if !item.count
-							<button.cart-btn id="add" @click.wait(0.5s)=handleClick> "Add To Cart"
-						
-						else if (item.count < 4) 
-							<button.update-count
-								id="update-plus"
-								@click.flag('busy').wait(1.5s)=handleClick
-							> "+"
-							<span.count .fa-beat> item.count
-							<button.update-count
-								id="update-minus"
-								@click.flag('busy').wait(1.2s)=handleClick
-							> "-"
-							
+							<button.cart-btn 
+								id="add" 
+								@click.flag('busycart').wait(500ms)=handleClick
+							> "Add To Cart"
 						else
-							<input.item-count-input
-								type="number"
-								value=item.count 
-								@change=handleChange
-							/>
 
-						<button.fa-solid .fa-trash-can
-							id="remove" @click.flag('busy').wait(.4s)=handleClick(e)>
-						
+							if (item.count < 4) 
+								<button.update-count
+									id="update-plus"
+									@click.flag('busy').wait(500ms)=handleClick
+								> "+"
+								<span.count .fa-beat> item.count
+								<button.update-count
+									id="update-minus"
+									@click.flag('busy').wait(500ms)=handleClick
+								> "-"							
+							else
+								<input.item-count-input
+									type="number"
+									bind=item.count 
+									@change=handleChange
+								/>
+
+							<i.remove-item .fa-solid .fa-trash-can
+								id="remove"
+								title="delete"
+								@click.flag('busy').wait(500ms)=handleClick>
+							
 

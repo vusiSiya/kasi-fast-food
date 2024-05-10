@@ -10,7 +10,7 @@ global css
 	a c:inherit td:none
 
 	.container d:flex jc:center g:1rem w:100%
-	.count bgc: #c51950 rd: 100%  c: white p: .25em .5em fw:bold
+	.count bgc: #c51950 rd:100%  c: white p: .25em .5em fw:bold
 
 	.menu-item d:flex g:1rem p:.5em bgc: #ffffe0c2 c:black max-width:45rem
 		rd: .5rem box-shadow: none @hover: 0 0 18px 8px #344544 
@@ -28,12 +28,18 @@ global css
 
 	.cart-btn 
 		bd: 1px solid black rd: .25rem fs: larger fw: bold 
-		p: .325rem .9em c:inherit @hover:white bgc:white @hover:black 
+		p: .325rem .9em c:inherit bgc:white
+		@hover c:white bgc:black
+	
+	.busycart c:white bgc:black pointer-events:none;
 	
 	.busy pointer-events:none opacity:40%
+	.remove-item fs:large mx: .8em 
+
 
 
 tag app
+
 	prop item-detail
 	prop signedIn = checkAuthState!
 
@@ -57,7 +63,5 @@ tag app
 			###
 			
 			
-	
-
 imba.router.alias("/", "/login")
 imba.mount do <app>

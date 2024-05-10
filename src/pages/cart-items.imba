@@ -5,6 +5,7 @@ css .total-price
 		bgc: #fffff1 @hover:black c: black @hover: white
 		p:.5em fw: bold rd:.28rem 
 
+
 tag cart-items
 	prop cartItems
 
@@ -13,13 +14,11 @@ tag cart-items
 		const item = cartItems.find do(item) item.id === id
 		await removeItem(id)
 		item.count = 0 
-		imba.commit!
 
 	def handleChange e
 		const {id,value} = e.target
-		const item = cartItems.find do(item) item.id === id[0]
+		const item = cartItems.find do(item) item.id === id
 		let new-count = Number(value)	
-		imba.commit!
 		await updateItemCount(item.id, new-count)
 		item.count = new-count
 
@@ -52,5 +51,8 @@ tag cart-items
 										value=item.count
 										@change=handleChange
 									/>
-									<button.fa-solid .fa-trash-can id=(item.id) @click=handleClick >
+									<i.remove-item .fa-solid .fa-trash-can 
+										id=item.id
+										title="delete"
+										@click.flag('busy').wait(500ms)=handleClick>
 										
