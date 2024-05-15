@@ -12,7 +12,7 @@ global css
 	.container d:flex jc:center g:1rem w:100%
 	.count bgc: #c51950 rd:100%  c: white p: .25em .5em fw:bold
 
-	.menu-item d:flex g:1rem p:.5em bgc: #ffffe0c2 c:black max-width:45rem
+	.menu-item d:flex g:1rem p:.5em bgc: #ffffe0c2 c:black w:15rem max-width:45rem
 		rd: .5rem box-shadow: none @hover: 0 0 18px 8px #344544 
 
 	.menu-item@!760 d:grid ai:flex-end m:0 auto max-width: max-content 
@@ -43,20 +43,20 @@ tag app
 	prop item-detail
 	prop signedIn = checkAuthState!
 
-	def handleItemClick e
+	### def getItemData e
 		const {id} = e.detail
 		const cartItem = await getSingleCartItem(id)
-		const generalItem = await getSingleItem(id)
-		item-detail = cartItem or generalItem
-
+		item-detail = (cartItem !== null) ? cartItem : await getSingleItem(id)
+	###
 
 	<self>
-		<layout @itemClick=handleItemClick>
+		<layout @itemClick=getItemData>
 			<login route="/login">
 			if checkAuthState!
 				<menu-items route="/items">
-				<cart-items route="/items-on-cart" cartItems=(await getCartItems!)>
-				<item-detail route="/item-detail/:id" item=item-detail>
+				<item-detail route="/item-detail/:id">
+				<cart-items route="/items-on-cart">
+
 			### else
 				<section [m:5em auto p:2rem c:white]>
 					<h2 [m:auto]> "You are not signed in."

@@ -1,13 +1,16 @@
-import {removeItem, addItemToCart, updateItemCount} from "../../api.js"
+import {
+	removeItem,
+	addItemToCart,
+	updateItemCount,
+	getSingleCartItem,
+	getSingleItem
+} from "../../api.js"
 
 
-css 
-	.update-count bgc:white px:.75rem py:.25rem fs:small bd:1px solid black rd:.25rem c:black
+css .update-count bgc:white px:.75rem py:.25rem fs:small bd:1px solid black rd:.25rem c:black
 
 
 tag item-detail
-
-	prop item
 
 	def handleChange e 
 		item.count = Number(e.target.value)
@@ -30,47 +33,50 @@ tag item-detail
 			await updateItemCount(item.id, new-count)	
 			
 
+	def render
+		let id = document.location.pathname.split("/")[2]
+		item = await getSingleCartItem(id) || await getSingleItem(id)
 
-	<self.container [d:vflex g:0] >
-		<a route-to="/items" [m:1rem 2rem @!760:1rem c:white] > "← back to menu"
+		<self.container [d:vflex g:0] >
+			<a route-to="/items" [m:1rem 2rem @!760:1rem c:white] > "← back to menu"
 
-		if !item
-			<loading-spinner>
-		else
-			<div.menu-item [m:.5em 3.2em @!760:auto ai:flex-end w:auto g:1em min-width:max-content]>
-				<img.item-image src=item.imgUrl alt=item.name >
-				<div.item-content>
-					<h2.item-name> item.name
-					<p.item-price> "R {item.price}"
-					
-					<div [d:flex ai:center g: .75em]>
-						if !item.count
-							<button.cart-btn 
-								id="add" 
-								@click.flag('busycart').wait(500ms)=handleClick
-							> "Add To Cart"
-						else
-
-							if (item.count < 4) 
-								<button.update-count
-									id="update-plus"
-									@click.flag('busy').wait(500ms)=handleClick
-								> "+"
-								<span.count .fa-beat> item.count
-								<button.update-count
-									id="update-minus"
-									@click.flag('busy').wait(500ms)=handleClick
-								> "-"							
+			if !item
+				<loading-spinner>
+			else
+				<div.menu-item [m:.5em 3.2em @!760:auto ai:flex-end w:auto g:1em min-width:max-content]>
+					<img.item-image src=item.imgUrl alt=item.name >
+					<div.item-content>
+						<h2.item-name> item.name
+						<p.item-price> "R {item.price}"
+						
+						<div [d:flex ai:center g: .75em]>
+							if !item.count
+								<button.cart-btn 
+									id="add" 
+									@click.flag('busycart').wait(500ms)=handleClick
+								> "Add To Cart"
 							else
-								<input.item-count-input
-									type="number"
-									bind=item.count 
-									@change=handleChange
-								/>
 
-							<i.remove-item .fa-solid .fa-trash-can
-								id="remove"
-								title="delete"
-								@click.flag('busy').wait(500ms)=handleClick>
-							
+								if (item.count < 4) 
+									<button.update-count
+										id="update-plus"
+										@click.flag('busy').wait(500ms)=handleClick
+									> "+"
+									<span.count .fa-beat> item.count
+									<button.update-count
+										id="update-minus"
+										@click.flag('busy').wait(500ms)=handleClick
+									> "-"							
+								else
+									<input.item-count-input
+										type="number"
+										bind=item.count 
+										@change=handleChange
+									/>
+
+								<i.remove-item .fa-solid .fa-trash-can
+									id="remove"
+									title="Delete"
+									@click.flag('busy').wait(500ms)=handleClick>
+								
 

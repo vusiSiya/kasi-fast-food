@@ -24,13 +24,11 @@ css
 
 tag login
 
-	prop signedIn = checkAuthState! or null
-
 	def getFormData e
 		e.preventDefault!
 		new FormData(e.target.parentElement)
 
-	def handleSignInWithEmail e
+	def handleEmailSignIn e
 		const formData = 	getFormData(e)
 		const email = formData.get("email")
 		const password = formData.get("password")
@@ -39,9 +37,8 @@ tag login
 		signedIn = checkAuthState!
 		
 
-	def handleSignInWithGoogle e
+	def handleGoogleSignIn e
 		await authSignInWithGoogle!
-		signedIn = checkAuthState!
 
 	def handleSignUp e
 		const formData = getFormData(e)
@@ -50,22 +47,23 @@ tag login
 		await authCreateAccountWithEmail(email, password)
 		e.target.parentElement.reset!
 
+	def render
+		signedIn = checkAuthState! or null
+		<self [m:auto]>
+			unless signedIn === null
+				<p [m:auto c:red2 w:100%]> signedIn === true ? "Successully Signed In" : "Invalid Credentials!"
+			<form>
+				<h4 [ta:center]> "Login or Sign Up"
+				<input type="text" name="email" placeholder="email" required autocomplete="off" />
+				<input type="password" name="password" placeholder="password" required autocomplete="off" />
+				<button
+					type="submit"
+					@click=handleEmailSignIn
+				> "Log in"
 
-	<self [m:auto]>
-		unless signedIn === null
-			<p [m:auto c:red2 w:100%]> signedIn === true ? "Successully Signed In" : "Invalid Credentials!"
-		<form>
-			<h4 [ta:center]> "Login or Sign Up"
-			<input type="text" name="email" placeholder="email" required autocomplete="off" />
-			<input type="password" name="password" placeholder="password" required autocomplete="off" />
-			<button
-				type="submit"
-				@click=handleSignInWithEmail
-			> "Log in"
-
-			<button type="submit" @click=handleSignUp> "Create Account"
-			<button type="submit" @click=handleSignInWithGoogle [d:flex ai:center jc:center]>
-				<img [w:2rem] src=google-logo /> " Sign in with Google"
+				<button type="submit" @click=handleSignUp> "Create Account"
+				<button type="submit" @click=handleGoogleSignIn [d:flex ai:center jc:center]>
+					<img [w:2rem] src=google-logo /> " Sign in with Google"
 				
 
 
