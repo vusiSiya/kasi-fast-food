@@ -37,11 +37,7 @@ global css
 	.remove-item fs:large mx: .8em 
 
 
-
 tag app
-	prop item-detail
-	prop signedIn = checkAuthState!
-
 	<self>
 		<layout>
 			<login route="/login">
@@ -49,11 +45,6 @@ tag app
 				<menu-items route="/items">
 				<item-detail route="/item-detail/:id">
 				<cart-items route="/items-on-cart">
-
-			### else
-				<section [m:5em auto p:2rem c:white]>
-					<h2 [m:auto]> "You are not signed in."
-			###
 			
 			
 imba.router.alias("/", "/login")

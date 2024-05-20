@@ -22,6 +22,7 @@ import {
 	signInWithPopup,
 	GoogleAuthProvider,
 	signInWithEmailAndPassword,
+	signInAnonymously,
 	onAuthStateChanged, 
 	signOut
 } from "firebase/auth";
@@ -46,8 +47,6 @@ const provider = new GoogleAuthProvider()
 const itemsCollectionRef = collection(db,"items");
 const cartItemsCollection = collection(db, "items-on-cart")
 
-export const user = auth.currentUser
-
 // functions
 export const getAllItems = async ()=>{
 	const querySnapshot = await getDocs(itemsCollectionRef)
@@ -70,7 +69,6 @@ export const getSingleItem = async (id="")=>{
 export const getSingleCartItem = async (id)=>{
 	try {
 		const cartItems = await getCartItems();
-		console.log(Number(id[0]))
 		const item = cartItems.find(item=> item.id[0] === id[0]);
 		return item
 	} 
@@ -157,7 +155,6 @@ export const checkAuthState = ()=>{
 	return user_uid ? true : false
 }
 
-
 export const authCreateAccountWithEmail = async (email, password)=>{
 	try{
 		const userCredential = await createUserWithEmailAndPassword(auth, email, password)
@@ -170,6 +167,13 @@ export const authCreateAccountWithEmail = async (email, password)=>{
 	}
 }
 
+export const anonymousSignIn = async()=>{
+	try {
+		await signInAnonymously(auth)
+	} catch (error) {
+		console.error(error.message)
+	}
+}
 
 export const signInWithEmail = async (email, password)=>{
 	// do I need to recive an isloggedIn boolean parameter? to return ?
@@ -187,7 +191,7 @@ export const authSignInWithGoogle= async()=> {
       await signInWithPopup(auth, provider)
     }
     catch(error){
-      console.log(error.message)
+      console.error(error.message)
     }
 }
 

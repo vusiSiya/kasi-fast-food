@@ -3,6 +3,7 @@ import {
 	authCreateAccountWithEmail,
 	signInWithEmail,
 	authSignInWithGoogle,
+	anonymousSignIn,
 	checkAuthState
 } from "../../api"
 import google-logo from "../../Images/google-logo.png"
@@ -14,57 +15,60 @@ css
 		bgc: #354645 @hover:orange
 
 	form 
-		d: grid bgc: black g: 1em min-width: 15em m: .5em auto p: 1em c: white 
-		bd: none rd: .5rem fs:1.5rem @!700:medium
+		d: grid bgc:black g:1em min-width:15em m:.5em auto p:1em c: white 
+		bd: none rd: .5rem fs:1.5rem @!700:medium 
 
 	form > input 
 		bd: 4px solid transparent @hover:4px solid blue3 rd: .25rem
-		w: auto p: .5em ta: start 
+		w: auto p:.5em ta: start 
 			
 
 tag login
+	prop signedIn = checkAuthState! or null
 
 	def getFormData e
-		e.preventDefault!
-		new FormData(e.target.parentElement)
+		new FormData(e.target)
 
 	def handleEmailSignIn e
 		const formData = 	getFormData(e)
 		const email = formData.get("email")
 		const password = formData.get("password")
-		e.target.parentElement.reset!
+		e.target.reset!
 		await signInWithEmail(email, password)
 		signedIn = checkAuthState!
-		
+
+	def handleAnonymousAuth
+		await anonymousSignIn!
+		signedIn = checkAuthState!
 
 	def handleGoogleSignIn e
 		await authSignInWithGoogle!
+		signedIn = checkAuthState!
 
 	def handleSignUp e
 		const formData = getFormData(e)
 		const email = formData.get("email")
 		const password = formData.get("password")
 		await authCreateAccountWithEmail(email, password)
-		e.target.parentElement.reset!
+		e.target.reset!
+	
+	def handleSubmit e
+		if e.submitter.id === "sign-in"
+			await handleEmailSignIn(e)
+		else await handleSignUp(e) 
 
-	def render
-		signedIn = checkAuthState! or null
-		<self [m:auto]>
+	<self [m:auto c:white]>
+		<form @submit.prevent()=handleSubmit>
+			<h4 [ta:center]> "Login or Sign up"
 			unless signedIn === null
-				<p [m:auto c:red2 w:100%]> signedIn === true ? "Successully Signed In" : "Invalid Credentials!"
-			<form>
-				<h4 [ta:center]> "Login or Sign Up"
-				<input type="text" name="email" placeholder="email" required autocomplete="off" />
-				<input type="password" name="password" placeholder="password" required autocomplete="off" />
-				<button
-					type="submit"
-					@click=handleEmailSignIn
-				> "Log in"
-
-				<button type="submit" @click=handleSignUp> "Create Account"
-				<button type="submit" @click=handleGoogleSignIn [d:flex ai:center jc:center]>
-					<img [w:2rem] src=google-logo /> " Sign in with Google"
-				
+				<p [m:0 c:orange fs:small fw:bold]> signedIn === true ? "Successully Signed In" : "Invalid Credentials!"
+		
+			<input type="text" name="email" placeholder="email" required autocomplete="off" />
+			<input type="password" name="password" placeholder="password" required autocomplete="off" />
+			<button type="submit" id="sign-in"> "Login"
+			<button type="submit" id="sign-up"> "Sign up"
+			<button type="button" @click=handleAnonymousAuth> "Login Anonymously"
+			
 
 
 

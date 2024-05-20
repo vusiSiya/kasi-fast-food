@@ -1,4 +1,4 @@
-import{ getAllItems, user} from "../../api.js"
+import{ getAllItems} from "../../api.js"
 
 tag menu-items
 
