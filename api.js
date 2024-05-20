@@ -58,20 +58,20 @@ export const getAllItems = async ()=>{
 }
 
 
-export const getSingleItem = async (itemId="")=>{
-	const generalItemsRef = doc(db, "items", itemId[0].toString());
+export const getSingleItem = async (id="")=>{
+	const generalItemsRef = doc(db, "items", id[0].toString());
 	const itemSnapShot = await getDoc(generalItemsRef);
 	return {
 		...itemSnapShot.data(),
-		id: itemId
+		id: id
 	};
 }
 
-export const getSingleCartItem = async (itemId)=>{
+export const getSingleCartItem = async (id)=>{
 	try {
 		const cartItems = await getCartItems();
-		console.log(Number(itemId[0]))
-		const item = cartItems.find(item=> item.id[0] === itemId[0]);
+		console.log(Number(id[0]))
+		const item = cartItems.find(item=> item.id[0] === id[0]);
 		return item
 	} 
 	catch (err) {
@@ -81,11 +81,11 @@ export const getSingleCartItem = async (itemId)=>{
 }
 
 
-export const addItemToCart = async (itemId="", itemCount)=>{
+export const addItemToCart = async (id="")=>{
 	try {
-		const item = await getSingleItem(itemId);
+		const item = await getSingleItem(id);
 		const user_uid = auth.currentUser?.uid || localStorage.getItem("user-uid");
-		await setDoc(doc(db, "items-on-cart", itemId),{
+		await setDoc(doc(db, "items-on-cart", id),{
 			...item,
 			count: 1,
 			uid: user_uid
@@ -96,18 +96,16 @@ export const addItemToCart = async (itemId="", itemCount)=>{
 	}
 }
 
-export const updateItemCount= async (itemId, itemCount)=>{
-	const itemRef = doc(db, "items-on-cart", itemId.toString());
+export const updateItemCount= async (id, count)=>{
+	const itemRef = doc(db, "items-on-cart", id.toString());
 	await updateDoc(itemRef, {
-		count: Number(itemCount)
+		count: Number(count)
 	});
 }
 
-export const removeItem = async (itemId)=>{
-	const itemRef = doc(db, "items-on-cart", itemId.toString());
-	await updateDoc(itemRef, {
-		count: 0
-	});
+export const removeItem = async (id)=>{
+	const itemRef = doc(db, "items-on-cart", id.toString());
+	await deleteDoc(itemRef)
 }
 
 export const getCartItems = async()=>{
@@ -168,7 +166,7 @@ export const authCreateAccountWithEmail = async (email, password)=>{
 	}
 	catch(error){
 		console.error(error.message)
-		alert(`${error.message}`) 
+		alert(error.message) 
 	}
 }
 

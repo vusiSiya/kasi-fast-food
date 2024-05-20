@@ -39,18 +39,11 @@ global css
 
 
 tag app
-
 	prop item-detail
 	prop signedIn = checkAuthState!
 
-	### def getItemData e
-		const {id} = e.detail
-		const cartItem = await getSingleCartItem(id)
-		item-detail = (cartItem !== null) ? cartItem : await getSingleItem(id)
-	###
-
 	<self>
-		<layout @itemClick=getItemData>
+		<layout>
 			<login route="/login">
 			if checkAuthState!
 				<menu-items route="/items">
