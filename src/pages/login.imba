@@ -59,16 +59,17 @@ tag login
 
 	<self [m:auto c:white]>
 		<form @submit.prevent()=handleSubmit>
-			<h4 [ta:center]> "Login or Sign up"
+			<h4 [ta:center]> "Sign in or Sign up"
 			unless signedIn === null
 				<p [m:0 c:orange fs:small fw:bold]> signedIn === true ? "Successully Signed In" : "Invalid Credentials!"
 		
 			<input type="text" name="email" placeholder="email" required autocomplete="off" />
 			<input type="password" name="password" placeholder="password" required autocomplete="off" />
-			<button type="submit" id="sign-in"> "Login"
-			<button type="submit" id="sign-up"> "Sign up"
-			<button type="button" @click=handleAnonymousAuth> "Login Anonymously"
-			
+			<button type="submit" id="sign-in"> "Sign In"
+			<button type="submit" id="sign-up"> "Sign Up"
+			<button type="button" @click=handleAnonymousAuth> "Sign In Anonymously"
+			<button [d:flex ai:center jc:center] type="button" @click=handleGoogleSignIn>
+				<img [w:2rem] src=google-logo /> "Sign In with Google"
 
 
 

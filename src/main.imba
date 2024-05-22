@@ -41,11 +41,12 @@ tag app
 	<self>
 		<layout>
 			<login route="/login">
-			if checkAuthState!
-				<menu-items route="/items">
-				<item-detail route="/item-detail/:id">
-				<cart-items route="/items-on-cart">
-			
+			<menu-items route="/items">
+			<item-detail route="/item-detail/:id">
+			<cart-items route="/items-on-cart">
+			<section [d:grid ji:center m:5em auto p:2rem c:white] route="/not-signed-in">
+				<h2 [m:auto]> "You are not signed in." 
+				<p> " Click { <a [td:underline c:#68bee0] route-to="/login"> "here"} to sign in"
 			
 imba.router.alias("/", "/login")
 imba.mount do <app>
