@@ -15,7 +15,7 @@ css
 		bgc: #354645 @hover:orange
 
 	form 
-		d: grid bgc:black g:1em min-width:15em m:.5em auto p:1em c: white 
+		d: grid bgc:black g:.8em min-width:15em m:.5em auto p:1em c: white 
 		bd: none rd: .5rem fs:1.5rem @!700:medium 
 
 	form > input 
@@ -67,9 +67,10 @@ tag login
 			<input type="password" name="password" placeholder="password" required autocomplete="off" />
 			<button type="submit" id="sign-in"> "Sign In"
 			<button type="submit" id="sign-up"> "Sign Up"
-			<button type="button" @click=handleAnonymousAuth> "Sign In Anonymously"
-			<button [d:flex ai:center jc:center] type="button" @click=handleGoogleSignIn>
-				<img [w:2rem] src=google-logo /> "Sign In with Google"
+			<section [d:grid g:.4em]>
+				<button type="button" @mousedown=handleAnonymousAuth> "Sign In Anonymously"
+				<button [d:flex ai:center jc:center] type="button" @mousedown=handleGoogleSignIn>
+					<img [w:2rem] src=google-logo /> "Sign In with Google"
 
 
 

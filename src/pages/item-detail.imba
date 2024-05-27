@@ -53,30 +53,30 @@ tag item-detail
 							if !item.count
 								<button.cart-btn 
 									id="add" 
-									@click.flag('busycart').wait(500ms)=handleClick
+									@mousedown.flag('busycart').wait(500ms)=handleClick
 								> "Add To Cart"
 							else
 
 								if (item.count < 4) 
 									<button.update-count
 										id="update-plus"
-										@click.flag('busy').wait(500ms)=handleClick
+										@mousedown.flag('busy').wait(500ms)=handleClick
 									> "+"
 									<span.count .fa-beat> item.count
 									<button.update-count
 										id="update-minus"
-										@click.flag('busy').wait(500ms)=handleClick
+										@mousedown.flag('busy').wait(500ms)=handleClick
 									> "-"							
 								else
 									<input.item-count-input
 										type="number"
-										bind=item.count 
+										value=item.count 
 										@change=handleChange
 									/>
 
 								<i.remove-item .fa-solid .fa-trash-can
 									id="remove"
 									title="Delete"
-									@click.flag('busy').wait(500ms)=handleClick>
+									@mousedown.flag('busy').wait(500ms)=handleClick>
 								
 

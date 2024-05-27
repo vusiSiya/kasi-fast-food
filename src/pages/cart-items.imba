@@ -56,6 +56,6 @@ tag cart-items
 										/>
 										<i.remove-item .fa-solid .fa-trash-can 
 											id=item.id
-											title="delete"
-											@click.flag('busy').wait(500ms)=handleClick>
+											title="Delete"
+											@mousedown.flag('busy').wait(500ms)=handleClick>
 											
