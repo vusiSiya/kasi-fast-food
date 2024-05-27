@@ -1,13 +1,18 @@
-# Imba restaurant menu
-Check out my **imba-built** restaurant menu website.
+## Fast Food
+A Fast food demo website, with a bit of Kasi flavour.
 
-<a href="https://my-imba-restaurant-menu-siya.netlify.app/">**Live Demo**🏌️‍♂️
+<a href="https://kasi-fast-food.netlify.app/">Live Demo</a>
 
-## Imba 🐤
-I've recently started learning **Imba**, an awesome **web programming language** that compiles to **Javascript**.</br>
-I like how it has a **simplistic syntax**, and **built in styling**, saving you a lot of **time!**
+### About
+I've been learning 🐤Imba and this is my capstone project. </br> 
+The website is a single-page app, using Imba's built-in router.</br>
 
-Learn more about Imba at _https://github.com/imba/imba_
+### Tools
+* Imba - _https://imba.io_
+* Firebase - _https://firebase.google.com_
+
+
+
  
 
 
