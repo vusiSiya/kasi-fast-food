@@ -5,7 +5,7 @@ A Fast food demo website, with a bit of Kasi flavour.
 
 ### About
 I've been learning 🐤Imba and this is my capstone project. </br> 
-The webiste is an SPA, using Imba's built-in router.</br>
+The website is a single-page app, using Imba's built-in router.</br>
 
 ### Tools
 * Imba - _https://imba.io_
