@@ -24,7 +24,7 @@ global css
 	
 	.item-count-input 	
 		bd:4px solid #537f7b @hover:4px #689F38 rd: .25rem
-		ta: center fs: medium  w: auto p: .25em .5em m:0
+		ta: center fs: medium  w:11rem py:.25em px:.5em m:0
 
 	.cart-btn 
 		bd: 1px solid black rd: .25rem fs: larger fw: bold 

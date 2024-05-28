@@ -43,7 +43,7 @@ tag item-detail
 			if !item
 				<loading-spinner>
 			else
-				<div.menu-item [m:.5em 3.2em @!760:auto ai:flex-end w:auto g:1em min-width:max-content]>
+				<div.menu-item [m:.5em 3.2em @!760:auto ai:flex-end g:1em min-width:max-content]>
 					<img.item-image src=item.imgUrl alt=item.name >
 					<div.item-content>
 						<h2.item-name> item.name

@@ -24,7 +24,7 @@ css
 			
 
 tag login
-	prop signedIn = checkAuthState! or null
+	prop signedIn = null
 
 	def getFormData e
 		new FormData(e.target)
@@ -68,6 +68,7 @@ tag login
 			<button type="submit" id="sign-in"> "Sign In"
 			<button type="submit" id="sign-up"> "Sign Up"
 			<section [d:grid g:.4em]>
+				<p [fs:small m:0 ta:center]> "or"
 				<button type="button" @mousedown=handleAnonymousAuth> "Sign In Anonymously"
 				<button [d:flex ai:center jc:center] type="button" @mousedown=handleGoogleSignIn>
 					<img [w:2rem] src=google-logo /> "Sign In with Google"
