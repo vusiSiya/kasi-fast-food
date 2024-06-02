@@ -24,18 +24,19 @@ tag cart-items
 
 	def render
 		cartItems = await getCartItems!
-		total-price = await getTotalPrice!
+		totalPrice = await getTotalPrice!
 
 		<self[d:grid g:.5em]>
 			<div [d:flex ai:center]>	
 				<h1 [m:.8em 3.2rem c:white]> "On your cart" 
 				<p.total-price> 
-					<i.fa-solid .fa-coins .fa-beat-fade> 
-					" R{total-price}"
+					<i.fa-solid .fa-coins .fa-beat-fade=totalPrice> 
+					" R{totalPrice}"
 					
 			<div.container [d:vflex]>
-				if !cartItems
-					<loading-spinner>
+				if cartItems.length === 0
+					<section [d:grid ji:center m:5em auto p:2rem c:white]>
+						<h2 [m:auto 0]> "Nothing here, yet." 
 				else
 
 					for item in cartItems

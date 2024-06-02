@@ -63,7 +63,7 @@ tag login
 			unless signedIn === null
 				<p [m:0 c:orange fs:small fw:bold]> signedIn === true ? "Successully Signed In" : "Invalid Credentials!"
 		
-			<input type="text" name="email" placeholder="email" required autocomplete="off" />
+			<input type="email" name="email" placeholder="email" required autocomplete="off" />
 			<input type="password" name="password" placeholder="password" required autocomplete="off" />
 			<button type="submit" id="sign-in"> "Sign In"
 			<button type="submit" id="sign-up"> "Sign Up"

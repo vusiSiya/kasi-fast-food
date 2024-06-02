@@ -36,14 +36,14 @@ tag item-detail
 	def render
 		let id = document.location.pathname.split("/")[2]
 		item = await getSingleCartItem(id) || await getSingleItem(id)
-
+		
 		<self.container [d:vflex g:0] >
 			<a route-to="/items" [m:1rem 2rem @!760:1rem c:white] > "← back to menu"
 
 			if !item
 				<loading-spinner>
 			else
-				<div.menu-item [m:.5em 3.2em @!760:auto ai:flex-end g:1em min-width:max-content]>
+				<div.menu-item [m:.5em 3.2em @!760:auto ai:flex-end g:1em w:auto min-width:max-content]>
 					<img.item-image src=item.imgUrl alt=item.name >
 					<div.item-content>
 						<h2.item-name> item.name

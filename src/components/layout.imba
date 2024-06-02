@@ -26,6 +26,7 @@ tag layout
 	def render
 		let totalCartItems = await getTotalCount!
 		let signedIn = checkAuthState!
+		# shouldBeat = totalCartItems && (document.location.pathname === '/items-on-cart')
 
 		<self [d:grid]>
 			<nav [d:flex jc:space-between bgc:#75a1a1 c:white pos:fixed top:0 p:.5em  w:100%  mb:.8em ]>
@@ -33,16 +34,18 @@ tag layout
 					<h2 [m:0 ml:2rem @!760:auto]> "Fast Food"
 					<div [d:flex g:1em]>
 						<a [d:flex fw:bold ai:center g:.25rem] route-to=(signedIn ? "items-on-cart" : "/not-signed-in")> 
-							<i.fa-solid .fa-cart-shopping>
+							<i.fa-solid .fa-truck-fast>
 							<span.count> totalCartItems
 						<a [fw:bold] route-to=(signedIn ? "items" : "/not-signed-in" )> "Menu"
+
 				<section [jc:end pr:5rem] >
 					<a route-to="login"> "Login"	
 					<a route-to="login" @click=(do await authSignOut!)> "Logout"				
 			<main[d:vflex mt:7.5rem mb:2.5rem]>
 				<slot>
-			###<footer [m:1em auto c:white]> 
-				<section> "© {getYear!} Siyabonga Mahlalela"
+
+			### <footer [m:1em auto c:white]> 
+				<section> "© {new Date!.getFullYear!} Siyabonga Mahlalela"
 				
 
 
