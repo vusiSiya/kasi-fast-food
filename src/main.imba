@@ -48,5 +48,5 @@ tag app
 				<h2 [m:auto]> "You are not signed in." 
 				<p> " Click { <a [td:underline c:#68bee0] route-to="/login"> "here"} to sign in"
 			
-imba.router.alias("/", "/login")
+imba.router.alias("/", "/items")
 imba.mount do <app>

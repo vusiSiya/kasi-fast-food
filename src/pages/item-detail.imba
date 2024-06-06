@@ -3,40 +3,42 @@ import {
 	addItemToCart,
 	updateItemCount,
 	getSingleCartItem,
-	getSingleItem
+	getSingleItem,
+	checkAuthState
 } from "../../api.js"
 
 
 css .update-count bgc:white px:.75rem py:.25rem fs:small bd:1px solid black rd:.25rem c:black
 
+css a.login td:underline c:-webkit-link
+
 
 tag item-detail
-
 	def handleChange e 
 		item.count = Number(e.target.value)
 		await updateItemCount(item.id, item.count)
 
 	def handleClick e
 		const {id} = e.target 
-		if id === "remove"
-			await removeItem(item.id)
-			item.count = 0
-			
-		else if id === "add"
-			item.count = 1
-			await addItemToCart(item.id, item.count)	
+		if checkAuthState!
+			if id === "remove"
+				await removeItem(item.id)
+				item.count = 0	
+			else if id === "add"
+				item.count = 1
+				await addItemToCart(item.id, item.count)	
+			else
+				const new-count = (id === "update-plus") ? item.count + 1 : item.count - 1
+				item.count = new-count
+				return (new-count < 1) ? await removeItem(item.id) : await updateItemCount(item.id, new-count)
 		else
-			const new-count = (id === "update-plus") ? item.count + 1 : item.count - 1
-			item.count = new-count
-			if (new-count === 0)
-				return await removeItem(item.id)
-			await updateItemCount(item.id, new-count)	
-			
+			showSignInText = true
+
 
 	def render
 		let id = document.location.pathname.split("/")[2]
 		item = await getSingleCartItem(id) || await getSingleItem(id)
-		
+		showLoginText = checkAuthState! === false
 		<self.container [d:vflex g:0] >
 			<a route-to="/items" [m:1rem 2rem @!760:1rem c:white] > "← back to menu"
 
@@ -49,14 +51,18 @@ tag item-detail
 						<h2.item-name> item.name
 						<p.item-price> "R {item.price}"
 						
-						<div [d:flex ai:center g: .75em]>
+						<div [d:flex flex-wrap:wrap ai:center g: .75em]>
 							if !item.count
 								<button.cart-btn 
 									id="add" 
 									@mousedown.flag('busycart').wait(500ms)=handleClick
-								> "Add To Cart"
-							else
+								>  "Add To Cart"
+    
+								showLoginText && <p [fs:small fw:bold]>
+										"You need to {<a.login route-to="/login"> "login"} first"
 
+							else
+								
 								if (item.count < 4) 
 									<button.update-count
 										id="update-plus"

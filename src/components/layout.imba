@@ -36,7 +36,7 @@ tag layout
 						<a [d:flex fw:bold ai:center g:.25rem] route-to=(signedIn ? "items-on-cart" : "/not-signed-in")> 
 							<i.fa-solid .fa-truck-fast>
 							<span.count> totalCartItems
-						<a [fw:bold] route-to=(signedIn ? "items" : "/not-signed-in" )> "Menu"
+						<a [fw:bold] route-to="items"> "Menu"
 
 				<section [jc:end pr:5rem] >
 					<a route-to="login"> "Login"	
