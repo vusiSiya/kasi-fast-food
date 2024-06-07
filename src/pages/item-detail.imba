@@ -31,14 +31,12 @@ tag item-detail
 				const new-count = (id === "update-plus") ? item.count + 1 : item.count - 1
 				item.count = new-count
 				return (new-count < 1) ? await removeItem(item.id) : await updateItemCount(item.id, new-count)
-		else
-			showSignInText = true
-
 
 	def render
 		let id = document.location.pathname.split("/")[2]
 		item = await getSingleCartItem(id) || await getSingleItem(id)
-		showLoginText = checkAuthState! === false
+		showLoginText = (checkAuthState! === false)
+
 		<self.container [d:vflex g:0] >
 			<a route-to="/items" [m:1rem 2rem @!760:1rem c:white] > "← back to menu"
 
