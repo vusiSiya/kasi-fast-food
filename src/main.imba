@@ -1,6 +1,6 @@
 
 import "./components/layout.imba"
-import {getSingleItem, getSingleCartItem, getCartItems,checkAuthState} from "../api.js"
+import {getAllItems, getCartItems,checkAuthState} from "../api.js"
 
 
 global css 
@@ -41,7 +41,7 @@ tag app
 	<self>
 		<layout>
 			<login route="/login">
-			<menu-items route="/items">
+			<menu-items route="/items" items=(await getAllItems!)>
 			<item-detail route="/item-detail/:id">
 			<cart-items route="/items-on-cart">
 			<section [d:grid ji:center m:5em auto p:2rem c:white] route="/not-signed-in">

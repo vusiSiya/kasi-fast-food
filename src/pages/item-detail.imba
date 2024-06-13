@@ -32,55 +32,49 @@ tag item-detail
 				item.count = new-count
 				return (new-count < 1) ? await removeItem(item.id) : await updateItemCount(item.id, new-count)
 
-	def render
-		let id = document.location.pathname.split("/")[2]
-		item = await getSingleCartItem(id) || await getSingleItem(id)
-		showLoginText = (checkAuthState! === false)
+	def routed(params)
+		item = await getSingleCartItem(params.id) || await getSingleItem(params.id)
 
-		<self.container [d:vflex g:0] >
-			<a route-to="/items" [m:1rem 2rem @!760:1rem c:white] > "← back to menu"
+	<self.container [d:vflex g:0]>
+		<a route-to="/items" [m:1rem 2rem @!760:1rem c:white] > "← back to menu"
+		<div.menu-item [m:.5em 3.2em @!760:auto ai:flex-end g:1em w:auto min-width:max-content]>
+			<img.item-image src=item.imgUrl alt=item.name >
+			<div.item-content>
+				<h2.item-name> item.name
+				<p.item-price> "R {item.price}"
+				
+				<div [d:flex flex-wrap:wrap ai:center g: .75em]>
+					if !item.count
+						<button.cart-btn 
+							id="add" 
+							@mousedown.flag('busycart').wait(500ms)=handleClick
+						>  "Add To Cart"
 
-			if !item
-				<loading-spinner>
-			else
-				<div.menu-item [m:.5em 3.2em @!760:auto ai:flex-end g:1em w:auto min-width:max-content]>
-					<img.item-image src=item.imgUrl alt=item.name >
-					<div.item-content>
-						<h2.item-name> item.name
-						<p.item-price> "R {item.price}"
+						(checkAuthState! === false) && <p [fs:small fw:bold]>
+								"You need to {<a.login route-to="/login"> "login"} first"
+
+					else
 						
-						<div [d:flex flex-wrap:wrap ai:center g: .75em]>
-							if !item.count
-								<button.cart-btn 
-									id="add" 
-									@mousedown.flag('busycart').wait(500ms)=handleClick
-								>  "Add To Cart"
-    
-								showLoginText && <p [fs:small fw:bold]>
-										"You need to {<a.login route-to="/login"> "login"} first"
+						if (item.count < 4) 
+							<button.update-count
+								id="update-plus"
+								@mousedown.flag('busy').wait(500ms)=handleClick
+							> "+"
+							<span.count .fa-beat> item.count
+							<button.update-count
+								id="update-minus"
+								@mousedown.flag('busy').wait(500ms)=handleClick
+							> "-"							
+						else
+							<input.item-count-input
+								type="number"
+								value=item.count 
+								@change=handleChange
+							/>
 
-							else
-								
-								if (item.count < 4) 
-									<button.update-count
-										id="update-plus"
-										@mousedown.flag('busy').wait(500ms)=handleClick
-									> "+"
-									<span.count .fa-beat> item.count
-									<button.update-count
-										id="update-minus"
-										@mousedown.flag('busy').wait(500ms)=handleClick
-									> "-"							
-								else
-									<input.item-count-input
-										type="number"
-										value=item.count 
-										@change=handleChange
-									/>
-
-								<i.remove-item .fa-solid .fa-trash-can
-									id="remove"
-									title="Delete"
-									@mousedown.flag('busy').wait(500ms)=handleClick>
-								
+						<i.remove-item .fa-solid .fa-trash-can
+							id="remove"
+							title="Delete"
+							@mousedown.flag('busy').wait(500ms)=handleClick>
+						
 
