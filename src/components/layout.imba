@@ -5,6 +5,7 @@ import {
 	checkAuthState
 } from "../../api.js"
 
+import "./sign-in-prompt.imba"
 import "./loading-spinner.imba"
 import "../pages/login.imba"
 import "../pages/cart-items.imba"                                                                                      
@@ -22,7 +23,7 @@ css
 	
 
 tag layout
-	<self>
+	<self [d:grid]>
 		<nav [d:flex jc:space-between bgc:#75a1a1 c:white pos:fixed top:0 p:.5em w:100%  mb:.8em z-index:2]>
 			<section>
 				<h2 [m:0 ml:2rem @!760:auto]> "Fast Food"
@@ -35,11 +36,11 @@ tag layout
 			<section [jc:end pr:5rem] >
 				<a route-to="login"> "Login"	
 				<a route-to="login" @click=(do await authSignOut!)> "Logout"				
-		<main[d:vflex mt:7.5rem mb:2.5rem]>
+		<main [d:vflex mt:7.5rem mb:2.5rem]>
 			<slot>
 
-		###<footer [pos:static b:0 left:0 right:0 m:.5em auto ta:center c:white]> 
-			<p> "© {new Date!.getFullYear!} Siyabonga Mahlalela"
-				<a[mx:.5em 0 p:0 bgc:transparent c:white] href="https://github.com/vusiSiya" target="_blank">
+		<footer [pos:fixed b:0 left:0 right:0  ta:center c:white z-index: -1]> 
+			<p [m:0 mb:.5em]> "© {new Date!.getFullYear!} Siyabonga Mahlalela"
+				<a[ml:.5em p:0 bgc:transparent c:white] href="https://github.com/vusiSiya/kasi-fast-food" target="_blank">
 					<i .fa-brands .fa-github [rd:full td@hover:underline]>
 		

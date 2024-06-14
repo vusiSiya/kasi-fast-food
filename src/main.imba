@@ -40,13 +40,12 @@ global css
 tag app
 	<self>
 		<layout>
-			<login route="/login">
 			<menu-items route="/items" items=(await getAllItems!)>
-			<item-detail route="/item-detail/:id">
+			<sign-in-prompt route="/not-signed-in">
 			<cart-items route="/items-on-cart">
-			<section [d:grid ji:center m:5em auto p:2rem c:white] route="/not-signed-in">
-				<h2 [m:auto]> "You are not signed in." 
-				<p> " Click { <a [td:underline c:#68bee0] route-to="/login"> "here"} to sign in"
+			<item-detail route="/item-detail/:id">
+			<login route="/login">
+
 			
 imba.router.alias("/", "/items")
 imba.mount do <app>

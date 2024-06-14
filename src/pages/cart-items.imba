@@ -24,14 +24,13 @@ tag cart-items
 
 	def render
 		cartItems = await getCartItems!
-		totalPrice = await getTotalPrice!
 
 		<self[d:grid g:.5em]>
 			<div [d:flex ai:center]>	
 				<h1 [m:.8em 3.2rem c:white]> "On your cart" 
 				<p.total-price> 
-					<i.fa-solid .fa-coins .fa-beat-fade=totalPrice> 
-					" R{totalPrice}"
+					<i.fa-solid .fa-coins .fa-beat-fade=cartItems.length> 
+					" R {await getTotalPrice!}"
 					
 			<div.container [d:vflex]>
 				if cartItems.length === 0
