@@ -1,4 +1,4 @@
-import {getTotalPrice, getCartItems, removeItem, updateItemCount} from "../../api.js"
+import {getTotalPrice, getCartItems, removeItem, updateItemCount, attempt} from "../../api.js"
 
 
 css .total-price 
@@ -23,7 +23,7 @@ tag cart-items
 
 
 	def render
-		cartItems = await getCartItems!
+		cartItems = await attempt(getCartItems!)
 
 		<self[d:grid g:.5em]>
 			<div [d:flex ai:center]>	

@@ -59,31 +59,19 @@ export const getAllItems = async ()=>{
 
 export const getSingleItem = async (id="")=>{
 
-	try{
-		const generalItemsRef = doc(db, "items", id[0].toString());
-		const itemSnapShot = await getDoc(generalItemsRef);
-		return {
-			...itemSnapShot.data(),
-			id: id
-		}
-	}catch(err){
-		console.error(err)
-		return null
+	const generalItemsRef = doc(db, "items", id[0].toString());
+	const itemSnapShot = await getDoc(generalItemsRef);
+	return {
+		...itemSnapShot.data(),
+		id: id
 	}
 }
 
 export const getSingleCartItem = async (id)=>{
-	try {
 		const cartItems = await getCartItems();
 		const item = cartItems.find(item=> item.id[0] === id[0]);
 		return item
-	} 
-	catch (err) {
-		console.error(err.message);
-		return null
-	}
 }
-
 
 export const addItemToCart = async (id="")=>{
 	try {
@@ -101,35 +89,38 @@ export const addItemToCart = async (id="")=>{
 }
 
 export const updateItemCount= async (id, count)=>{
-	const itemRef = doc(db, "items-on-cart", id.toString());
-	await updateDoc(itemRef, {
-		count: Number(count)
-	});
+	try {
+		const itemRef = doc(db, "items-on-cart", id.toString());
+		await updateDoc(itemRef, {
+			count: Number(count)
+		})
+	} catch (err) {
+		console.error(err)
+	}
+	
 }
 
 export const removeItem = async (id)=>{
-	const itemRef = doc(db, "items-on-cart", id.toString());
-	await deleteDoc(itemRef)
+	try{
+		const itemRef = doc(db, "items-on-cart", id.toString());
+		await deleteDoc(itemRef)
+	}catch(err){
+		console.error(err);
+	}
 }
 
 export const getCartItems = async()=>{
-	try{
-		const cartItemsCollectionRef = collection(db,"items-on-cart");
-		const userId = auth.currentUser?.uid || localStorage.getItem("user-uid");
+	const cartItemsCollectionRef = collection(db,"items-on-cart");
+	const userId = auth.currentUser?.uid || localStorage.getItem("user-uid");
 
-		const q = query(cartItemsCollectionRef, where("uid", "==", userId))
-		const querySnapshot = await getDocs(q);
-		const cartItems = querySnapshot?.docs.map(doc =>{
-			return {
-				...doc.data()
-			}
-		});
-		return cartItems
-	}
-	catch(err){
-		console.error(err.message);
-		return null
-	}
+	const q = query(cartItemsCollectionRef, where("uid", "==", userId))
+	const querySnapshot = await getDocs(q);
+	const cartItems = querySnapshot?.docs.map(doc =>{
+		return {
+			...doc.data()
+		}
+	});
+	return cartItems
 };
 
 
@@ -145,6 +136,15 @@ export const getTotalPrice = async()=>{
 	return totalPrice || 0
 }
 
+export const attempt= async (func)=>{
+	try {
+		const data = await func
+		return data
+	} catch (err) {
+		console.error(err)
+		return null
+	}
+}
 
 // auth
 onAuthStateChanged(auth, (user) => {

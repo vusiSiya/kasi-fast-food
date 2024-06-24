@@ -4,7 +4,8 @@ import {
 	updateItemCount,
 	getSingleCartItem,
 	getSingleItem,
-	checkAuthState
+	checkAuthState,
+	attempt
 } from "../../api.js"
 
 
@@ -35,8 +36,8 @@ tag item-detail
 				return (new-count < 1) ? await removeItem(item.id) : await updateItemCount(item.id, new-count)
 
 	def routed(params)
-		item = await getSingleCartItem(params.id) || await getSingleItem(params.id)
-
+		item = await attempt(getSingleCartItem(params.id)) || await attempt(getSingleItem(params.id))
+	
 	<self.container [d:vflex g:0]>
 		<a route-to="/items" [m:1rem 2rem @!760:1rem c:white] > "← back to menu"
 
