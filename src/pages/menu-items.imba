@@ -1,10 +1,9 @@
-import{ getAllItems} from "../../api.js"
 
 tag menu-items
 	prop items
 	
 	<self.container [d:grid @!700:vflex g: 2rem gtc:repeat(3, auto) w:100% jc:center m: 2rem auto 0]>
-		if !items
+		if !items.length
 			<loading-spinner>
 		else 
 			for item in items

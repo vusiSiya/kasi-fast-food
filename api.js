@@ -58,12 +58,18 @@ export const getAllItems = async ()=>{
 
 
 export const getSingleItem = async (id="")=>{
-	const generalItemsRef = doc(db, "items", id[0].toString());
-	const itemSnapShot = await getDoc(generalItemsRef);
-	return {
-		...itemSnapShot.data(),
-		id: id
-	};
+
+	try{
+		const generalItemsRef = doc(db, "items", id[0].toString());
+		const itemSnapShot = await getDoc(generalItemsRef);
+		return {
+			...itemSnapShot.data(),
+			id: id
+		}
+	}catch(err){
+		console.error(err)
+		return null
+	}
 }
 
 export const getSingleCartItem = async (id)=>{

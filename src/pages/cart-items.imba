@@ -41,7 +41,7 @@ tag cart-items
 					for item in cartItems
 						unless !item.count
 							<div.menu-item [td:none ai:flex-end g:1em w:auto mx: 3.2em @!760: auto mt: .5em]>
-								<img.item-image src=item.imgUrl />
+								<img.item-image src=item.imgUrl alt=item.name />
 
 								<div.item-content [ai:end g:1.4em]>
 									<h3.item-name> item.name
