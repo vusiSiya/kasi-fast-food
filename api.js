@@ -74,39 +74,25 @@ export const getSingleCartItem = async (id)=>{
 }
 
 export const addItemToCart = async (id="")=>{
-	try {
-		const item = await getSingleItem(id);
-		const user_uid = auth.currentUser?.uid || localStorage.getItem("user-uid");
-		await setDoc(doc(db, "items-on-cart", id),{
-			...item,
-			count: 1,
-			uid: user_uid
-		})
-	} 
-	catch (err) {
-		console.error(err.message);
-	}
+	const item = await getSingleItem(id);
+	const user_uid = auth.currentUser?.uid || localStorage.getItem("user-uid");
+	await setDoc(doc(db, "items-on-cart", id),{
+		...item,
+		count: 1,
+		uid: user_uid
+	})
 }
 
 export const updateItemCount= async (id, count)=>{
-	try {
-		const itemRef = doc(db, "items-on-cart", id.toString());
-		await updateDoc(itemRef, {
-			count: Number(count)
-		})
-	} catch (err) {
-		console.error(err)
-	}
-	
+	const itemRef = doc(db, "items-on-cart", id.toString())
+	await updateDoc(itemRef, {
+		count: Number(count)
+	})
 }
 
 export const removeItem = async (id)=>{
-	try{
-		const itemRef = doc(db, "items-on-cart", id.toString());
-		await deleteDoc(itemRef)
-	}catch(err){
-		console.error(err);
-	}
+	const itemRef = doc(db, "items-on-cart", id.toString())
+	await deleteDoc(itemRef)
 }
 
 export const getCartItems = async()=>{
@@ -119,9 +105,9 @@ export const getCartItems = async()=>{
 		return {
 			...doc.data()
 		}
-	});
+	})
 	return cartItems
-};
+}
 
 
 export const getTotalCount = async()=>{
@@ -136,9 +122,19 @@ export const getTotalPrice = async()=>{
 	return totalPrice || 0
 }
 
-export const attempt= async (func)=>{
+export const tryData= async (func)=>{
 	try {
 		const data = await func
+		return data
+	} catch (err) {
+		console.error(err)
+		return null
+	}
+}
+
+export const tryAuth = async ()=>{
+	try {
+		const data = await func || null
 		return data
 	} catch (err) {
 		console.error(err)
@@ -151,10 +147,11 @@ onAuthStateChanged(auth, (user) => {
 	if (user) {
 	  const uid = user.uid;
 	  localStorage.setItem("user-uid", uid)
-	} else {
-		localStorage.removeItem("user-uid");
-	}
-});
+	} 
+	else 
+		localStorage.removeItem("user-uid")
+
+})
 
 export const checkAuthState = ()=>{
 	const user_uid = localStorage.getItem("user-uid")
@@ -162,52 +159,27 @@ export const checkAuthState = ()=>{
 }
 
 export const authCreateAccountWithEmail = async (email, password)=>{
-	try{
 		const userCredential = await createUserWithEmailAndPassword(auth, email, password)
 		const user = userCredential.user;
 		alert("account successfully created!");
-	}
-	catch(error){
-		console.error(error.message)
-		alert(error.message) 
-	}
 }
 
 export const anonymousSignIn = async()=>{
-	try {
-		await signInAnonymously(auth)
-	} catch (error) {
-		console.error(error.message)
-	}
+	await signInAnonymously(auth)
 }
 
 export const signInWithEmail = async (email, password)=>{
 	// do I need to recive an isloggedIn boolean parameter? to return ?
-	try{
 		await signInWithEmailAndPassword(auth, email, password)
-	}
-	catch(error){
-		console.error(error.message)
-	}
 }
 
 
 export const authSignInWithGoogle= async()=> {
-    try{
       await signInWithPopup(auth, provider)
-    }
-    catch(error){
-      console.error(error.message)
-    }
 }
 
 export const authSignOut= async()=>{
-	try{
-		await signOut(auth)
-	}
-	catch(error){
-        console.error(error.message)
-	}
+	await signOut(auth)
 }
 
 
