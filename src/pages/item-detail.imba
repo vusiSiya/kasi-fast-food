@@ -5,7 +5,7 @@ import {
 	getSingleCartItem,
 	getSingleItem,
 	checkAuthState,
-	attempt
+	tryData
 } from "../../api.js"
 
 
@@ -19,24 +19,24 @@ tag item-detail
 
 	def handleChange e 
 		item.count = Number(e.target.value)
-		await updateItemCount(item.id, item.count)
+		await tryData(updateItemCount(item.id, item.count))
 
 	def handleClick e
 		const {id} = e.target 
 		if checkAuthState!
 			if id === "remove"
-				await removeItem(item.id)
+				await tryData(removeItem(item.id))
 				item.count = 0	
 			else if id === "add"
 				item.count = 1
-				await addItemToCart(item.id, item.count)	
+				await tryData(addItemToCart(item.id, item.count))
 			else
 				const new-count = (id === "update-plus") ? item.count + 1 : item.count - 1
 				item.count = new-count
-				return (new-count < 1) ? await removeItem(item.id) : await updateItemCount(item.id, new-count)
+				return (new-count < 1) ? await tryData(removeItem(item.id)) : await tryData(updateItemCount(item.id, new-count))
 
 	def routed(params)
-		item = await attempt(getSingleCartItem(params.id)) || await attempt(getSingleItem(params.id))
+		item = await tryData(getSingleCartItem(params.id)) || await tryData(getSingleItem(params.id))
 	
 	<self.container [d:vflex g:0]>
 		<a route-to="/items" [m:1rem 2rem @!760:1rem c:white] > "← back to menu"
