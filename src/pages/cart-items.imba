@@ -1,4 +1,4 @@
-import {getTotalPrice, getCartItems, removeItem, updateItemCount} from "../../api.js"
+import {getTotalPrice, getCartItems, removeItem, updateItemCount, tryData} from "../../api.js"
 
 
 css .total-price 
@@ -11,19 +11,19 @@ tag cart-items
 	def handleClick e
 		const {id} = e.target
 		const item = cartItems.find do(item) item.id === id
-		await removeItem(id)
+		await tryData(removeItem(id))
 		item.count = 0 
 
 	def handleChange e
 		const {id,value} = e.target
 		const item = cartItems.find do(item) item.id === id
 		let new-count = Number(value)	
-		await updateItemCount(item.id, new-count)
+		await tryData(updateItemCount(item.id, new-count))
 		item.count = new-count
 
-
+              
 	def render
-		cartItems = await getCartItems!
+		cartItems = await tryData(getCartItems!)
 
 		<self[d:grid g:.5em]>
 			<div [d:flex ai:center]>	

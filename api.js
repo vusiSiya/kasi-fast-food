@@ -59,78 +59,55 @@ export const getAllItems = async ()=>{
 
 export const getSingleItem = async (id="")=>{
 
-	try{
-		const generalItemsRef = doc(db, "items", id[0].toString());
-		const itemSnapShot = await getDoc(generalItemsRef);
-		return {
-			...itemSnapShot.data(),
-			id: id
-		}
-	}catch(err){
-		console.error(err)
-		return null
+	const generalItemsRef = doc(db, "items", id[0].toString());
+	const itemSnapShot = await getDoc(generalItemsRef);
+	return {
+		...itemSnapShot.data(),
+		id: id
 	}
 }
 
 export const getSingleCartItem = async (id)=>{
-	try {
 		const cartItems = await getCartItems();
 		const item = cartItems.find(item=> item.id[0] === id[0]);
 		return item
-	} 
-	catch (err) {
-		console.error(err.message);
-		return null
-	}
 }
 
-
 export const addItemToCart = async (id="")=>{
-	try {
-		const item = await getSingleItem(id);
-		const user_uid = auth.currentUser?.uid || localStorage.getItem("user-uid");
-		await setDoc(doc(db, "items-on-cart", id),{
-			...item,
-			count: 1,
-			uid: user_uid
-		})
-	} 
-	catch (err) {
-		console.error(err.message);
-	}
+	const item = await getSingleItem(id);
+	const user_uid = auth.currentUser?.uid || localStorage.getItem("user-uid");
+	await setDoc(doc(db, "items-on-cart", id),{
+		...item,
+		count: 1,
+		uid: user_uid
+	})
 }
 
 export const updateItemCount= async (id, count)=>{
-	const itemRef = doc(db, "items-on-cart", id.toString());
+	const itemRef = doc(db, "items-on-cart", id.toString())
 	await updateDoc(itemRef, {
 		count: Number(count)
-	});
+	})
 }
 
 export const removeItem = async (id)=>{
-	const itemRef = doc(db, "items-on-cart", id.toString());
+	const itemRef = doc(db, "items-on-cart", id.toString())
 	await deleteDoc(itemRef)
 }
 
 export const getCartItems = async()=>{
-	try{
-		const cartItemsCollectionRef = collection(db,"items-on-cart");
-		const userId = auth.currentUser?.uid || localStorage.getItem("user-uid");
+	const cartItemsCollectionRef = collection(db,"items-on-cart");
+	const userId = auth.currentUser?.uid || localStorage.getItem("user-uid");
 
-		const q = query(cartItemsCollectionRef, where("uid", "==", userId))
-		const querySnapshot = await getDocs(q);
-		const cartItems = querySnapshot?.docs.map(doc =>{
-			return {
-				...doc.data()
-			}
-		});
-		return cartItems
-	}
-	catch(err){
-		console.error(err.message);
-		return null
-	}
-};
+	const q = query(cartItemsCollectionRef, where("uid", "==", userId))
+	const querySnapshot = await getDocs(q);
+	const cartItems = querySnapshot?.docs.map(doc =>{
+		return {
+			...doc.data()
+		}
+	})
+	return cartItems
+}
 
 
 export const getTotalCount = async()=>{
@@ -145,16 +122,36 @@ export const getTotalPrice = async()=>{
 	return totalPrice || 0
 }
 
+export const tryData= async (func)=>{
+	try {
+		const data = await func
+		return data
+	} catch (err) {
+		console.error(err)
+		return null
+	}
+}
+
+export const tryAuth = async ()=>{
+	try {
+		const data = await func || null
+		return data
+	} catch (err) {
+		console.error(err)
+		return null
+	}
+}
 
 // auth
 onAuthStateChanged(auth, (user) => {
 	if (user) {
 	  const uid = user.uid;
 	  localStorage.setItem("user-uid", uid)
-	} else {
-		localStorage.removeItem("user-uid");
-	}
-});
+	} 
+	else 
+		localStorage.removeItem("user-uid")
+
+})
 
 export const checkAuthState = ()=>{
 	const user_uid = localStorage.getItem("user-uid")
@@ -162,52 +159,27 @@ export const checkAuthState = ()=>{
 }
 
 export const authCreateAccountWithEmail = async (email, password)=>{
-	try{
 		const userCredential = await createUserWithEmailAndPassword(auth, email, password)
 		const user = userCredential.user;
 		alert("account successfully created!");
-	}
-	catch(error){
-		console.error(error.message)
-		alert(error.message) 
-	}
 }
 
 export const anonymousSignIn = async()=>{
-	try {
-		await signInAnonymously(auth)
-	} catch (error) {
-		console.error(error.message)
-	}
+	await signInAnonymously(auth)
 }
 
 export const signInWithEmail = async (email, password)=>{
 	// do I need to recive an isloggedIn boolean parameter? to return ?
-	try{
 		await signInWithEmailAndPassword(auth, email, password)
-	}
-	catch(error){
-		console.error(error.message)
-	}
 }
 
 
 export const authSignInWithGoogle= async()=> {
-    try{
       await signInWithPopup(auth, provider)
-    }
-    catch(error){
-      console.error(error.message)
-    }
 }
 
 export const authSignOut= async()=>{
-	try{
-		await signOut(auth)
-	}
-	catch(error){
-        console.error(error.message)
-	}
+	await signOut(auth)
 }
 
 
