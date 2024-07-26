@@ -47,7 +47,7 @@ const provider = new GoogleAuthProvider()
 const itemsCollectionRef = collection(db,"items");
 const cartItemsCollection = collection(db, "items-on-cart")
 
-// functions
+// functions, --reading data--
 export const getAllItems = async ()=>{
 	const querySnapshot = await getDocs(itemsCollectionRef)
 	const dataArray = await querySnapshot?.docs.map(doc =>{
@@ -56,9 +56,7 @@ export const getAllItems = async ()=>{
 	return dataArray;
 }
 
-
 export const getSingleItem = async (id="")=>{
-
 	const generalItemsRef = doc(db, "items", id[0].toString());
 	const itemSnapShot = await getDoc(generalItemsRef);
 	return {
@@ -73,27 +71,6 @@ export const getSingleCartItem = async (id)=>{
 		return item
 }
 
-export const addItemToCart = async (id="")=>{
-	const item = await getSingleItem(id);
-	const user_uid = auth.currentUser?.uid || localStorage.getItem("user-uid");
-	await setDoc(doc(db, "items-on-cart", id),{
-		...item,
-		count: 1,
-		uid: user_uid
-	})
-}
-
-export const updateItemCount= async (id, count)=>{
-	const itemRef = doc(db, "items-on-cart", id.toString())
-	await updateDoc(itemRef, {
-		count: Number(count)
-	})
-}
-
-export const removeItem = async (id)=>{
-	const itemRef = doc(db, "items-on-cart", id.toString())
-	await deleteDoc(itemRef)
-}
 
 export const getCartItems = async()=>{
 	const cartItemsCollectionRef = collection(db,"items-on-cart");
@@ -102,13 +79,10 @@ export const getCartItems = async()=>{
 	const q = query(cartItemsCollectionRef, where("uid", "==", userId))
 	const querySnapshot = await getDocs(q);
 	const cartItems = querySnapshot?.docs.map(doc =>{
-		return {
-			...doc.data()
-		}
+		return {...doc.data()}
 	})
 	return cartItems
 }
-
 
 export const getTotalCount = async()=>{
 	const cartItems = await getCartItems();
@@ -122,19 +96,48 @@ export const getTotalPrice = async()=>{
 	return totalPrice || 0
 }
 
-export const tryData= async (func)=>{
+
+// functions, --writing--
+export const addItemToCart = async (id="")=>{
+	
 	try {
-		const data = await func
-		return data
+		const item = await getSingleItem(id);
+		const user_uid = auth.currentUser?.uid || localStorage.getItem("user-uid");
+		await setDoc(doc(db, "items-on-cart", id),{
+			...item,
+			count: 1,
+			uid: user_uid
+		})
+		
 	} catch (err) {
-		console.error(err)
-		return null
+		throw new Error(err.message)
 	}
 }
 
-export const tryAuth = async ()=>{
+export const updateItemCount= async (id, count)=>{
 	try {
-		const data = await func || null
+		const itemRef = doc(db, "items-on-cart", id.toString())
+		await updateDoc(itemRef, {
+			count: Number(count)
+		})
+	} catch (err) {
+		throw new Error(err.message)
+	}
+}
+
+export const removeItem = async (id)=>{
+	try {
+		const itemRef = doc(db, "items-on-cart", id.toString())
+		await deleteDoc(itemRef)
+	} catch (err) {
+		throw new Error(err.message)
+	}
+}
+
+
+export const get = async (func)=>{  // my refactor of 'tryCatch'
+	try {
+		const data = await func
 		return data
 	} catch (err) {
 		console.error(err)

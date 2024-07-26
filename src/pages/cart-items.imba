@@ -1,4 +1,4 @@
-import {getTotalPrice, getCartItems, removeItem, updateItemCount, tryData} from "../../api.js"
+import {getTotalPrice, getCartItems, removeItem, updateItemCount, get} from "../../api.js"
 
 
 css .total-price 
@@ -7,29 +7,30 @@ css .total-price
 
 
 tag cart-items
+	prop cartItems
 
 	def handleClick e
 		const {id} = e.target
 		const item = cartItems.find do(item) item.id === id
-		await tryData(removeItem(id))
+		await removeItem(id)
 		item.count = 0 
 
 	def handleChange e
 		const {id,value} = e.target
 		const item = cartItems.find do(item) item.id === id
 		let new-count = Number(value)	
-		await tryData(updateItemCount(item.id, new-count))
+		await updateItemCount(item.id, new-count)
 		item.count = new-count
 
               
 	def render
-		cartItems = await tryData(getCartItems!)
+		cartItems = await get(getCartItems!)
 
 		<self[d:grid g:.5em]>
 			<div [d:flex ai:center]>	
 				<h1 [m:.8em 3.2rem c:white]> "On your cart" 
 				<p.total-price> 
-					<i.fa-solid .fa-coins .fa-beat-fade=cartItems.length> 
+					<i.fa-solid .fa-coins .fa-beat-fade> 
 					" R {await getTotalPrice!}"
 					
 			<div.container [d:vflex]>
@@ -57,5 +58,6 @@ tag cart-items
 										<i.remove-item .fa-solid .fa-trash-can 
 											id=item.id
 											title="Delete"
-											@mousedown.flag('busy').wait(500ms)=handleClick>
+											@mousedown.flag('busy', 'div').wait(500ms)=handleClick
+										>
 											

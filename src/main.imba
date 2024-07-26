@@ -1,6 +1,6 @@
 
 import "./components/layout.imba"
-import {getAllItems, getCartItems,checkAuthState, tryData} from "../api.js"
+import {getAllItems, getCartItems,checkAuthState, get} from "../api.js"
 
 
 global css 
@@ -33,7 +33,7 @@ global css
 	
 	.busycart c:white bgc:black pointer-events:none;
 	
-	.busy pointer-events:none opacity:40%
+	.busy pointer-events:none opacity:50%
 	.remove-item fs:large mx: .8em 
 
 
@@ -41,7 +41,7 @@ tag app
 	<self>
 		<layout>
 			<menu-items 
-				items=(await tryData(getAllItems!) || JSON.parse(window.localStorage.items))
+				items=(await get(getAllItems!))
 				route="/items" 
 			>
 			<sign-in-prompt route="/not-signed-in">

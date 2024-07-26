@@ -5,7 +5,7 @@ import {
 	getSingleCartItem,
 	getSingleItem,
 	checkAuthState,
-	tryData
+	get
 } from "../../api.js"
 
 
@@ -19,24 +19,26 @@ tag item-detail
 
 	def handleChange e 
 		item.count = Number(e.target.value)
-		await tryData(updateItemCount(item.id, item.count))
+		await updateItemCount(item.id, item.count)
 
 	def handleClick e
 		const {id} = e.target 
 		if checkAuthState!
 			if id === "remove"
-				await tryData(removeItem(item.id))
+				await removeItem(item.id)
 				item.count = 0	
 			else if id === "add"
 				item.count = 1
-				await tryData(addItemToCart(item.id, item.count))
+				await addItemToCart(item.id)
 			else
 				const new-count = (id === "update-plus") ? item.count + 1 : item.count - 1
 				item.count = new-count
-				return (new-count < 1) ? await tryData(removeItem(item.id)) : await tryData(updateItemCount(item.id, new-count))
+				return (new-count < 1) ? await removeItem(item.id) : await updateItemCount(item.id, new-count)
 
 	def routed(params)
-		item = await tryData(getSingleCartItem(params.id)) || await tryData(getSingleItem(params.id))
+		const cartItem = await getSingleCartItem(params.id) 
+		const generalItem = !cartItem && await get(getSingleItem(params.id))
+		item = cartItem || generalItem
 	
 	<self.container [d:vflex g:0]>
 		<a route-to="/items" [m:1rem 2rem @!760:1rem c:white] > "← back to menu"
@@ -54,7 +56,7 @@ tag item-detail
 						if !item.count
 							<button.cart-btn 
 								id="add" 
-								@mousedown.flag('busycart').wait(500ms)=handleClick
+								@mousedown.flag('busycart', 'button').wait(500ms)=handleClick
 							>  "Add To Cart"
 
 							(checkAuthState! === false) && <p [fs:small fw:bold]>
@@ -65,12 +67,12 @@ tag item-detail
 							if (item.count < 4) 
 								<button.update-count
 									id="update-plus"
-									@mousedown.flag('busy').wait(500ms)=handleClick
+									@mousedown.flag('busy', 'div').wait(500ms)=handleClick
 								> "+"
 								<span.count .fa-beat> item.count
 								<button.update-count
 									id="update-minus"
-									@mousedown.flag('busy').wait(500ms)=handleClick
+									@mousedown.flag('busy', 'div').wait(500ms)=handleClick
 								> "-"							
 							else
 								<input.item-count-input
@@ -82,6 +84,7 @@ tag item-detail
 							<i.remove-item .fa-solid .fa-trash-can
 								id="remove"
 								title="Delete"
-								@mousedown.flag('busy').wait(500ms)=handleClick>
+								@mousedown.flag('busy', 'div').wait(500ms)=handleClick
+							>
 							
 

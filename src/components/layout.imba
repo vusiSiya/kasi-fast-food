@@ -27,7 +27,7 @@ tag layout
 	def handleLogout e
 		const {textContent} = e.target
 		const isLogoutBtn = (textContent === "Logout")
-		return isLogoutBtn && (await authSignOut!)
+		if isLogoutBtn then await authSignOut!
 
 	<self [d:grid]>
 		<nav [d:flex jc:space-between bgc:#75a1a1 c:white pos:fixed top:0 p:.5em w:100%  mb:.8em z-index:2]>
@@ -51,6 +51,7 @@ tag layout
 				<a[ml:.5em p:0 bgc:transparent c:white]
 					href="https://github.com/vusiSiya/kasi-fast-food"
 					target="_blank"
+					rel="noreferrer"
 				>
 					<i .fa-brands .fa-github [rd:full td@hover:underline]>
 		
