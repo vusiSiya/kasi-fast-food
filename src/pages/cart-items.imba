@@ -24,7 +24,7 @@ tag cart-items
 
               
 	def render
-		cartItems = await get(getCartItems!)
+		cartItems = await get(getCartItems)
 
 		<self[d:grid g:.5em]>
 			<div [d:flex ai:center]>	

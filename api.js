@@ -45,7 +45,7 @@ const auth = getAuth(app)
 const provider = new GoogleAuthProvider()
 
 const itemsCollectionRef = collection(db,"items");
-const cartItemsCollection = collection(db, "items-on-cart")
+const cartItemsCollectionRef = collection(db, "items-on-cart")
 
 // functions, --reading data--
 export const getAllItems = async ()=>{
@@ -66,32 +66,30 @@ export const getSingleItem = async (id="")=>{
 }
 
 export const getSingleCartItem = async (id)=>{
-		const cartItems = await getCartItems();
-		const item = cartItems.find(item=> item.id[0] === id[0]);
-		return item
+		const cartItems = await get(getCartItems);
+		return cartItems ? cartItems.find(item=> item.id[0] === id[0]) : null
 }
 
-
 export const getCartItems = async()=>{
-	const cartItemsCollectionRef = collection(db,"items-on-cart");
-	const userId = auth.currentUser?.uid || localStorage.getItem("user-uid");
-
+	const userId = auth.currentUser?.uid
 	const q = query(cartItemsCollectionRef, where("uid", "==", userId))
 	const querySnapshot = await getDocs(q);
 	const cartItems = querySnapshot?.docs.map(doc =>{
-		return {...doc.data()}
+		return {
+			...doc.data()
+		}
 	})
 	return cartItems
 }
 
 export const getTotalCount = async()=>{
-	const cartItems = await getCartItems();
+	const cartItems = await get(getCartItems);
 	const count = cartItems?.reduce((sum,item)=>(sum + item.count), 0);
 	return count || 0
 }
 
 export const getTotalPrice = async()=>{
-	const cartItems = await getCartItems();
+	const cartItems = await get(getCartItems);
 	const totalPrice = cartItems?.reduce((sum,item)=>(sum + item.price * item.count), 0);
 	return totalPrice || 0
 }
@@ -99,7 +97,6 @@ export const getTotalPrice = async()=>{
 
 // functions, --writing--
 export const addItemToCart = async (id="")=>{
-	
 	try {
 		const item = await getSingleItem(id);
 		const user_uid = auth.currentUser?.uid || localStorage.getItem("user-uid");
@@ -110,7 +107,7 @@ export const addItemToCart = async (id="")=>{
 		})
 		
 	} catch (err) {
-		throw new Error(err.message)
+		console.error(err.message)
 	}
 }
 
@@ -121,7 +118,7 @@ export const updateItemCount= async (id, count)=>{
 			count: Number(count)
 		})
 	} catch (err) {
-		throw new Error(err.message)
+		console.error(err.message)
 	}
 }
 
@@ -130,17 +127,17 @@ export const removeItem = async (id)=>{
 		const itemRef = doc(db, "items-on-cart", id.toString())
 		await deleteDoc(itemRef)
 	} catch (err) {
-		throw new Error(err.message)
+		console.error(err.message)
 	}
 }
 
 
 export const get = async (func)=>{  // my refactor of 'tryCatch'
 	try {
-		const data = await func
+		const data = await func()
 		return data
 	} catch (err) {
-		console.error(err)
+		console.error(err.message)
 		return null
 	}
 }
