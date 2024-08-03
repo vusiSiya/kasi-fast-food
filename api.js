@@ -66,8 +66,8 @@ export const getSingleItem = async (id="")=>{
 }
 
 export const getSingleCartItem = async (id)=>{
-		const cartItems = await get(getCartItems);
-		return cartItems ? cartItems.find(item=> item.id[0] === id[0]) : null
+	const cartItems = await get(getCartItems);
+	return cartItems ? cartItems.find(item=> item.id[0] === id[0]) : null
 }
 
 export const getCartItems = async()=>{
@@ -99,7 +99,7 @@ export const getTotalPrice = async()=>{
 export const addItemToCart = async (id="")=>{
 	try {
 		const item = await getSingleItem(id);
-		const user_uid = auth.currentUser?.uid || localStorage.getItem("user-uid");
+		const user_uid = auth.currentUser.uid
 		await setDoc(doc(db, "items-on-cart", id),{
 			...item,
 			count: 1,
@@ -136,7 +136,8 @@ export const get = async (func)=>{  // my refactor of 'tryCatch'
 	try {
 		const data = await func()
 		return data
-	} catch (err) {
+	}
+	catch (err) {
 		console.error(err.message)
 		return null
 	}

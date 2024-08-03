@@ -5,7 +5,6 @@ import {
 	getSingleCartItem,
 	getSingleItem,
 	checkAuthState,
-	get
 } from "../../api.js"
 
 
