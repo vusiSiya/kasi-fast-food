@@ -1,15 +1,18 @@
 
+import { getAllItems, get } from "../../api"
+import type {Item} from "../../types"
 tag menu-items
 	prop items
-	
+
 	def render
+		items = await get<Item[]>(getAllItems)
 		<self.container [d:grid @!700:vflex g: 2rem gtc:repeat(3, auto) w:100% jc:center m: 2rem auto 0]>
-			if !items.length
-				<loading-spinner>
+			
+			if !items.length	 
+				<loading-spinner>	
 			else 
-				window.localStorage.setItem "items", JSON.stringify(items)
 				for item in items
-					<a.menu-item [d:grid m:auto]
+					<a .menu-item [d:grid m:auto]
 						id=item.id
 						route-to="/item-detail/{item.id}"
 					>

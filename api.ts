@@ -28,7 +28,10 @@ const cartItemsCollectionRef = collection(db, "items-on-cart")
 export async function getAllItems(): Promise<Item[] | any[]>{
 	const querySnapshot = await getDocs(itemsCollectionRef)
 	const dataArray = await querySnapshot?.docs.map(doc =>{
-		return {...doc.data(), id: doc.id + nanoid(10)}
+		return {
+			...doc.data(),
+			id: doc.id + nanoid(10)
+		}
 	});
 	return dataArray;
 }
@@ -43,8 +46,8 @@ export async function getSingleItem(id: string): Promise<Item | Partial<Item>>{
 }
 
 export async function getSingleCartItem(id:string): Promise<CartItem | null>{
-	const cartItems: CartItem[] = await getCartItems();
-	return cartItems.find(item=> item.id[0] === id[0]) || null
+	const cartItems: CartItem[] = await get(getCartItems);
+	return cartItems ? cartItems.find(item=> item.id[0] === id[0]) : null
 }
 
 export async function getCartItems(): Promise<CartItem[] | any[]>{
@@ -60,13 +63,13 @@ export async function getCartItems(): Promise<CartItem[] | any[]>{
 }
 
 export async function getTotalCount (): Promise<number>{
-	const cartItems: CartItem[] = await getCartItems();
+	const cartItems: CartItem[] = await get(getCartItems);
 	const count = cartItems?.reduce((sum,item)=>sum + item.count, 0);
 	return count || 0
 }
 
 export async function getTotalPrice (): Promise<number>{
-	const cartItems:CartItem[] = await getCartItems();
+	const cartItems:CartItem[] = await get(getCartItems);
 	const totalPrice = cartItems.reduce((sum, item)=>{
 		return sum + item.price * item.count
 	}, 0);
@@ -107,5 +110,20 @@ export async function removeItem(id: string){
 		await deleteDoc(itemRef)
 	} catch (err) {
 		console.error(err.message)
+	}
+}
+
+
+export function checkAuthState(){
+	const user_uid = localStorage.getItem("user-uid")
+	return user_uid ? true : false
+}
+
+export async function get<T>( func: Function): Promise<T>{
+	try {
+		return await func()
+	} catch (err) {
+		console.error(err.message)
+		return null
 	}
 }

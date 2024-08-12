@@ -5,7 +5,7 @@ import {
 	getSingleCartItem,
 	getSingleItem,
 	checkAuthState,
-} from "../../api.js"
+} from "../../api"
 
 
 css .update-count bgc:white px:.75rem py:.25rem fs:small bd:1px solid black rd:.25rem c:black

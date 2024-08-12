@@ -36,11 +36,6 @@ onAuthStateChanged(auth, (user) => {
 	localStorage.removeItem("user-uid")
 })
 
-export function checkAuthState(){
-	const user_uid = localStorage.getItem("user-uid")
-	return user_uid ? true : false
-}
-
 export async function authCreateAccountWithEmail (email: string, password: string){
 	const userCredential = await createUserWithEmailAndPassword(auth, email, password)
 	const user = userCredential.user;
