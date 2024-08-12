@@ -1,10 +1,8 @@
 
-import {
-	authSignOut,
-	getTotalCount,
-	checkAuthState
-} from "../../api.js"
+import {authSignOut} from "../../auth"
+import { getTotalCount, checkAuthState } from "../../api"
 
+# components and tags
 import "./sign-in-prompt.imba"
 import "./loading-spinner.imba"
 import "../pages/login.imba"

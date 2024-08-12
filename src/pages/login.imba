@@ -4,8 +4,8 @@ import {
 	signInWithEmail,
 	authSignInWithGoogle,
 	anonymousSignIn,
-	checkAuthState
-} from "../../api"
+} from "../../auth"
+import { checkAuthState } from "../../api"
 import google-logo from "../../Images/google-logo.png"
 
 
@@ -34,7 +34,7 @@ tag login
 		const email = formData.get("email")
 		const password = formData.get("password")
 		e.target.reset!
-		await signInWithEmail(email, password)
+		await signInWithEmail(email.toString(), password.toString())
 		signedIn = checkAuthState!
 
 	def handleAnonymousAuth
@@ -49,7 +49,7 @@ tag login
 		const formData = getFormData(e)
 		const email = formData.get("email")
 		const password = formData.get("password")
-		await authCreateAccountWithEmail(email, password)
+		await authCreateAccountWithEmail(email.toString(), password.toString())
 		e.target.reset!
 	
 	def handleSubmit e
