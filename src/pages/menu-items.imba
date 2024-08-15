@@ -1,13 +1,16 @@
 
 import { getAllItems, get } from "../../api"
 import type {Item} from "../../types"
+
 tag menu-items
-	prop items
+	prop items = []
 
 	def render
 		items = await get<Item[]>(getAllItems)
-		<self.container [d:grid @!700:vflex g: 2rem gtc:repeat(3, auto) w:100% jc:center m: 2rem auto 0]>
-			
+		<self.container>
+			css d:grid @!700:vflex jc:center g:2rem gtc:repeat(3, auto)
+				w:100% m:2rem auto 0
+
 			if !items.length	 
 				<loading-spinner>	
 			else 
@@ -16,7 +19,7 @@ tag menu-items
 						id=item.id
 						route-to="/item-detail/{item.id}"
 					>
-						<img.item-image [w:100%] src=item.imgUrl />
+						<img.item-image width="240" src=item.imgUrl />
 						<div.item-content>
 							<h2.item-name> item.name
 							<h3.item-price> "R {item.price}"

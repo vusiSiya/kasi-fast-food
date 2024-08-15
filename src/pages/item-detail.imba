@@ -8,13 +8,15 @@ import {
 } from "../../api"
 
 
-css .update-count bgc:white px:.75rem py:.25rem fs:small bd:1px solid black rd:.25rem c:black
+css .update-count bgc:white px:.75rem py:.25rem
+	fs:small bd:1px solid black rd:.25rem c:black
 
 css a.login td:underline c:-webkit-link
 
 
 tag item-detail
 	prop item = {}
+	prop show-loader = yes
 
 	def handleChange e 
 		item.count = Number(e.target.value)
@@ -37,12 +39,15 @@ tag item-detail
 	def routed(params)
 		const cartItem = await getSingleCartItem(params.id) 
 		const generalItem = !cartItem && await getSingleItem(params.id)
+		show-loader = no
+		imba.commit!
 		item = cartItem || generalItem
-	
+
+
 	<self.container [d:vflex g:0]>
 		<a route-to="/items" [m:1rem 2rem @!760:1rem c:white] > "← back to menu"
 
-		if !item
+		if (!item and show-loader= yes)
 			<loading-spinner>
 		else
 			<div.menu-item [m:.5em 3.2em @!760:auto ai:flex-end g:1em w:auto min-width:max-content]>

@@ -14,7 +14,7 @@ css .total-price
 
 
 tag cart-items
-	prop cartItems
+	prop cartItems = []
 
 	def handleClick e
 		const {id} = e.target

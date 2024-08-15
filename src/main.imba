@@ -15,7 +15,8 @@ global css
 
 	.menu-item@!760 d:grid ai:flex-end m:0 auto max-width: max-content 
 	
-	.item-image w:100% max-width:16rem @!760:19rem aspect-ratio:1  rd:.27rem ff:italic
+	.item-image w:100% min-width:240px max-width:16rem @!760:19rem aspect-ratio:1
+		rd:.27rem ff:italic
 
 	.item-content d:grid g:1rem
 	.item-name, .item-price m: .75rem 0 .125rem

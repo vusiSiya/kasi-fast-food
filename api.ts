@@ -78,7 +78,7 @@ export async function getTotalPrice (): Promise<number>{
 
 
 // functions, --writing--
-export async function addItemToCart(id: string){
+export async function addItemToCart(id: string): Promise<void>{
 	try {
 		const item = await getSingleItem(id);
 		const user_uid = auth.currentUser.uid
@@ -93,7 +93,7 @@ export async function addItemToCart(id: string){
 	}
 }
 
-export async function updateItemCount(id: string, count: number){
+export async function updateItemCount(id: string, count: number): Promise<void>{
 	try {
 		const itemRef = doc(db, "items-on-cart", id)
 		await updateDoc(itemRef, {
@@ -104,7 +104,7 @@ export async function updateItemCount(id: string, count: number){
 	}
 }
 
-export async function removeItem(id: string){
+export async function removeItem(id: string): Promise<void>{
 	try {
 		const itemRef = doc(db, "items-on-cart", id)
 		await deleteDoc(itemRef)
@@ -114,7 +114,7 @@ export async function removeItem(id: string){
 }
 
 
-export function checkAuthState(){
+export function checkAuthState(): boolean{
 	const user_uid = localStorage.getItem("user-uid")
 	return user_uid ? true : false
 }
