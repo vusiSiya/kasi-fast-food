@@ -31,17 +31,17 @@ tag cart-items
 
               
 	def render
-		cartItems = await get<CartItem[]>(getCartItems)
-
+		cartItems = await get<CartItem[]>(getCartItems) or null
+	
 		<self[d:grid g:.5em]>
 			<div [d:flex ai:center]>	
 				<h1 [m:.8em 3.2rem c:white]> "On your cart" 
 				<p.total-price> 
 					<i.fa-solid .fa-coins .fa-beat-fade> 
-					" R {await getTotalPrice!}"
+					" R {await getTotalPrice! || 0}"
 					
 			<div.container [d:vflex]>
-				if cartItems.length === 0
+				if !cartItems
 					<section [d:grid ji:center m:5em auto p:2rem c:white]>
 						<h2 [m:auto 0]> "Nothing here, yet." 
 				else
@@ -49,7 +49,7 @@ tag cart-items
 					for item in cartItems
 						unless !item.count
 							<div.menu-item [td:none ai:flex-end g:1em w:auto mx: 3.2em @!760: auto mt: .5em]>
-								<img.item-image src=item.imgUrl alt=item.name />
+								<img.item-image width="240" src=item.imgUrl alt=item.name />
 
 								<div.item-content [ai:end g:1.4em]>
 									<h3.item-name> item.name

@@ -37,8 +37,8 @@ tag item-detail
 				return (new-count < 1) ? await removeItem(item.id) : await updateItemCount(item.id, new-count)
 
 	def routed(params)
-		const cartItem = await getSingleCartItem(params.id) 
-		const generalItem = !cartItem && await getSingleItem(params.id)
+		const cartItem = await getSingleCartItem(params.id) || null 
+		const generalItem = !cartItem && await getSingleItem(params.id) || null
 		show-loader = no
 		imba.commit!
 		item = cartItem || generalItem
@@ -51,7 +51,7 @@ tag item-detail
 			<loading-spinner>
 		else
 			<div.menu-item [m:.5em 3.2em @!760:auto ai:flex-end g:1em w:auto min-width:max-content]>
-				<img.item-image src=item.imgUrl alt=item.name >
+				<img.item-image width="240" src=item.imgUrl alt=item.name >
 				<div.item-content>
 					<h2.item-name> item.name
 					<p.item-price> "R {item.price}"

@@ -46,8 +46,9 @@ export async function getSingleItem(id: string): Promise<Item | Partial<Item>>{
 }
 
 export async function getSingleCartItem(id:string): Promise<CartItem | null>{
-	const cartItems: CartItem[] = await get(getCartItems);
-	return cartItems ? cartItems.find(item=> item.id[0] === id[0]) : null
+	const items = await get<CartItem[]>(getCartItems)
+	const selectedItem = items?.find(item=> item.id[0] === id[0])
+	return selectedItem || null
 }
 
 export async function getCartItems(): Promise<CartItem[] | any[]>{
@@ -59,18 +60,19 @@ export async function getCartItems(): Promise<CartItem[] | any[]>{
 			...doc.data()
 		}
 	})
+
 	return cartItems
 }
 
 export async function getTotalCount (): Promise<number>{
-	const cartItems: CartItem[] = await get(getCartItems);
-	const count = cartItems?.reduce((sum,item)=>sum + item.count, 0);
+	const items = await get<CartItem[]>(getCartItems);
+	const count = items?.reduce((sum,item)=>sum + item.count, 0);
 	return count || 0
 }
 
 export async function getTotalPrice (): Promise<number>{
-	const cartItems:CartItem[] = await get(getCartItems);
-	const totalPrice = cartItems.reduce((sum, item)=>{
+	const items = await get<CartItem[]>(getCartItems);
+	const totalPrice = items?.reduce((sum, item)=>{
 		return sum + item.price * item.count
 	}, 0);
 	return totalPrice || 0
@@ -81,13 +83,15 @@ export async function getTotalPrice (): Promise<number>{
 export async function addItemToCart(id: string): Promise<void>{
 	try {
 		const item = await getSingleItem(id);
-		const user_uid = auth.currentUser.uid
+		const user_uid = auth.currentUser?.uid || null
+		if(!user_uid) return
+
 		await setDoc(doc(db, "items-on-cart", id),{
-			...item,
-			count: 1,
-			uid: user_uid
-		})
-		
+				...item,
+				count: 1,
+				uid: user_uid
+			}
+		)
 	} catch (err) {
 		console.error(err.message)
 	}
@@ -113,13 +117,13 @@ export async function removeItem(id: string): Promise<void>{
 	}
 }
 
-
+// utils
 export function checkAuthState(): boolean{
 	const user_uid = localStorage.getItem("user-uid")
 	return user_uid ? true : false
 }
 
-export async function get<T>( func: Function): Promise<T>{
+export async function get<T>( func: Function): Promise<T | null>{
 	try {
 		return await func()
 	} catch (err) {

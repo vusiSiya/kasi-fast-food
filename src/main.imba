@@ -37,14 +37,15 @@ global css
 
 
 tag app
-	<self>
-		<layout>
-			<menu-items route="/items">
-			<sign-in-prompt route="/not-signed-in">
-			<cart-items route="/items-on-cart">
-			<item-detail route="/item-detail/:id">
-			<login route="/login">
-
+	def render
+		imba.commit!
+		<self>
+			<layout>
+				<menu-items route="/items">
+				<sign-in-prompt route="/not-signed-in">
+				<cart-items route="/items-on-cart">
+				<item-detail route="/item-detail/:id">
+				<login route="/login">
 			
 imba.router.alias("/", "/items")
 imba.mount do <app>

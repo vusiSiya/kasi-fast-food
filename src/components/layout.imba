@@ -36,7 +36,7 @@ tag layout
 						route-to=(checkAuthState! ? "items-on-cart" : "/not-signed-in")
 					> 
 						<i.fa-solid .fa-truck-fast>
-						<span.count> (await getTotalCount!)
+						<span.count> (await getTotalCount! || 0)
 					<a [fw:bold] route-to="items"> "Menu"
 
 			<section [jc:end pr:1.5rem]>
