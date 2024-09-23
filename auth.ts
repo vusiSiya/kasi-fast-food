@@ -1,5 +1,4 @@
 import { initializeApp } from "firebase/app";
-import {getFirestore} from "firebase/firestore";
 import {
 	getAuth,
 	createUserWithEmailAndPassword,
@@ -8,7 +7,7 @@ import {
 	signInWithEmailAndPassword,
 	signInAnonymously,
 	onAuthStateChanged, 
-	signOut
+	signOut,
 } from "firebase/auth";
 
 
@@ -26,19 +25,24 @@ const firebaseConfig = {
  export const app = initializeApp(firebaseConfig);
  export const auth = getAuth(app)
  const provider = new GoogleAuthProvider()
+ 
 
 // auth
 onAuthStateChanged(auth, (user) => {
 	if (user) {
 	  localStorage.setItem("user-uid", user.uid)
-	  return
+	  const component = document.querySelector("nav-bar")
+	  component.currentUser = user
 	} 
-	localStorage.removeItem("user-uid")
+	else {
+		localStorage.removeItem("user-uid");
+	}
 })
 
 export async function authCreateAccountWithEmail (email: string, password: string){
 	const userCredential = await createUserWithEmailAndPassword(auth, email, password)
 	const user = userCredential.user;
+	
 	alert("account successfully created!");
 }
 

@@ -60,7 +60,6 @@ export async function getCartItems(): Promise<CartItem[] | any[]>{
 			...doc.data()
 		}
 	})
-
 	return cartItems
 }
 

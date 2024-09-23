@@ -43,52 +43,46 @@ tag item-detail
 		imba.commit!
 		item = cartItem || generalItem
 
+	def render
+		<self.container [d:vflex g:0]>
+			<a route-to="/items" [m:1rem 2rem @!760:1rem c:white] > "← back to menu"
 
-	<self.container [d:vflex g:0]>
-		<a route-to="/items" [m:1rem 2rem @!760:1rem c:white] > "← back to menu"
-
-		if (!item and show-loader= yes)
-			<loading-spinner>
-		else
-			<div.menu-item [m:.5em 3.2em @!760:auto ai:flex-end g:1em w:auto min-width:max-content]>
-				<img.item-image width="240" src=item.imgUrl alt=item.name >
-				<div.item-content>
-					<h2.item-name> item.name
-					<p.item-price> "R {item.price}"
-					
-					<div [d:flex flex-wrap:wrap ai:center g: .75em]>
-						if !item.count
-							<button.cart-btn 
-								id="add" 
-								@mousedown.flag('busycart', 'button').wait(500ms)=handleClick
-							>  "Add To Cart"
-
-							(checkAuthState! === false) && <p [fs:small fw:bold]>
+			if (!item and show-loader= yes)
+				<loading-spinner>
+			else
+				<div.menu-item [m:.5em 3.2em @!760:auto ai:flex-end g:1em w:auto min-width:max-content]>
+					<img.item-image width="240" src=item.imgUrl alt=item.name >
+					<div.item-content>
+						<h2.item-name> item.name
+						<p.item-price> "R {item.price}"
+						<div [d:flex flex-wrap:wrap ai:center g: .75em]>
+							if !item.count
+								<button.cart-btn 
+									id="add" 
+									@mousedown.flag('busycart', 'button').wait(500ms)=handleClick
+								>  "Add To Cart"
+								
+								!checkAuthState() && <p [fs:small fw:bold]>
 									"You need to {<a.login route-to="/login"> "login"} first"
-
-						else
-							
-							if (item.count < 4) 
-								<button.update-count
-									id="update-plus"
-									@mousedown.flag('busy', 'div').wait(500ms)=handleClick
-								> "+"
-								<span.count .fa-beat> item.count
-								<button.update-count
-									id="update-minus"
-									@mousedown.flag('busy', 'div').wait(500ms)=handleClick
-								> "-"							
 							else
-								<input.item-count-input
-									type="number"
-									value=item.count 
-									@change=handleChange
-								/>
-
-							<i.remove-item .fa-solid .fa-trash-can
-								id="remove"
-								title="Delete"
-								@mousedown.flag('busy', 'div').wait(500ms)=handleClick
-							>
-							
+								
+								if (item.count < 4) 
+									<button.update-count
+										id="update-plus"
+										@mousedown.flag('busy', 'div').wait(500ms)=handleClick
+									> "+"
+									<span.count .fa-beat> item.count
+									<button.update-count
+										id="update-minus"
+										@mousedown.flag('busy', 'div').wait(500ms)=handleClick
+									> "-"							
+								else
+									<input.item-count-input type="number" value=item.count @change=handleChange />
+									
+								<i.remove-item .fa-solid .fa-trash-can
+									id="remove"
+									title="Delete"
+									@mousedown.flag('busy', 'div').wait(500ms)=handleClick
+								>
+								
 
