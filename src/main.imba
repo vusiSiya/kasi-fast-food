@@ -32,7 +32,6 @@ global css
 
 tag App
 	def render
-		imba.commit!
 		<self>
 			<layout>
 				<menu-items route="/items">

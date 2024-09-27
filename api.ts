@@ -14,19 +14,19 @@ import {
 	where
 } from "firebase/firestore";
 
-import {nanoid} from 'nanoid'
+import {nanoid} from 'nanoid';
 import type {Item, CartItem } from "./types";
 import {app, auth } from "./auth";
 
 // initialisation
 const db = getFirestore(app);
 const itemsCollectionRef = collection(db,"items");
-const cartItemsCollectionRef = collection(db, "items-on-cart")
+const cartItemsCollectionRef = collection(db, "items-on-cart");
 
 
 // functions, --reading data--
-export async function getAllItems(): Promise<Item[] | any[]>{
-	const querySnapshot = await getDocs(itemsCollectionRef)
+export async function getAllItems(): Promise<Item[] | any[]> {
+	const querySnapshot = await getDocs(itemsCollectionRef);
 	const dataArray = await querySnapshot?.docs.map(doc =>{
 		return {
 			...doc.data(),
@@ -36,97 +36,96 @@ export async function getAllItems(): Promise<Item[] | any[]>{
 	return dataArray;
 }
 
-export async function getSingleItem(id: string): Promise<Item | Partial<Item>>{
+export async function getSingleItem(id: string): Promise<Item | Partial<Item>> {
 	const generalItemsRef = doc(db, "items", id[0].toString());
 	const itemSnapShot = await getDoc(generalItemsRef);
 	return {
 		...itemSnapShot.data(),
 		id: id
-	}
+	};
 }
 
-export async function getSingleCartItem(id:string): Promise<CartItem | null>{
-	const items = await get<CartItem[]>(getCartItems)
-	const selectedItem = items?.find(item=> item.id[0] === id[0])
-	return selectedItem || null
+export async function getSingleCartItem(id:string): Promise<CartItem | null> {
+	const items = await get<CartItem[]>(getCartItems);
+	const selectedItem = items?.find(item=> item.id[0] === id[0]);
+	return selectedItem || null;
 }
 
-export async function getCartItems(): Promise<CartItem[] | any[]>{
+export async function getCartItems(): Promise<CartItem[] | any[]> {
 	const userId = auth.currentUser?.uid
 	const q = query(cartItemsCollectionRef, where("uid", "==", userId))
 	const querySnapshot = await getDocs(q);
-	const cartItems = querySnapshot?.docs.map(doc =>{
+	const cartItems = querySnapshot?.docs.map(doc => {
 		return {
 			...doc.data()
 		}
 	})
-	return cartItems
+	return cartItems;
 }
 
-export async function getTotalCount (): Promise<number>{
+export async function getTotalCount (): Promise<number> {
 	const items = await get<CartItem[]>(getCartItems);
 	const count = items?.reduce((sum,item)=>sum + item.count, 0);
-	return count || 0
+	return count || 0;
 }
 
-export async function getTotalPrice (): Promise<number>{
+export async function getTotalPrice (): Promise<number> {
 	const items = await get<CartItem[]>(getCartItems);
 	const totalPrice = items?.reduce((sum, item)=>{
-		return sum + item.price * item.count
+		return sum + item.price * item.count;
 	}, 0);
-	return totalPrice || 0
+	return totalPrice || 0;
 }
 
 
 // functions, --writing--
-export async function addItemToCart(id: string): Promise<void>{
+export async function addItemToCart(id: string): Promise<void> {
 	try {
 		const item = await getSingleItem(id);
-		const user_uid = auth.currentUser?.uid || null
-		if(!user_uid) return
+		const user_uid = auth.currentUser?.uid || null;
+		if(!user_uid) return;
 
-		await setDoc(doc(db, "items-on-cart", id),{
+		await setDoc(doc(db, "items-on-cart", id), {
 				...item,
 				count: 1,
 				uid: user_uid
 			}
 		)
 	} catch (err) {
-		console.error(err.message)
+		console.error(err.message);
 	}
 }
 
-export async function updateItemCount(id: string, count: number): Promise<void>{
+export async function updateItemCount(id: string, count: number): Promise<void> {
 	try {
 		const itemRef = doc(db, "items-on-cart", id)
 		await updateDoc(itemRef, {
 			count: Number(count)
 		})
 	} catch (err) {
-		console.error(err.message)
+		console.error(err.message);
 	}
 }
 
-export async function removeItem(id: string): Promise<void>{
+export async function removeItem(id: string): Promise<void> {
 	try {
-		const itemRef = doc(db, "items-on-cart", id)
+		const itemRef = doc(db, "items-on-cart", id);
 		await deleteDoc(itemRef)
 	} catch (err) {
-		console.error(err.message)
+		console.error(err.message);
 	}
 }
 
 // utils
 export function checkAuthState(): boolean{
-	const user_uid = localStorage.getItem("user-uid")
-	return user_uid ? true : false
+	return !!localStorage.getItem("user-uid");
 }
 
 export async function get<T>( func: Function): Promise<T | null>{
 	try {
 		return await func()
 	} catch (err) {
-		console.error(err.message)
-		return null
+		console.log(err.message);
+		return null;
 	}
 }
