@@ -61,3 +61,10 @@ export async function authSignInWithGoogle(){
 export async function authSignOut(){
 	await signOut(auth)
 }
+
+//utils
+export function checkAuthState(): boolean | null{
+	const {currentUser} = auth
+	if (currentUser === null) return null
+	return !!currentUser
+}

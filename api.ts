@@ -117,10 +117,6 @@ export async function removeItem(id: string): Promise<void> {
 }
 
 // utils
-export function checkAuthState(): boolean{
-	return !!localStorage.getItem("user-uid");
-}
-
 export async function get<T>( func: Function): Promise<T | null>{
 	try {
 		return await func()

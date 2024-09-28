@@ -4,8 +4,8 @@ import {
 	signInWithEmail,
 	authSignInWithGoogle,
 	anonymousSignIn,
+	checkAuthState
 } from "../../auth"
-import { checkAuthState } from "../../api"
 import google-logo from "../../Images/google-logo.png"
 
 
@@ -53,8 +53,10 @@ tag login
 	<self [m:auto c:white]>
 		<form @submit.prevent()=handleSubmit>
 			<h4 [ta:center]> "Sign in or Sign up"
-			unless signedIn === null
-				<p [m:0 c:orange fs:small fw:bold]> checkAuthState! ? "Successully Signed In" : "Invalid Credentials!"
+
+			unless checkAuthState! === null
+				<p [m:0 c:orange fs:small fw:bold]>
+					checkAuthState! ? "Successully Signed In" : "Invalid Credentials!"
 		
 			<input type="email" name="email" placeholder="email" required autocomplete="off" />
 			<input type="password" name="password" placeholder="password" required autocomplete="off" />
