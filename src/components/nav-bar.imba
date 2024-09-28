@@ -10,9 +10,9 @@ css section > div > a@hover bgc:black3 c:white
 css .login bgc:orange c:white ta:center p:.55em .15em
 css .login, img.profile bd:1px solid white rd:100% w:2rem bxs@hover: 0 0 8px 2px grey
 	
-css div.select d:none pos:absolute top:1rem right:5rem max-width:7rem
+css div.select d:none fw:bold pos:absolute top:1rem right:5rem max-width:fit-content
 	fs:small rd:.2rem p:.5rem bgc:white c:black
-css div.select > p cursor:pointer fw:bold m:.5rem d:flex g:.5em ai:baseline
+css div.select > p cursor:pointer m:.5rem d:flex g:.5em ai:baseline
 	@hover td:underline color:orange
 
 css .menu-bar fs:x-large bgc:inherit c:white bd:none bxs@hover: 0 0 8px 2px silver
@@ -38,20 +38,21 @@ tag nav-bar
 		<self>
 			<section>
 				<div [align-self:flex-start]>
-					<h1 [w:fit-content fs:2rem @!760:1.5rem bdb:dotted m:0 ml:2rem @!760:auto]> "Fast Food"
+					<h1 [w:fit-content fs:2rem @!760:1.5rem m:0 ml:2rem @!760:auto]> "Fast Food"
 					
 				if isSmallScreen
 					<div [pos: relative]>
-						<button .menu-bar @mousedown=(showMenu = !showMenu)>
+						<button.menu-bar @mousedown=(showMenu = !showMenu)>
 							<i .fa-solid .fa-bars>
-						<div.select [d:grid ji:start fs:medium]=showMenu>
-							<p [gap:2px]>
-								<a route-to=(isSignedIn ? "/items-on-cart" : "/not-signed-in")> "Cart"
-								<i.fa-solid .fa-truck-fast>
-								<span.count .small-cart> (await getTotalCount! || 0)	
+							
+						<div.select [d:grid ji:start fs:medium fw:normal p:0]=showMenu>
 							<p>
 								<a route-to="/items"> "Menu"
 								<i .fa-solid .fa-burger>
+							<p [gap:2px]>
+								<a route-to=(isSignedIn ? "/items-on-cart" : "/not-signed-in")> "Cart"
+								<i.fa-solid .fa-truck-fast [fs:small]>
+								<span.count .small-cart> (await getTotalCount! || 0)	
 							<p>
 								<a route-to="login" @mousedown=handleSignOut> checkAuthState! ? "Logout" : "Login"
 								<i .fa-regular .fa-user .login[max-width:1.3rem fs:x-small]>

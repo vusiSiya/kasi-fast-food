@@ -1,10 +1,21 @@
+import "./components/sign-in-prompt.imba"
+import "./components/loading-spinner.imba"
+import "./components/nav-bar.imba"
+import "./components/footer-tag.imba"
 
-import "./components/layout.imba"
+import "./pages/login.imba"
+import "./pages/cart-items.imba"                                                                                      
+import "./pages/item-detail.imba"
+import "./pages/menu-items.imba"
+
 
 global css 
 	html,body m:0
 	body bgc:#527e7a fs:1rem ff:Arial d:grid g:.25em w:100% 
 	a c:inherit td:none
+
+	nav-bar d:flex jc:space-between bgc:#75a1a1 c:white 
+		pos:fixed top:0 p:.5em w:100%  mb:.8em z-index:2
 
 	.container d:flex jc:center g:1rem w:100%
 	.count bgc:#c51950 rd:100%  c:white p:.25em .5em fw:bold
@@ -29,16 +40,20 @@ global css
 	.busy pointer-events:none opacity:50%
 	.remove-item fs:large mx:.8em 
 
+	footer pos:fixed b:0 l:0 r:0 ta:center c:white z-index: -1
+	footer > p > a ml:.5em p:0 bgc:transparent c:white
 
 tag App
-	def render
-		<self>
-			<layout>
-				<menu-items route="/items">
-				<item-detail route="/item-detail/:id">
-				<cart-items route="/items-on-cart">
-				<login route="/login">
-				<sign-in-prompt route="/not-signed-in">
+	<self [d:grid]>
+		<nav-bar>
+		<main [d:vflex mt:7.5rem mb:2.5rem]>
+			<menu-items route="/items">
+			<item-detail route="/item-detail/:id">
+			<cart-items route="/items-on-cart">
+			<login route="/login">
+			<sign-in-prompt route="/not-signed-in">
+		<footer-tag>
 			
+				
 imba.router.alias("/", "/items")
 imba.mount do <App>
