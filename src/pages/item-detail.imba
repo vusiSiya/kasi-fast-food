@@ -4,8 +4,9 @@ import {
 	updateItemCount,
 	getSingleCartItem,
 	getSingleItem,
-	checkAuthState,
 } from "../../api"
+import {checkAuthState} from "../../auth"
+
 
 
 css .update-count bgc:white px:.75rem py:.25rem
