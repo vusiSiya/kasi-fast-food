@@ -98,10 +98,10 @@ export async function addItemToCart(id: string): Promise<void> {
 
 export async function updateItemCount(id: string, count: number): Promise<void> {
 	try {
-		const itemRef = doc(db, "items-on-cart", id)
+		const itemRef = doc(db, "items-on-cart", id);
 		await updateDoc(itemRef, {
 			count: Number(count)
-		})
+		});
 	} catch (err) {
 		console.error(err.message);
 	}
@@ -117,10 +117,11 @@ export async function removeItem(id: string): Promise<void> {
 }
 
 // utils
-export async function get<T>( func: Function): Promise<T | null>{
+export async function get<T>( func: Function): Promise<T | null> {
 	try {
-		return await func()
-	} catch (err) {
+		return await func();
+	} 
+	catch (err) {
 		console.log(err.message);
 		return null;
 	}

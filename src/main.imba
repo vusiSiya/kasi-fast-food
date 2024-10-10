@@ -2,12 +2,13 @@ import "./components/sign-in-prompt.imba"
 import "./components/loading-spinner.imba"
 import "./components/nav-bar.imba"
 import "./components/footer-tag.imba"
-
 import "./pages/login.imba"
 import "./pages/cart-items.imba"                                                                                      
 import "./pages/item-detail.imba"
 import "./pages/menu-items.imba"
 
+import { getAllItems, getCartItems, getTotalCount, get } from "../api"
+import type { Item, CartItem} from "../types"
 
 global css 
 	html,body m:0
@@ -16,6 +17,8 @@ global css
 
 	nav-bar d:flex jc:space-between bgc:#75a1a1 c:white 
 		pos:fixed top:0 p:.5em w:100%  mb:.8em z-index:2
+
+	main d:vflex mt:7.5rem mb:2.5rem
 
 	.container d:flex jc:center g:1rem w:100%
 	.count bgc:#c51950 rd:100%  c:white p:.25em .5em fw:bold
@@ -44,12 +47,19 @@ global css
 	footer > p > a ml:.5em p:0 bgc:transparent c:white
 
 tag App
+	prop items
+	prop cartData = do
+
+	def mount
+			items = await get<Item[]>(getAllItems)
+			cartData = do await get<CartItem[]>(getCartItems)
+	
 	<self [d:grid]>
 		<nav-bar>
-		<main [d:vflex mt:7.5rem mb:2.5rem]>
-			<menu-items route="/items">
+		<main>
+			<menu-items route="/items" items=items>
 			<item-detail route="/item-detail/:id">
-			<cart-items route="/items-on-cart">
+			<cart-items route="/items-on-cart" data=(await cartData!)>
 			<login route="/login">
 			<sign-in-prompt route="/not-signed-in">
 		<footer-tag>

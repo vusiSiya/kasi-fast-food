@@ -31,12 +31,15 @@ tag login
 		const password = formData.get("password")
 		e.target.reset!
 		await signInWithEmail(email.toString!, password.toString!)
+		imba.commit!
 
 	def handleAnonymousAuth
 		await anonymousSignIn!
+		imba.commit!
 
 	def handleGoogleSignIn e
 		await authSignInWithGoogle!
+		imba.commit!
 
 	def handleSignUp e
 		const formData = getFormData(e)
@@ -49,24 +52,25 @@ tag login
 		if e.submitter.id === "sign-in"
 			await handleEmailSignIn(e)
 		else await handleSignUp(e) 
+			
+	def render
+		<self [m:auto c:white]>
+			<form @submit.prevent()=handleSubmit>
+				<h4 [ta:center]> "Sign in or Sign up"
 
-	<self [m:auto c:white]>
-		<form @submit.prevent()=handleSubmit>
-			<h4 [ta:center]> "Sign in or Sign up"
-
-			unless checkAuthState! === null
-				<p [m:0 c:orange fs:small fw:bold]>
-					checkAuthState! ? "Successully Signed In" : "Invalid Credentials!"
-		
-			<input type="email" name="email" placeholder="email" required autocomplete="off" />
-			<input type="password" name="password" placeholder="password" required autocomplete="off" />
-			<button type="submit" id="sign-in"> "Sign In"
-			<button type="submit" id="sign-up"> "Sign Up"
-			<section [d:grid g:.4em]>
-				<p [fs:small m:0 ta:center]> "or"
-				<button type="button" @mousedown=handleAnonymousAuth> "Sign In Anonymously"
-				<button [d:flex ai:center jc:center] type="button" @mousedown=handleGoogleSignIn>
-					<img [w:2rem] src=google-logo /> "Sign In with Google"
+				unless checkAuthState! === null
+					<p [m:0 c:orange fs:small fw:bold]>
+						checkAuthState! ? "Successully Signed In" : "Invalid Credentials!"
+			
+				<input type="email" name="email" placeholder="email" required autocomplete="off" />
+				<input type="password" name="password" placeholder="password" required autocomplete="off" />
+				<button type="submit" id="sign-in"> "Sign In"
+				<button type="submit" id="sign-up"> "Sign Up"
+				<section [d:grid g:.4em]>
+					<p [fs:small m:0 ta:center]> "or"
+					<button type="button" @mousedown=handleAnonymousAuth> "Sign In Anonymously"
+					<button [d:flex ai:center jc:center] type="button" @mousedown=handleGoogleSignIn>
+						<img [w:2rem] src=google-logo /> "Sign In with Google"
 
 
 

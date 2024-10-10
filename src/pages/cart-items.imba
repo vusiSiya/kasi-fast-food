@@ -7,32 +7,27 @@ import {
 } from "../../api"
 import type {CartItem} from "../../types"
 
-
-css .total-price 
-		bgc: #fffff1 @hover:black c: black @hover: white
-		p:.5em fw: bold rd:.28rem 
-
+css .total-price bgc: #fffff1 @hover:black c: black @hover: white
+	p:.5em fw: bold rd:.28rem 
 
 tag cart-items
-	prop cartItems = []
+	prop data = []
+	prop count = 0
 
 	def handleClick e
 		const {id} = e.target
-		const item = cartItems.find do(item) item.id === id
+		const item = data.find do(item) item.id === id
 		await removeItem(id)
 		item.count = 0 
 
 	def handleChange e
 		const {id,value} = e.target
-		const item = cartItems.find do(item) item.id === id
+		const item = data.find do(item) item.id === id
 		let new-count = Number(value)	
 		await updateItemCount(item.id, new-count)
 		item.count = new-count
 
-              
 	def render
-		cartItems = await get<CartItem[]>(getCartItems) or null
-	
 		<self[d:grid g:.5em]>
 			<div [d:flex ai:center]>	
 				<h1 [m:.8em 3.2rem c:white]> "On your cart" 
@@ -41,12 +36,12 @@ tag cart-items
 					" R {await getTotalPrice! || 0}"
 					
 			<div.container [d:vflex]>
-				if !cartItems
+				if !data
 					<section [d:grid ji:center m:5em auto p:2rem c:white]>
 						<h2 [m:auto 0]> "Nothing here, yet." 
 				else
 
-					for item in cartItems
+					for item in data
 						unless !item.count
 							<div.menu-item [td:none ai:flex-end g:1em w:auto mx: 3.2em @!760: auto mt: .5em]>
 								<img.item-image width="240" src=item.imgUrl alt=item.name />
@@ -67,4 +62,4 @@ tag cart-items
 											title="Delete"
 											@mousedown.flag('busy', 'div').wait(500ms)=handleClick
 										>
-											
+												

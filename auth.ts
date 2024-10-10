@@ -30,13 +30,9 @@ const firebaseConfig = {
 // auth
 onAuthStateChanged(auth, (user) => {
 	if (user) {
-	  localStorage.setItem("user-uid", user.uid)
 	  const component = document.querySelector("nav-bar")
 	  component.currentUser = user
 	} 
-	else {
-		localStorage.removeItem("user-uid");
-	}
 })
 
 export async function authCreateAccountWithEmail (email: string, password: string){

@@ -15,7 +15,8 @@ css div.select d:none fw:bold pos:absolute top:1rem right:5rem max-width:fit-con
 css div.select > p cursor:pointer m:.5rem d:flex g:.5em ai:baseline
 	@hover td:underline color:orange
 
-css .menu-bar fs:x-large bgc:inherit c:white bd:none bxs@hover: 0 0 8px 2px silver
+css .menu-bar fs:x-large bgc:inherit c:white bd:none 
+	@hover bd: 1px solid silver rd:.25rem
 css .small-cart p:.2em fs:x-small rd:100% bd:1px solid red
 	
 
@@ -23,17 +24,16 @@ tag nav-bar
 	prop currentUser
 	prop showMenu = false
 	prop showOptions = false
-	
-	def handleSignOut e
-		imba.commit!
-		if (e.target.textContent === "Logout") then authSignOut!
+	prop count = 0
 
+	def handleSignOut e
+		if (e.target.textContent === "Logout") then authSignOut!
+		
 	def render
 		const isSignedIn = checkAuthState!
 		const user = isSignedIn && currentUser
-		const mediaQueryList = window.matchMedia("(max-width: 759px)")
+		const mediaQueryList = window.matchMedia("(max-width: 759px)");
 		const isSmallScreen = mediaQueryList.matches
-		imba.commit!
 
 		<self>
 			<section>
@@ -48,14 +48,14 @@ tag nav-bar
 						<div.select [d:grid ji:start fs:medium fw:normal p:0]=showMenu>
 							<p>
 								<a route-to="/items"> "Menu"
-								<i .fa-solid .fa-burger>
+									<i .fa-solid .fa-burger>
 							<p [gap:2px]>
 								<a route-to=(isSignedIn ? "/items-on-cart" : "/not-signed-in")> "Cart"
-								<i.fa-solid .fa-truck-fast [fs:small]>
-								<span.count .small-cart> (await getTotalCount! || 0)	
+									<i.fa-solid .fa-truck-fast [fs:small]>
+									<span.count .small-cart> (await getTotalCount! || 0)	
 							<p>
 								<a route-to="login" @mousedown=handleSignOut> checkAuthState! ? "Logout" : "Login"
-								<i .fa-regular .fa-user .login[max-width:1.3rem fs:x-small]>
+									<i .fa-regular .fa-user .login[max-width:1.3rem fs:x-small]>
 				else
 					<div[d:flex ai:flex-end g:2rem]>
 						<section [jc:end pr:1rem m:0]>
@@ -80,7 +80,4 @@ tag nav-bar
 							else 
 								<a .login route-to="login">
 									<i .fa-regular .fa-user>
-
-
-
 
