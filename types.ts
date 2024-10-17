@@ -1,7 +1,7 @@
 
 export type CartItem = {
    id: string;
-   ImgUrl: string;
+   imgUrl: string;
    name: string;
    price: number;
    count: number;

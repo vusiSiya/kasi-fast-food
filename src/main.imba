@@ -7,7 +7,7 @@ import "./pages/cart-items.imba"
 import "./pages/item-detail.imba"
 import "./pages/menu-items.imba"
 
-import { getAllItems, getCartItems, getTotalCount, get } from "../api"
+import { getAllItems, get } from "../api"
 import type { Item, CartItem} from "../types"
 
 global css 
@@ -48,18 +48,21 @@ global css
 
 tag App
 	prop items
-	prop cartData = do
 
 	def mount
-			items = await get<Item[]>(getAllItems)
-			cartData = do await get<CartItem[]>(getCartItems)
+		items = await get<Item[]>(getAllItems)
+		window.addEventListener("deviceorientationabsolute", do(e)
+			# isSmallScreen = mediaQueryList.matches
+			imba.commit!
+		)
+		return;
 	
 	<self [d:grid]>
 		<nav-bar>
 		<main>
 			<menu-items route="/items" items=items>
 			<item-detail route="/item-detail/:id">
-			<cart-items route="/items-on-cart" data=(await cartData!)>
+			<cart-items route="/items-on-cart">
 			<login route="/login">
 			<sign-in-prompt route="/not-signed-in">
 		<footer-tag>

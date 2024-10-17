@@ -1,13 +1,8 @@
 import { initializeApp } from "firebase/app";
 import {
 	getAuth,
-	createUserWithEmailAndPassword,
-	signInWithPopup,
 	GoogleAuthProvider,
-	signInWithEmailAndPassword,
-	signInAnonymously,
 	onAuthStateChanged, 
-	signOut,
 } from "firebase/auth";
 
 
@@ -24,39 +19,14 @@ const firebaseConfig = {
 // initialisation
  export const app = initializeApp(firebaseConfig);
  export const auth = getAuth(app)
- const provider = new GoogleAuthProvider()
- 
+ export const provider = new GoogleAuthProvider()
 
-// auth
 onAuthStateChanged(auth, (user) => {
 	if (user) {
 	  const component = document.querySelector("nav-bar")
 	  component.currentUser = user
 	} 
 })
-
-export async function authCreateAccountWithEmail (email: string, password: string){
-	const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-	const user = userCredential.user;
-	
-	alert("account successfully created!");
-}
-
-export async function anonymousSignIn(){
-	await signInAnonymously(auth)
-}
-
-export async function signInWithEmail(email: string, password: string){
-	await signInWithEmailAndPassword(auth, email, password)
-}
-
-export async function authSignInWithGoogle(){
-      await signInWithPopup(auth, provider)
-}
-
-export async function authSignOut(){
-	await signOut(auth)
-}
 
 //utils
 export function checkAuthState(): boolean | null{

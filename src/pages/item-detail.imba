@@ -38,8 +38,7 @@ tag item-detail
 
 	def routed(params)
 		const cartItem = await getSingleCartItem(params.id) || null 
-		const generalItem = !cartItem && await getSingleItem(params.id) || null
-		item = cartItem || generalItem
+		this.item = cartItem || await getSingleItem(params.id)
 
 	def render
 		<self.container [d:vflex g:0]>

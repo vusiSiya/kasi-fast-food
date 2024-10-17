@@ -12,7 +12,6 @@ css .total-price bgc: #fffff1 @hover:black c: black @hover: white
 
 tag cart-items
 	prop data = []
-	prop count = 0
 
 	def handleClick e
 		const {id} = e.target
@@ -21,13 +20,16 @@ tag cart-items
 		item.count = 0 
 
 	def handleChange e
-		const {id,value} = e.target
+		const {id, value} = e.target
 		const item = data.find do(item) item.id === id
 		let new-count = Number(value)	
 		await updateItemCount(item.id, new-count)
 		item.count = new-count
 
 	def render
+		const items = await get<CartItem[]>(getCartItems)
+		this.data = items
+
 		<self[d:grid g:.5em]>
 			<div [d:flex ai:center]>	
 				<h1 [m:.8em 3.2rem c:white]> "On your cart" 
@@ -36,12 +38,12 @@ tag cart-items
 					" R {await getTotalPrice! || 0}"
 					
 			<div.container [d:vflex]>
-				if !data
+				if !items
 					<section [d:grid ji:center m:5em auto p:2rem c:white]>
 						<h2 [m:auto 0]> "Nothing here, yet." 
 				else
 
-					for item in data
+					for item in [...items]
 						unless !item.count
 							<div.menu-item [td:none ai:flex-end g:1em w:auto mx: 3.2em @!760: auto mt: .5em]>
 								<img.item-image width="240" src=item.imgUrl alt=item.name />

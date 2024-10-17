@@ -1,5 +1,7 @@
 
-import { authSignOut, checkAuthState } from "../../auth"
+
+import { signOut } from "firebase/auth" 
+import { auth, checkAuthState } from "../../auth"
 import { getTotalCount } from "../../api"
 
 
@@ -24,23 +26,26 @@ tag nav-bar
 	prop currentUser
 	prop showMenu = false
 	prop showOptions = false
-	prop count = 0
+	prop mediaQueryList = window.matchMedia("(max-width: 759px)")
+	prop checkIfSmallScreen = do 
+		console.log(this.mediaQueryList.matches)
+		return mediaQueryList.matches
 
 	def handleSignOut e
-		if (e.target.textContent === "Logout") then authSignOut!
+		if (e.target.textContent === "Logout")
+			signOut(auth)
+			imba.commit!
 		
 	def render
 		const isSignedIn = checkAuthState!
 		const user = isSignedIn && currentUser
-		const mediaQueryList = window.matchMedia("(max-width: 759px)");
-		const isSmallScreen = mediaQueryList.matches
-
+		
 		<self>
 			<section>
 				<div [align-self:flex-start]>
 					<h1 [w:fit-content fs:2rem @!760:1.5rem m:0 ml:2rem @!760:auto]> "Fast Food"
 					
-				if isSmallScreen
+				if checkIfSmallScreen!
 					<div [pos: relative]>
 						<button.menu-bar @mousedown=(showMenu = !showMenu)>
 							<i .fa-solid .fa-bars>
