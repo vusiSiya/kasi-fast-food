@@ -27,14 +27,13 @@ tag nav-bar
 	prop showMenu = false
 	prop showOptions = false
 	prop mediaQueryList = window.matchMedia("(max-width: 759px)")
-	prop checkIfSmallScreen = do 
-		console.log(this.mediaQueryList.matches)
-		return mediaQueryList.matches
+	prop checkIfSmallScreen = do mediaQueryList.matches
 
 	def handleSignOut e
-		if (e.target.textContent === "Logout")
-			signOut(auth)
-			imba.commit!
+		const {textContent} = e.target
+		if checkAuthState! && textContent === "Logout"
+			await signOut(auth)
+			window.location.replace "/items"
 		
 	def render
 		const isSignedIn = checkAuthState!
@@ -50,7 +49,7 @@ tag nav-bar
 						<button.menu-bar @mousedown=(showMenu = !showMenu)>
 							<i .fa-solid .fa-bars>
 							
-						<div.select [d:grid ji:start fs:medium fw:normal p:0]=showMenu>
+						<div.select [d:grid ji:start fs:medium fw:normal p:0 min-width:6rem]=showMenu>
 							<p>
 								<a route-to="/items"> "Menu"
 									<i .fa-solid .fa-burger>
@@ -59,7 +58,7 @@ tag nav-bar
 									<i.fa-solid .fa-truck-fast [fs:small]>
 									<span.count .small-cart> (await getTotalCount! || 0)	
 							<p>
-								<a route-to="login" @mousedown=handleSignOut> checkAuthState! ? "Logout" : "Login"
+								<a route-to="login" @mousedown=handleSignOut> isSignedIn ? "Logout" : "Login"
 									<i .fa-regular .fa-user .login[max-width:1.3rem fs:x-small]>
 				else
 					<div[d:flex ai:flex-end g:2rem]>

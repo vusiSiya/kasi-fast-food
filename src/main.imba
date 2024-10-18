@@ -51,11 +51,8 @@ tag App
 
 	def mount
 		items = await get<Item[]>(getAllItems)
-		window.addEventListener("deviceorientationabsolute", do(e)
-			# isSmallScreen = mediaQueryList.matches
-			imba.commit!
-		)
-		return;
+		window.addEventListener("deviceorientationabsolute", do imba.commit!)
+		return
 	
 	<self [d:grid]>
 		<nav-bar>

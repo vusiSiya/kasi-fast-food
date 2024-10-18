@@ -43,7 +43,7 @@ tag cart-items
 						<h2 [m:auto 0]> "Nothing here, yet." 
 				else
 
-					for item in [...items]
+					for item in [...items]  # spreading for typesafety
 						unless !item.count
 							<div.menu-item [td:none ai:flex-end g:1em w:auto mx: 3.2em @!760: auto mt: .5em]>
 								<img.item-image width="240" src=item.imgUrl alt=item.name />

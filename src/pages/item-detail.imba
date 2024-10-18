@@ -14,8 +14,6 @@ css a.login td:underline c:-webkit-link
 
 
 tag item-detail
-	prop item = {}
-	prop showLoader = yes
 
 	def handleChange e 
 		item.count = Number(e.target.value)
@@ -36,16 +34,15 @@ tag item-detail
 				item.count = new-count
 				return (new-count < 1) ? await removeItem(item.id) : await updateItemCount(item.id, new-count)
 
-	def routed(params)
+	def routed(params, state)
 		const cartItem = await getSingleCartItem(params.id) || null 
 		this.item = cartItem || await getSingleItem(params.id)
+
 
 	def render
 		<self.container [d:vflex g:0]>
 			<a route-to="/items" [m:1rem 2rem @!760:1rem c:white] > "← back to menu"
-
-			if (!item and showLoader= yes)
-				<loading-spinner>
+			if !item then <loading-spinner>
 			else
 				<div.menu-item [m:.5em 3.2em @!760:auto ai:flex-end g:1em w:auto min-width:max-content]>
 					<img.item-image width="240" src=item.imgUrl alt=item.name >

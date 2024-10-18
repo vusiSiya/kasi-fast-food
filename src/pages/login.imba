@@ -15,15 +15,14 @@ css button fw:bold p:1em 1.5em bd:none rd:.5rem c:inherit
 css form d:grid bgc:black g:.8em min-width:15em m:.5em auto p:1em c:white 
 	bd:none rd:.5rem fs:1.5rem @!700:medium 
 
-css form > input bd:4px solid transparent @hover:4px solid blue3 rd:.25rem
+css form > input bd:4px solid transparent bc@hover:blue3 rd:.25rem
 	w:auto p:.5em ta:start 
-	
 			
 tag login
 	prop errorMsg = null
 	
 	def handleSubmit e
-		const {id} = e.submitter || e.target
+		const {id} = e.submitter || e.target  # getting the button's id
 		try
 			if e.submitter
 				const formData = new FormData(e.target)
@@ -32,13 +31,19 @@ tag login
 				if id === "sign-in"
 					await signInWithEmailAndPassword(auth , email.toString!, password.toString!)
 				else if id === "sign-up"
-					await createUserWithEmailAndPassword(auth, email.toString!, password.toString!)
+					const cred = await createUserWithEmailAndPassword auth, email.toString!, password.toString!
+					if !cred.user.emailVerified
+						await cred.user.delete!
+						throw new Error("😤 Invalid Email!")
+					
 			else 
 				if id === "google-auth" then await signInWithPopup(auth, provider)
 				else await signInAnonymously(auth)
 		catch error
 			errorMsg = error.message
+			setTimeout(&, 500) do window.location.reload!
 		e.submitter && e.target.reset!
+		!errorMsg && setTimeout(&, 490) do window.location.replace "/items-on-cart"
 		return
 		
 	def render
@@ -46,11 +51,10 @@ tag login
 		<self [m:auto c:white]>
 			<form @submit.prevent()=handleSubmit>
 				<h4 [ta:center]> "Sign in or Sign up"
-				<p [m:0 c:orange fs:small fw:bold]> signedIn ? "Successully Signed In" : errorMsg
-				errorMsg = null
-				
-				<input type="email" name="email" placeholder="email" required autocomplete="off" />
-				<input type="password" name="password" placeholder="password" required autocomplete="off" />
+				<p [m:0 c:orange fs:small fw:bold] [c:orangered]=errorMsg> 
+					signedIn && !erroMsg ? "Successully Signed In" : errorMsg
+				<input [bc:orangered]=errorMsg type="email" name="email" placeholder="email" required autocomplete="off" />
+				<input [bc:orangered]=errorMsg type="password" name="password" placeholder="password" required autocomplete="off" />
 				<button type="submit" id="sign-in"> "Sign In"
 				<button type="submit" id="sign-up"> "Sign Up"
 				<section [d:grid g:.4em]>
