@@ -29,7 +29,7 @@ tag login
 				const email = formData.get("email")
 				const password = formData.get("password")
 				if id === "sign-in"
-					await signInWithEmailAndPassword(auth , email.toString!, password.toString!)
+					await signInWithEmailAndPassword(auth, email.toString!, password.toString!)
 				else if id === "sign-up"
 					const cred = await createUserWithEmailAndPassword auth, email.toString!, password.toString!
 					if !cred.user.emailVerified
@@ -41,9 +41,9 @@ tag login
 				else await signInAnonymously(auth)
 		catch error
 			errorMsg = error.message
-			setTimeout(&, 500) do window.location.reload!
+			setTimeout(&, 80) do window.location.reload!
 		e.submitter && e.target.reset!
-		!errorMsg && setTimeout(&, 490) do window.location.replace "/items-on-cart"
+		!errorMsg && setTimeout(&, 80) do window.location.replace "/items-on-cart"
 		return
 		
 	def render
@@ -52,7 +52,7 @@ tag login
 			<form @submit.prevent()=handleSubmit>
 				<h4 [ta:center]> "Sign in or Sign up"
 				<p [m:0 c:orange fs:small fw:bold] [c:orangered]=errorMsg> 
-					signedIn && !erroMsg ? "Successully Signed In" : errorMsg
+					signedIn and !errorMsg ? "Successully Signed In" : errorMsg
 				<input [bc:orangered]=errorMsg type="email" name="email" placeholder="email" required autocomplete="off" />
 				<input [bc:orangered]=errorMsg type="password" name="password" placeholder="password" required autocomplete="off" />
 				<button type="submit" id="sign-in"> "Sign In"

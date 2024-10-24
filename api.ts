@@ -46,7 +46,7 @@ export async function getSingleItem(id: string): Promise<Item | Partial<Item>> {
 }
 
 export async function getSingleCartItem(id:string): Promise<CartItem | null> {
-	const items = await get<CartItem[]>(getCartItems);
+	const items = await _catch<CartItem[]>(getCartItems);
 	const selectedItem = items?.find(item=> item.id[0] === id[0]);
 	return selectedItem || null;
 }
@@ -64,13 +64,13 @@ export async function getCartItems(): Promise<CartItem[] | any[]> {
 }
 
 export async function getTotalCount (): Promise<number> {
-	const items = await get<CartItem[]>(getCartItems);
+	const items = await _catch<CartItem[]>(getCartItems);
 	const count = items?.reduce((sum,item)=>sum + item.count, 0);
 	return count || 0;
 }
 
 export async function getTotalPrice (): Promise<number> {
-	const items = await get<CartItem[]>(getCartItems);
+	const items = await _catch<CartItem[]>(getCartItems);
 	const totalPrice = items?.reduce((sum, item)=>{
 		return sum + item.price * item.count;
 	}, 0);
@@ -80,44 +80,32 @@ export async function getTotalPrice (): Promise<number> {
 
 // functions, --writing--
 export async function addItemToCart(id: string): Promise<void> {
-	try {
-		const item = await getSingleItem(id);
-		const user_uid = auth.currentUser?.uid || null;
-		if(!user_uid) return;
+	const item = await getSingleItem(id);
+	const user_uid = auth.currentUser?.uid || null;
+	if(!user_uid) return;
 
-		await setDoc(doc(db, "items-on-cart", id), {
-				...item,
-				count: 1,
-				uid: user_uid
-			}
-		)
-	} catch (err) {
-		console.error(err.message);
-	}
+	await setDoc(doc(db, "items-on-cart", id), {
+			...item,
+			count: 1,
+			uid: user_uid
+		}
+	)
 }
 
 export async function updateItemCount(id: string, count: number): Promise<void> {
-	try {
-		const itemRef = doc(db, "items-on-cart", id);
-		await updateDoc(itemRef, {
-			count: Number(count)
-		});
-	} catch (err) {
-		console.error(err.message);
-	}
+	const itemRef = doc(db, "items-on-cart", id);
+	await updateDoc(itemRef, {
+		count: Number(count)
+	});
 }
 
 export async function removeItem(id: string): Promise<void> {
-	try {
-		const itemRef = doc(db, "items-on-cart", id);
-		await deleteDoc(itemRef)
-	} catch (err) {
-		console.error(err.message);
-	}
+	const itemRef = doc(db, "items-on-cart", id);
+	await deleteDoc(itemRef)
 }
 
 // utils
-export async function get<T>( func: Function): Promise<T | null> {
+export async function _catch<T>( func: Function): Promise<T | null> {
 	try {
 		return await func();
 	} 

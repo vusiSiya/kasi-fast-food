@@ -7,8 +7,8 @@ import "./pages/cart-items.imba"
 import "./pages/item-detail.imba"
 import "./pages/menu-items.imba"
 
-import { getAllItems, get } from "../api"
-import type { Item, CartItem} from "../types"
+import { getAllItems, _catch } from "../api"
+import type { Item } from "../types"
 
 global css 
 	html,body m:0
@@ -50,7 +50,7 @@ tag App
 	prop items
 
 	def mount
-		items = await get<Item[]>(getAllItems)
+		items = await _catch<Item[]>(getAllItems)
 		window.addEventListener("deviceorientationabsolute", do imba.commit!)
 		return
 	
