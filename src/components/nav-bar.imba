@@ -23,7 +23,6 @@ css .small-cart p:.2em fs:x-small rd:100% bd:1px solid red
 	
 
 tag nav-bar
-	prop currentUser
 	prop showMenu = false
 	prop showOptions = false
 	prop mediaQueryList = window.matchMedia("(max-width: 759px)")
@@ -32,18 +31,19 @@ tag nav-bar
 	def handleSignOut e
 		const {textContent} = e.target
 		if checkAuthState! && textContent === "Logout"
+			auth.currentUser.isAnonymous && await auth.currentUser.delete!
 			await signOut(auth)
 			window.location.replace "/items"
 		
 	def render
 		const isSignedIn = checkAuthState!
-		const user = isSignedIn && currentUser
-		
+		const user = auth.currentUser
+
 		<self>
 			<section>
 				<div [align-self:flex-start]>
 					<h1 [w:fit-content fs:2rem @!760:1.5rem m:0 ml:2rem @!760:auto]> "Fast Food"
-					
+
 				if checkIfSmallScreen!
 					<div [pos: relative]>
 						<button.menu-bar @mousedown=(showMenu = !showMenu)>

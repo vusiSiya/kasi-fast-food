@@ -27,17 +27,17 @@ tag item-detail
 		if checkAuthState!
 			try
 				if id === "remove"
-					item.count = 0
 					await removeItem(item.id)	
+					item.count = 0
 				else if id === "add"
-					item.count = 1
 					await addItemToCart(item.id)
+					item.count = 1
 				else
 					const new-count = (id === "update-plus") ? item.count + 1 : item.count - 1;
 					(new-count < 1 ) ? await removeItem(item.id) : await updateItemCount(item.id, new-count)
 					item.count = new-count
 			catch err
-				errorMsg = err
+				errorMsg = err.message
 	
 	def routed(params)
 		const cartItem = await getSingleCartItem(params.id)
@@ -66,12 +66,12 @@ tag item-detail
 							if (item.count < 4) 
 								<button.update-count
 									id="update-plus"
-									@mousedown.flag('busy', 'div').wait(500ms)=handleClick
+									@mousedown.flag('busy', 'div').wait(300ms)=handleClick
 								> "+"
 								<span.count .fa-beat> item.count
 								<button.update-count
 									id="update-minus"
-									@mousedown.flag('busy', 'div').wait(500ms)=handleClick
+									@mousedown.flag('busy', 'div').wait(300ms)=handleClick
 								> "-"							
 							else
 								<input.item-count-input type="number" value=item.count @change=handleChange />
@@ -79,9 +79,9 @@ tag item-detail
 							<i.remove-item .fa-solid .fa-trash-can
 								id="remove"
 								title="Delete"
-								@mousedown.flag('busy', 'div').wait(500ms)=handleClick
+								@mousedown.flag('busy', 'div').wait(300ms)=handleClick
 							>
 						if errorMsg
 							<p [c:red m:0]> "An Error Occured"
-							<span[d:none]> setTimeout(&, 500) do errorMsg = null 
+							<[d:none]> setTimeout(&, 500) do errorMsg = null 
 

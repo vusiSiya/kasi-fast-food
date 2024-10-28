@@ -62,8 +62,7 @@ tag App
 			<cart-items route="/items-on-cart">
 			<login route="/login">
 			<sign-in-prompt route="/not-signed-in">
-		<footer-tag>
-			
+		<footer-tag>			
 				
 imba.router.alias("/", "/items")
 imba.mount do <App>

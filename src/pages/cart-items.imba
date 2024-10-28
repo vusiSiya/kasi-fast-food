@@ -46,7 +46,7 @@ tag cart-items
 			<div.container [d:vflex]>
 				if !data && showSpinner
 					<loading-spinner> 
-					setTimeout(&, 1500) do showSpinner = false
+					<[d:none]> setTimeout(&, 1200) do showSpinner = false
 
 				else if !totalPrice
 					<section [d:grid ji:center m:5em auto p:2rem c:white]>

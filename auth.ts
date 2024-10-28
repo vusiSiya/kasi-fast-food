@@ -23,8 +23,7 @@ export const provider = new GoogleAuthProvider()
 
 onAuthStateChanged(auth, (user) => {
 	if (user) {
-	  const component = document.querySelector("nav-bar")
-	  component.currentUser = user
+
 	} 
 })
 
