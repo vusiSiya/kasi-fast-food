@@ -5,6 +5,7 @@ import {
 	updateItemCount 
 } from "../../api"
 import type {CartItem} from "../../types"
+import {checkAuthState} from "../../auth"
 
 css .total-price bgc: #fffff1 @hover:black c: black @hover: white
 	p:.5em fw: bold rd:.28rem 
@@ -34,7 +35,9 @@ tag cart-items
 	def render
 		const items = await _catch<CartItem[]>(getCartItems)
 		this.data = items
-		const totalPrice = items && items.reduce(&, 0) do(sum, item) sum + item.price * item.count
+		
+		const totalPrice = items && items.reduce(&, 0) do(sum, item) 
+			sum + item.price * item.count
 
 		<self[d:grid g:.5em]>
 			<div [d:flex ai:center]>	

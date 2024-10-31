@@ -39,7 +39,7 @@ global css
 	.cart-btn bd:1px solid black rd:.25rem fs:larger fw:bold 
 		p:.325rem .9em c:inherit @hover:white bgc:white @hover:black
 	
-	.busycart c:white bgc:black pointer-events:none
+	.busy-cart c:white bgc:black pointer-events:none
 	.busy pointer-events:none opacity:50%
 	.remove-item fs:large mx:.8em 
 
@@ -51,7 +51,7 @@ tag App
 
 	def mount
 		items = await _catch<Item[]>(getAllItems)
-		window.addEventListener("deviceorientationabsolute", do imba.commit!)
+		window.screen.orientation.addEventListener "change", do imba.commit!
 		return
 	
 	<self [d:grid]>

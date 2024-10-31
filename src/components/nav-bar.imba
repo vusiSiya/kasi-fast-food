@@ -1,5 +1,4 @@
 
-
 import { signOut } from "firebase/auth" 
 import { auth, checkAuthState } from "../../auth"
 import { getTotalCount } from "../../api"
@@ -25,48 +24,44 @@ css .small-cart p:.2em fs:x-small rd:100% bd:1px solid red
 tag nav-bar
 	prop showMenu = false
 	prop showOptions = false
-	prop mediaQueryList = window.matchMedia("(max-width: 759px)")
-	prop checkIfSmallScreen = do mediaQueryList.matches
+	prop smallScreen
 
 	def handleSignOut e
 		const {textContent} = e.target
-		if checkAuthState! && textContent === "Logout"
+		if checkAuthState! and textContent === "Logout"
 			auth.currentUser.isAnonymous && await auth.currentUser.delete!
 			await signOut(auth)
 			window.location.replace "/items"
-		
+	
 	def render
 		const isSignedIn = checkAuthState!
 		const user = auth.currentUser
+		const protectedRoute = isSignedIn ? "/items-on-cart" : "/not-signed-in"
+		const {orientation} = window.screen
+		smallScreen = orientation.type === "portrait-primary"
 
 		<self>
 			<section>
 				<div [align-self:flex-start]>
 					<h1 [w:fit-content fs:2rem @!760:1.5rem m:0 ml:2rem @!760:auto]> "Fast Food"
 
-				if checkIfSmallScreen!
+				if smallScreen
 					<div [pos: relative]>
 						<button.menu-bar @mousedown=(showMenu = !showMenu)>
-							<i .fa-solid .fa-bars>
-							
-						<div.select [d:grid ji:start fs:medium fw:normal p:0 min-width:6rem]=showMenu>
-							<p>
-								<a route-to="/items"> "Menu"
+							<i.fa-solid .fa-bars>
+						<div.select [d:grid ji:start fs:medium fw:normal p:0 min-width:7rem]=showMenu>
+							<p> <a route-to="/items"> "Menu"
 									<i .fa-solid .fa-burger>
-							<p [gap:2px]>
-								<a route-to=(isSignedIn ? "/items-on-cart" : "/not-signed-in")> "Cart"
+							<p [gap:2px]> <a route-to=protectedRoute> "Cart"
 									<i.fa-solid .fa-truck-fast [fs:small]>
 									<span.count .small-cart> (await getTotalCount! || 0)	
-							<p>
-								<a route-to="login" @mousedown=handleSignOut> isSignedIn ? "Logout" : "Login"
+							<p> <a route-to="login" @mousedown=handleSignOut> isSignedIn ? "Logout" : "Login"
 									<i .fa-regular .fa-user .login[max-width:1.3rem fs:x-small]>
 				else
 					<div[d:flex ai:flex-end g:2rem]>
 						<section [jc:end pr:1rem m:0]>
 							<a [fw:bold] route-to="/items"> "Menu"
-							<a [d:flex ai:center fs:small g:.5rem]
-								route-to=(isSignedIn ? "/items-on-cart" : "/not-signed-in")
-							> 
+							<a [d:flex ai:center fs:small g:.5rem] route-to=protectedRoute> 
 								<i.fa-solid .fa-truck-fast>
 								<span.count> (await getTotalCount! || 0)
 								
@@ -74,10 +69,11 @@ tag nav-bar
 								<div [d:flex pos:relative] @mousedown=(showOptions = !showOptions)> 
 									<div [order:-1 d:flex gap:.5em ai:center fs:small]>
 										<p> (user.displayName or user.email or "Anonymous User")
-
-										if user.isAnonymous then <span.login><i .fa-regular .fa-user>
-										else <img.profile src=(user.photoURL) alt="profile-img">
-
+										
+										if user.isAnonymous
+											<span.login> <i.fa-regular .fa-user>
+										else 
+											<img.profile src=(user.photoURL) alt="profile-img">
 									<div.select [d:grid ji:center]=showOptions>
 										<p> "Profile"  
 										<p @mousedown=handleSignOut> "Logout"
