@@ -1,7 +1,7 @@
 
 import { signOut } from "firebase/auth" 
 import { auth, checkAuthState } from "../../auth"
-import { getTotalCount } from "../../api"
+import { getTotalCount, redirect } from "../../api"
 
 
 css section d:flex g:1rem ai:flex-end m:.5em jc:space-between w:100%
@@ -31,7 +31,7 @@ tag nav-bar
 		if checkAuthState! and textContent === "Logout"
 			auth.currentUser.isAnonymous && await auth.currentUser.delete!
 			await signOut(auth)
-			window.location.replace "/items"
+			await redirect("/")
 	
 	def render
 		const isSignedIn = checkAuthState!
@@ -51,12 +51,14 @@ tag nav-bar
 							<i.fa-solid .fa-bars>
 						<div.select [d:grid ji:start fs:medium fw:normal p:0 min-width:7rem]=showMenu>
 							<p> <a route-to="/items"> "Menu"
-									<i .fa-solid .fa-burger>
+								<i .fa-solid .fa-burger>
 							<p [gap:2px]> <a route-to=protectedRoute> "Cart"
-									<i.fa-solid .fa-truck-fast [fs:small]>
-									<span.count .small-cart> (await getTotalCount! || 0)	
-							<p> <a route-to="login" @mousedown=handleSignOut> isSignedIn ? "Logout" : "Login"
-									<i .fa-regular .fa-user .login[max-width:1.3rem fs:x-small]>
+								<i.fa-solid .fa-truck-fast [fs:small]>
+								<span.count .small-cart> (await getTotalCount! || 0)	
+							<p> 
+								<a route-to=(signedIn ? "/" : "/login")
+									@mousedown=handleSignOut> isSignedIn ? "Logout" : "Login"
+								<i .fa-regular .fa-user .login[max-width:1.3rem fs:x-small]>
 				else
 					<div[d:flex ai:flex-end g:2rem]>
 						<section [jc:end pr:1rem m:0]>

@@ -27,7 +27,7 @@ global css
 		rd:.5rem box-shadow:none @hover:0 0 18px 8px #344544 
 	.menu-item@!760 d:grid ai:flex-end m:0 auto max-width:max-content 
 	
-	.item-image w:100% min-width:240px max-width:16rem @!760:19rem aspect-ratio:1
+	.item-image w:100% min-width:12rem max-width:16rem @!760:19rem aspect-ratio:1
 		rd:.27rem ff:italic
 	.item-content d:grid g:1rem
 	.item-name, .item-price m:.75rem 0 .125rem
@@ -51,7 +51,7 @@ tag App
 
 	def mount
 		items = await _catch<Item[]>(getAllItems)
-		window.screen.orientation.addEventListener "change", do imba.commit!
+		window.screen.orientation.onchange =  do imba.commit!
 		return
 	
 	<self [d:grid]>

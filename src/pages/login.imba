@@ -7,7 +7,7 @@ import {
 } from "firebase/auth"
 import {auth, provider, checkAuthState } from "../../auth"
 import googleLogo from "../../Images/google-logo.png"
-
+import {redirect}  from "../../api"
 
 css button fw:bold p:1em 1.5em bd:none rd:.5rem c:inherit 
 	bgc:#354645 @hover:orange
@@ -18,33 +18,36 @@ css form d:grid bgc:black g:.8em min-width:15em m:.5em auto p:1em c:white
 css form > input bd:4px solid transparent bc@hover:blue3 rd:.25rem
 	w:auto p:.5em ta:start 
 			
+
 tag login
 	prop errorMsg = null
 	
 	def handleSubmit e
 		const {id} = e.submitter || e.target  # getting the button's id
 		try
+			if id === "google-auth" 
+				await signInWithPopup(auth, provider)
+			else if id === "anonymous-auth"
+				await signInAnonymously(auth)
+
 			if e.submitter
 				const formData = new FormData(e.target)
-				const email = formData.get("email")
-				const password = formData.get("password")
+				const email = formData.get("email").toString!
+				const password = formData.get("password").toString!
 				if id === "sign-in"
-					await signInWithEmailAndPassword(auth, email.toString!, password.toString!)
+					await signInWithEmailAndPassword(auth, email, password)
 				else if id === "sign-up"
-					const cred = await createUserWithEmailAndPassword auth, email.toString!, password.toString!
+					const cred = await createUserWithEmailAndPassword auth, email, password
 					if !cred.user.emailVerified
 						await cred.user.delete!
 						throw new Error("😤 Invalid Email!")
-					
-			else 
-				if id === "google-auth" then await signInWithPopup(auth, provider)
-				else await signInAnonymously(auth)
 		catch error
 			errorMsg = error.message
 			setTimeout(&, 80) do window.location.reload!
-		e.submitter && e.target.reset!
-		!errorMsg && setTimeout(&, 80) do window.location.replace "/items-on-cart"
-		return
+
+		if e.submitter then e.target.reset!
+		if !errorMsg then setTimeout(&, 80) do
+			await redirect("/items-on-cart")
 		
 	def render
 		const signedIn = checkAuthState!

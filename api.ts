@@ -114,3 +114,11 @@ export async function _catch<T>( func: Function): Promise<T | null> {
 		return null;
 	}
 }
+
+export async function redirect(path: string) {
+	const url = new URL(path, window.location.origin)
+	const newMetaTag = document.createElement("meta")
+	newMetaTag.httpEquiv = "Refresh"
+	newMetaTag.content=`0; URL=${url.href}`
+	document.head.append(newMetaTag);
+}
