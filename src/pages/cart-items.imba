@@ -26,9 +26,8 @@ tag cart-items
 		try
 			const {id, value} = e.target
 			const item = data.find do(item) item.id === id
-			let new-count = Number(value)	
-			await updateItemCount(item.id, new-count)
-			item.count = new-count
+			item.count = Number(value)	
+			await updateItemCount(item.id, item.count)
 		catch err
 			console.log(err)
 
@@ -74,5 +73,5 @@ tag cart-items
 									<i.remove-item .fa-solid .fa-trash-can 
 										id=item.id
 										title="Delete"
-										@mousedown.flag('busy', 'div').wait(500ms)=handleClick
+										@mousedown.flag('busy', 'div').wait(200ms)=handleClick
 									>

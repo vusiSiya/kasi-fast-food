@@ -34,14 +34,14 @@ tag item-detail
 					await addItemToCart(item.id)
 					item.count = 1
 				else
-					const new-count = (id === "update-plus") ? item.count + 1 : item.count - 1;
-					(new-count < 1 ) ? await removeItem(item.id) : await updateItemCount(item.id, new-count)
-					item.count = new-count
+					(id === "update-plus") ? item.count++ : item.count--;
+					(item.count < 1 ) ? await removeItem(item.id) : await updateItemCount(item.id, item.count)
+					return
 			catch err
 				errorMsg = err.message
 		
 	def fetch
-		let id = this.route.params.id
+		const id = this.route.params.id
 		item = await getSingleCartItem(id) || await getSingleItem(id)
 
 	def unmount
@@ -64,7 +64,7 @@ tag item-detail
 							if !item.count
 								<button.cart-btn 
 									id="add"
-									@mousedown.flag("busy-cart", "button").wait(100ms)=handleClick
+									@mousedown=handleClick
 								> "Add To Cart"
 								!checkAuthState() && <p .prompt> "You need to {<a.login route-to="/login"> "login"} first"
 
@@ -85,7 +85,7 @@ tag item-detail
 								<i.remove-item .fa-solid .fa-trash-can
 									id="remove"
 									title="Delete"
-									@mousedown.flag('busy', 'div').wait(300ms)=handleClick
+									@mousedown.flag('busy', 'div').wait(200ms)=handleClick
 								>
 							if errorMsg
 								<p [c:red m:0]> "An Error Occured"
