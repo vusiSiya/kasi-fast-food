@@ -27,7 +27,7 @@ const cartItemsCollectionRef = collection(db, "items-on-cart");
 // functions, --reading data--
 export async function getAllItems(): Promise<Item[] | any[]> {
 	const querySnapshot = await getDocs(itemsCollectionRef);
-	const dataArray = await querySnapshot?.docs.map(doc =>{
+	const dataArray = await querySnapshot?.docs.map(doc => {
 		return {
 			...doc.data(),
 			id: doc.id + nanoid(10)
@@ -52,8 +52,8 @@ export async function getSingleCartItem(id:string): Promise<CartItem | null> {
 }
 
 export async function getCartItems(): Promise<CartItem[] | any[]> {
-	const userId = auth.currentUser?.uid
-	const q = query(cartItemsCollectionRef, where("uid", "==", userId))
+	const userId = auth.currentUser?.uid;
+	const q = query(cartItemsCollectionRef, where("uid", "==", userId));
 	const querySnapshot = await getDocs(q);
 	const cartItems = querySnapshot?.docs.map(doc => {
 		return {
@@ -71,7 +71,7 @@ export async function getTotalCount (): Promise<number> {
 
 export async function getTotalPrice (): Promise<number> {
 	const items = await _catch<CartItem[]>(getCartItems);
-	const totalPrice = items?.reduce((sum, item)=>{
+	const totalPrice = items?.reduce((sum, item)=> {
 		return sum + item.price * item.count;
 	}, 0);
 	return totalPrice || 0;
@@ -115,7 +115,7 @@ export async function _catch<T>( func: Function): Promise<T | null> {
 	}
 }
 
-export async function redirect(path: string) {
+export function redirect(path: string) {
 	const url = new URL(path, window.location.origin)
 	const newMetaTag = document.createElement("meta")
 	newMetaTag.httpEquiv = "Refresh"

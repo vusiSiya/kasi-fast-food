@@ -9,6 +9,7 @@ import {auth, provider, checkAuthState } from "../../auth"
 import googleLogo from "../../Images/google-logo.png"
 import {redirect}  from "../../api"
 
+
 css button fw:bold p:1em 1.5em bd:none rd:.5rem c:inherit 
 	bgc:#354645 @hover:orange
 
@@ -20,22 +21,21 @@ css form > input bd:4px solid transparent bc@hover:blue3 rd:.25rem
 			
 
 tag login
-	prop errorMsg = null
+	prop errorMsg = ""
 	
 	def handleSubmit e
 		const {id} = e.submitter || e.target  # getting the button's id
 		try
-			if id === "google-auth" 
-				await signInWithPopup(auth, provider)
-			else if id === "anonymous-auth"
-				await signInAnonymously(auth)
+			if id === "google-auth" then await signInWithPopup(auth, provider)
+			else if id === "anonymous-auth" then await signInAnonymously(auth)
 
 			if e.submitter
 				const formData = new FormData(e.target)
 				const email = formData.get("email").toString!
 				const password = formData.get("password").toString!
-				if id === "sign-in"
-					await signInWithEmailAndPassword(auth, email, password)
+
+				if id === "sign-in" then await signInWithEmailAndPassword(auth, email, password)
+
 				else if id === "sign-up"
 					const cred = await createUserWithEmailAndPassword auth, email, password
 					if !cred.user.emailVerified
@@ -47,18 +47,19 @@ tag login
 
 		if e.submitter then e.target.reset!
 		if !errorMsg then setTimeout(&, 80) do
-			await redirect("/items-on-cart")
+			redirect("/items-on-cart")
 		
 	def render
 		const signedIn = checkAuthState!
+		const feedback = (signedIn and !errorMsg) ? "Successully Signed In" : errorMsg
+		
 		<self [m:auto c:white]>
 			<form @submit.prevent()=handleSubmit>
 				<h4 [ta:center]> "Sign in or Sign up"
-				<p [m:0 c:orange fs:small fw:bold] [c:orangered]=errorMsg> 
-					signedIn and !errorMsg ? "Successully Signed In" : errorMsg
+				<p [m:0 c:orange fs:small fw:bold] [c:orangered]=errorMsg> feedback
 				<input [bc:orangered]=errorMsg type="email" name="email" placeholder="email" required autocomplete="off" />
 				<input [bc:orangered]=errorMsg type="password" name="password" placeholder="password" required autocomplete="off" />
-				<button type="submit" id="sign-in"> "Sign In"
+				<button type="submit" id="sign-in" [bgc:orange]> "Sign In"
 				<button type="submit" id="sign-up"> "Sign Up"
 				<section [d:grid g:.4em]>
 					<p [fs:small m:0 ta:center]> "or"

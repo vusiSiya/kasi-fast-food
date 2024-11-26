@@ -31,7 +31,7 @@ tag nav-bar
 		if checkAuthState! and textContent === "Logout"
 			auth.currentUser.isAnonymous && await auth.currentUser.delete!
 			await signOut(auth)
-			await redirect("/")
+			redirect("/")
 	
 	def render
 		const isSignedIn = checkAuthState!
@@ -56,7 +56,7 @@ tag nav-bar
 								<i.fa-solid .fa-truck-fast [fs:small]>
 								<span.count .small-cart> (await getTotalCount! || 0)	
 							<p> 
-								<a route-to=(signedIn ? "/" : "/login")
+								<a route-to=(isSignedIn ? "/" : "/login")
 									@mousedown=handleSignOut> isSignedIn ? "Logout" : "Login"
 								<i .fa-regular .fa-user .login[max-width:1.3rem fs:x-small]>
 				else
