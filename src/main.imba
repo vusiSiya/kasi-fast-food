@@ -12,12 +12,19 @@ import { getAllItems, _catch } from "../api"
 import type { Item } from "../types"
 
 tag app
-	prop items
+	items = []
 
 	def mount
 		items = await _catch<Item[]>(getAllItems)
+
+		# side effects
 		window.screen.orientation.onchange = do imba.commit!
-	
+		window.document.body.onclick = do()
+			const nav = window.document.querySelector("nav-bar")
+			const menuEl = window.document.querySelector("div.grid")
+			if menuEl
+				nav.showMenu = false
+				imba.commit!		
 	<self>
 		<nav-bar>
 		<main>

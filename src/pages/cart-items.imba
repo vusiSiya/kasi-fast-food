@@ -5,7 +5,6 @@ import {
 	updateItemCount 
 } from "../../api"
 import type {CartItem} from "../../types"
-import {checkAuthState} from "../../auth"
 
 css .total-price bgc: #fffff1 @hover:black c: black @hover: white
 	p:.5em fw: bold rd:.28rem 

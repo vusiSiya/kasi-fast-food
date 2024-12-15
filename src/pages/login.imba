@@ -19,6 +19,7 @@ css form d:grid bgc:black g:.8em min-width:15em m:.5em auto p:1em c:white
 css form > input bd:4px solid transparent bc@hover:blue3 rd:.25rem
 	w:auto p:.5em ta:start 
 			
+css .red c:orangered
 
 tag login
 	prop errorMsg = ""
@@ -57,8 +58,8 @@ tag login
 			<form @submit.prevent()=handleSubmit>
 				<h4 [ta:center]> "Sign in or Sign up"
 				<p [m:0 c:orange fs:small fw:bold] [c:orangered]=errorMsg> feedback
-				<input [bc:orangered]=errorMsg type="email" name="email" placeholder="email" required autocomplete="off" />
-				<input [bc:orangered]=errorMsg type="password" name="password" placeholder="password" required autocomplete="off" />
+				<input type="email" name="email" placeholder="email" autocomplete="off" required focus [bc:orangered]=errorMsg />
+				<input type="password" name="password" placeholder="password" autocomplete="off" required [bc:orangered]=errorMsg />
 				<button type="submit" id="sign-in" [bgc:orange]> "Sign In"
 				<button type="submit" id="sign-up"> "Sign Up"
 				<section [d:grid g:.4em]>

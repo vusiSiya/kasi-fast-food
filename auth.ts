@@ -22,13 +22,11 @@ export const auth = getAuth(app)
 export const provider = new GoogleAuthProvider()
 
 onAuthStateChanged(auth, (user) => {
-	if (user) {
 
-	} 
 })
 
 //utils
-export function checkAuthState(): boolean | null{
+export function checkAuthState(): boolean | null {
 	const {currentUser} = auth
 	if (currentUser === null) return null
 	return !!currentUser

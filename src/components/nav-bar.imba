@@ -19,12 +19,13 @@ css div.select > p cursor:pointer m:.5rem d:flex g:.5em ai:baseline
 css .menu-bar fs:x-large bgc:inherit c:white bd:none 
 	@hover bd: 1px solid silver rd:.25rem
 css .small-cart p:.2em fs:x-small rd:100% bd:1px solid red
+css .grid d:grid ji:center
 	
 
 tag nav-bar
 	prop showMenu = false
 	prop showOptions = false
-	prop smallScreen
+	prop smallScreen = false
 
 	def handleSignOut e
 		const {textContent} = e.target
@@ -49,7 +50,7 @@ tag nav-bar
 					<div [pos: relative]>
 						<button.menu-bar @mousedown=(showMenu = !showMenu)>
 							<i.fa-solid .fa-bars>
-						<div.select [d:grid ji:start fs:medium fw:normal p:0 min-width:7rem]=showMenu>
+						<div.select [d:grid fs:medium fw:normal p:0 min-width:7rem]=showMenu .grid=showMenu>
 							<p> <a route-to="/items"> "Menu"
 								<i .fa-solid .fa-burger>
 							<p [gap:2px]> <a route-to=protectedRoute> "Cart"
