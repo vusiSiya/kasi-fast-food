@@ -54,7 +54,7 @@ tag cart-items
 						<p [m:auto 0 fs:large]> "Nothing here  ¯\_(ツ)_/¯"
 			
 				else if data
-					for item in [...items]  # spreading for typesafety
+					for item in [...items] 
 						<div.menu-item [td:none ai:flex-end g:1em w:auto mx: 3.2em @!760: auto mt: .5em]>
 							<img.item-image width="240" src=item.imgUrl alt=item.name />
 

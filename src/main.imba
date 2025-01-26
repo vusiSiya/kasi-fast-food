@@ -1,7 +1,10 @@
 import "./components/sign-in-prompt.imba"
 import "./components/loading-spinner.imba"
+# import "./components/small-screen-menu.imba"
+# import "./components/big-screen-menu.imba"
 import "./components/nav-bar.imba"
 import "./components/footer-tag.imba"
+
 import "./pages/login.imba"
 import "./pages/cart-items.imba"                                                                                      
 import "./pages/item-detail.imba"
@@ -10,6 +13,7 @@ import "./components/styles.imba"
 
 import { getAllItems, _catch } from "../api"
 import type { Item } from "../types"
+
 
 tag app
 	items = []
@@ -21,10 +25,12 @@ tag app
 		window.screen.orientation.onchange = do imba.commit!
 		window.document.body.onclick = do()
 			const nav = window.document.querySelector("nav-bar")
-			const menuEl = window.document.querySelector("div.grid")
-			if menuEl
+			const menuElement = window.document.querySelector("div.grid")
+			if menuElement
 				nav.showMenu = false
-				imba.commit!		
+				imba.commit!	
+				
+					
 	<self>
 		<nav-bar>
 		<main>

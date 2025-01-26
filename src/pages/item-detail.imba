@@ -3,10 +3,10 @@ import {
 	addItemToCart,
 	updateItemCount,
 	getSingleCartItem,
-	getSingleItem,
+	getGeneralItem,
 	_catch
 } from "../../api"
-import {checkAuthState} from "../../auth"
+import {checkAuthState, auth} from "../../auth"
 
 css .update-count bgc:white px:.75rem py:.25rem
 	fs:small bd:1px solid black rd:.25rem c:black
@@ -42,7 +42,8 @@ tag item-detail
 		
 	def fetch
 		const id = this.route.params.id
-		item = await getSingleCartItem(id) || await getSingleItem(id)
+		item = await getSingleCartItem(id) || await getGeneralItem(id)
+		return
 
 	def unmount
 		item = null
@@ -64,7 +65,7 @@ tag item-detail
 							if !item.count
 								<button.cart-btn 
 									id="add"
-									@mousedown=handleClick
+									@mousedown.flag('busy-cart', 'button')=handleClick
 								> "Add To Cart"
 								!checkAuthState() && <p .prompt> "You need to {<a.login route-to="/login"> "login"} first"
 

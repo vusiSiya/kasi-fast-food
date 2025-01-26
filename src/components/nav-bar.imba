@@ -25,62 +25,98 @@ css .grid d:grid ji:center
 tag nav-bar
 	prop showMenu = false
 	prop showOptions = false
-	prop smallScreen = false
+	prop screenIsSmall = false
 
 	def handleSignOut e
 		const {textContent} = e.target
-		if checkAuthState! and textContent === "Logout"
+		if checkAuthState and (textContent === "Logout")
 			auth.currentUser.isAnonymous && await auth.currentUser.delete!
 			await signOut(auth)
 			redirect("/")
-	
+
+
 	def render
-		const isSignedIn = checkAuthState!
+		const signedIn = checkAuthState!
 		const user = auth.currentUser
-		const protectedRoute = isSignedIn ? "/items-on-cart" : "/not-signed-in"
+		const count = await getTotalCount!
+		const protectedRoute = signedIn ? "/items-on-cart" : "/not-signed-in"
 		const {orientation} = window.screen
-		smallScreen = orientation.type === "portrait-primary"
+		screenIsSmall = (orientation.type === "portrait-primary")
 
 		<self>
 			<section>
 				<div [align-self:flex-start]>
 					<h1 [w:fit-content fs:2rem @!760:1.5rem m:0 ml:2rem @!760:auto]> "Fast Food"
+				if screenIsSmall 
+					<small-screen-menu 
+						signedIn=signedIn
+						reveal=showMenu
+						safe-route=protectedRoute
+						handleSignOut=handleSignOut
+						totalCount=count
+					>
+				else 
+					<big-screen-menu
+						user=user
+						reveal=showOptions
+						safe-route=protectedRoute
+						handleSignOut=handleSignOut
+						totalCount=count
+					>				
 
-				if smallScreen
-					<div [pos: relative]>
-						<button.menu-bar @mousedown=(showMenu = !showMenu)>
-							<i.fa-solid .fa-bars>
-						<div.select [d:grid fs:medium fw:normal p:0 min-width:7rem]=showMenu .grid=showMenu>
-							<p> <a route-to="/items"> "Menu"
-								<i .fa-solid .fa-burger>
-							<p [gap:2px]> <a route-to=protectedRoute> "Cart"
-								<i.fa-solid .fa-truck-fast [fs:small]>
-								<span.count .small-cart> (await getTotalCount! || 0)	
-							<p> 
-								<a route-to=(isSignedIn ? "/" : "/login")
-									@mousedown=handleSignOut> isSignedIn ? "Logout" : "Login"
-								<i .fa-regular .fa-user .login[max-width:1.3rem fs:x-small]>
-				else
-					<div[d:flex ai:flex-end g:2rem]>
-						<section [jc:end pr:1rem m:0]>
-							<a [fw:bold] route-to="/items"> "Menu"
-							<a [d:flex ai:center fs:small g:.5rem] route-to=protectedRoute> 
-								<i.fa-solid .fa-truck-fast>
-								<span.count> (await getTotalCount! || 0)
-								
-							if user
-								<div [d:flex pos:relative] @mousedown=(showOptions = !showOptions)> 
-									<div [order:-1 d:flex gap:.5em ai:center fs:small]>
-										<p> (user.displayName or user.email or "Anonymous User")
-										
-										if user.isAnonymous
-											<span.login> <i.fa-regular .fa-user>
-										else 
-											<img.profile src=(user.photoURL) alt="profile-img">
-									<div.select [d:grid ji:center]=showOptions>
-										<p> "Profile"  
-										<p @mousedown=handleSignOut> "Logout"
-							else 
-								<a .login route-to="login">
-									<i .fa-regular .fa-user>
+
+tag small-screen-menu
+	prop safe-route = ""
+	prop reveal = false
+	prop signedIn = false
+	prop handleSignOut = do
+	prop totalCount = 0
+
+	<self [pos: relative]>
+		<button.menu-bar @mousedown=(reveal = !reveal)>
+			<i.fa-solid .fa-bars>
+		<div.select [d:grid fs:medium fw:normal p:0 min-width:7rem]=reveal .grid=reveal>
+			<p> <a route-to="/items"> "Menu"
+				<i .fa-solid .fa-burger>
+			<p [gap:2px]> <a route-to=safe-route> "Cart"
+				<i.fa-solid .fa-truck-fast [fs:small]>
+				<span.count .small-cart> totalCount
+			<p> 
+				<a route-to=(signedIn ? "/" : "/login")
+					@mousedown=handleSignOut> signedIn ? "Logout" : "Login"
+				<i .fa-regular .fa-user .login[max-width:1.3rem fs:x-small]>
+
+
+				
+tag big-screen-menu
+	prop user = null
+	prop reveal = false
+	prop safe-route = ""
+	prop handleSignOut = do
+	prop totalCount = 0
+
+	<self [d:flex ai:flex-end g:2rem]>
+		<section [jc:end pr:1rem m:0]>
+			<a [fw:bold] route-to="/items"> "Menu"
+			<a [d:flex ai:center fs:small g:.5rem] route-to=safe-route> 
+				<i.fa-solid .fa-truck-fast>
+				<span.count> totalCount
+				
+			if user
+				<div [d:flex pos:relative] @mousedown=(reveal = !reveal)> 
+					<div [order:-1 d:flex gap:.5em ai:center fs:small]>
+						<p> (user.displayName or user.email or "Anonymous User")
+						
+						if user.isAnonymous then <span.login><i .fa-regular .fa-user>
+						else <img .profile src=(user.photoURL) alt="profile-img">
+
+					<div.select [d:grid ji:center]=reveal>
+						<p> "Profile"  
+						<p @mousedown=handleSignOut> "Logout"
+			else 
+				<a .login route-to="login">
+					<i .fa-regular .fa-user>
+
+
+
 

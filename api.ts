@@ -30,24 +30,20 @@ export async function getAllItems(): Promise<Item[] | any[]> {
 	const dataArray = await querySnapshot?.docs.map(doc => {
 		return {
 			...doc.data(),
-			id: doc.id + nanoid(10)
+			id: doc.id
 		}
 	})
 	return dataArray
 }
 
-export async function getSingleItem(id: string): Promise<Item | Partial<Item>> {
-	const itemRef = doc(db, "items", id[0].toString())
-	const snapShot = await getDoc(itemRef)
-	return {
-		...snapShot.data(),
-		id: id
-	}
+export async function getGeneralItem(id: string): Promise<Item | null> {
+	const items = await getAllItems();
+	return items?.find(item => item.id === id)
 }
 
 export async function getSingleCartItem(id: string): Promise<CartItem> {
 	const cartItems = await _catch<CartItem[]>(getCartItems)
-	const item = cartItems.find(item => item.id[0] === id[0])
+	const item = cartItems?.find(item => item.id === id)
 	return item || null
 }
 
@@ -80,7 +76,7 @@ export async function getTotalPrice(): Promise<number> {
 
 // functions, --writing--
 export async function addItemToCart(id: string): Promise<void> {
-	const item = await getSingleItem(id)
+	const item = await getGeneralItem(id)
 	const user_uid = auth.currentUser?.uid || null
 
 	if(!user_uid) return

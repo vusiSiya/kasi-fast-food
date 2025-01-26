@@ -45,8 +45,10 @@ tag login
 			setTimeout(&, 80) do window.location.reload!
 
 		if e.submitter then e.target.reset!
-		if !errorMsg then setTimeout(&, 80) do
-			redirect("/items-on-cart")
+		if !errorMsg 
+			setTimeout(&, 80) do redirect("/items-on-cart")
+		return
+		
 		
 	def render
 		const signedIn = checkAuthState!
