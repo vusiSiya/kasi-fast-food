@@ -31,10 +31,10 @@ tag cart-items
 			console.log(err)
 
 	def render
-		const items = await _catch<CartItem[]>(getCartItems)
-		this.data = items
+		this.data = await _catch<CartItem[]>(getCartItems)
+		# this.data = items
 		
-		const totalPrice = items && items.reduce(&, 0) do(sum, item) 
+		const totalPrice = data && data.reduce(&, 0) do(sum, item) 
 			sum + item.price * item.count
 
 		<self[d:grid g:.5em]>
@@ -54,7 +54,7 @@ tag cart-items
 						<p [m:auto 0 fs:large]> "Nothing here  ¯\_(ツ)_/¯"
 			
 				else if data
-					for item in [...items] 
+					for item in data 
 						<div.menu-item [td:none ai:flex-end g:1em w:auto mx: 3.2em @!760: auto mt: .5em]>
 							<img.item-image width="240" src=item.imgUrl alt=item.name />
 
