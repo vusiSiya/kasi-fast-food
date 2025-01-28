@@ -19,7 +19,7 @@ tag cart-items
 			await removeItem(id)
 			item.count = 0 
 		catch err
-			console.log(err)
+			console.error(err.message)
 
 	def handleChange e
 		try
@@ -28,11 +28,10 @@ tag cart-items
 			item.count = Number(value)	
 			await updateItemCount(item.id, item.count)
 		catch err
-			console.log(err)
+			console.error(err.message)
 
 	def render
 		this.data = await _catch<CartItem[]>(getCartItems)
-		# this.data = items
 		
 		const totalPrice = data && data.reduce(&, 0) do(sum, item) 
 			sum + item.price * item.count
@@ -42,7 +41,7 @@ tag cart-items
 				<h1 [m:.8em 3.2rem c:white]> "On your cart" 
 				<p.total-price> 
 					<i.fa-solid .fa-coins .fa-beat-fade> 
-					" R {totalPrice || 0}"
+					" R {totalPrice}"
 					
 			<div.container [d:vflex]>
 				if !data && showSpinner

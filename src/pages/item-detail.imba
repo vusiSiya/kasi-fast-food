@@ -42,7 +42,8 @@ tag item-detail
 		
 	def fetch
 		const id = this.route.params.id
-		item = await getSingleCartItem(id) || await getGeneralItem(id)
+		const [cartItemResult, generalItemResult] = await Promise.allSettled([getSingleCartItem(id), getGeneralItem(id)])
+		item = cartItemResult.value || generalItemResult.value
 		return
 
 	def unmount

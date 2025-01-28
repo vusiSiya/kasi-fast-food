@@ -20,7 +20,8 @@ css form > input bd:4px solid transparent bc@hover:blue3 rd:.25rem
 	w:auto p:.5em ta:start 
 
 tag login
-	prop errorMsg = ""
+	hasNoAccount = true
+	errorMsg = ""
 	
 	def handleSubmit e
 		const {id} = e.submitter || e.target  # getting the button's id
@@ -42,28 +43,37 @@ tag login
 						throw new Error("😤 Invalid Email!")
 		catch error
 			errorMsg = error.message
-			setTimeout(&, 80) do window.location.reload!
+			window.location.reload!
 
 		if e.submitter then e.target.reset!
-		if !errorMsg 
-			setTimeout(&, 80) do redirect("/items-on-cart")
-		return
-		
+		if !errorMsg then redirect("/items-on-cart")
 		
 	def render
 		const signedIn = checkAuthState!
-		const validation = (signedIn and !errorMsg) ? "Successully Signed In" : errorMsg
+		const validationMsg = (signedIn && !errorMsg) ? "Successully Signed In" : errorMsg
+		const url = new URL(window.location.href, window.location.origin)
+		hasNoAccount = url.searchParams.get("option") === "sign-up"
 		
 		<self [m:auto c:white]>
 			<form @submit.prevent()=handleSubmit>
-				<h4 [ta:center]> "Sign in or Sign up"
+				<p[d:grid g:.5em m:auto]> 
+					
+					if hasNoAccount
+						<h4 [ta:center mb:0]> "Sign Up"
+						<p [fs:small m:0 auto .1em]> "Already have an account? 
+							{<a [td:underline tdc:orange] route-to="."> "Sign In here"}"
+							
+					else
+						<h4 [ta:center mb:0]> "Sign In"
+						<p [fs:small m:0 auto .1em]> "Don't have an account? 
+							{<a [td:underline tdc:orange] route-to="/login?option=sign-up"> "Sign Up here"}"
 
-				<p [m:0 c:orange fs:small fw:bold] [c:orangered]=errorMsg> validation
+				<p [m:0 c:orange fs:small fw:bold] [c:orangered]=errorMsg> validationMsg
 				<input type="email" name="email" placeholder="email" autocomplete="off" required focus [bc:orangered]=errorMsg />
 				<input type="password" name="password" placeholder="password" autocomplete="off" required [bc:orangered]=errorMsg />
 				
-				<button type="submit" id="sign-in" [bgc:orange]> "Sign In"
-				<button type="submit" id="sign-up"> "Sign Up"
+				if hasNoAccount then <button type="submit" id="sign-up" [bgc:orange]> "Sign Up"
+				else <button type="submit" id="sign-in" [bgc:orange]> "Sign In"
 
 				<section [d:grid g:.4em]>
 					<p [fs:small m:0 ta:center]> "or"
