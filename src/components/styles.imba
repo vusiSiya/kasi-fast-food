@@ -28,7 +28,7 @@ global css
 	.cart-btn bd:1px solid black rd:.25rem fs:larger fw:bold 
 		p:.325rem .9em c:inherit @hover:white bgc:white @hover:black
 	
-	.busy-cart c:white bgc:black pointer-events:none opacity:48%
+	.busy-cart c:white bgc:black pointer-events:none opacity:80%
 	.busy pointer-events:none opacity:50%
 	.remove-item fs:large mx:.8em 
 

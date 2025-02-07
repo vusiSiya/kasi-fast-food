@@ -1,9 +1,11 @@
 import { 
 	getCartItems,
+	redirect,
 	_catch,
 	removeItem,
 	updateItemCount 
 } from "../../api"
+import {checkAuthState} from "../../auth"
 import type {CartItem} from "../../types"
 
 css .total-price bgc: #fffff1 @hover:black c: black @hover: white
@@ -31,8 +33,12 @@ tag cart-items
 			console.error(err.message)
 
 	def render
+		const url = new URL(window.location.href)
+		const signedIn = checkAuthState! || url.searchParams.get("auth") === "true"
+		if !signedIn then redirect("not-signed-in", 2)
+			
 		this.data = await _catch<CartItem[]>(getCartItems)
-		
+
 		const totalPrice = data && data.reduce(&, 0) do(sum, item) 
 			sum + item.price * item.count
 
@@ -41,7 +47,7 @@ tag cart-items
 				<h1 [m:.8em 3.2rem c:white]> "On your cart" 
 				<p.total-price> 
 					<i.fa-solid .fa-coins .fa-beat-fade> 
-					" R {totalPrice}"
+					" R {totalPrice || 0}"
 					
 			<div.container [d:vflex]>
 				if !data && showSpinner
@@ -71,5 +77,5 @@ tag cart-items
 									<i.remove-item .fa-solid .fa-trash-can 
 										id=item.id
 										title="Delete"
-										@mousedown.flag('busy', 'div').wait(200ms)=handleClick
+										@mousedown.flag('busy', 'div').wait(300ms)=handleClick
 									>

@@ -22,6 +22,7 @@ css form > input bd:4px solid transparent bc@hover:blue3 rd:.25rem
 tag login
 	hasNoAccount = true
 	errorMsg = ""
+	signedIn = false
 	
 	def handleSubmit e
 		const {id} = e.submitter || e.target  # getting the button's id
@@ -46,18 +47,21 @@ tag login
 			window.location.reload!
 
 		if e.submitter then e.target.reset!
-		if !errorMsg then redirect("/items-on-cart")
-		
+		if !errorMsg then redirect("items-on-cart?auth={signedIn}", 2)
+
+
 	def render
-		const signedIn = checkAuthState!
+		signedIn = checkAuthState!
+		if signedIn then redirect("items-on-cart?auth={signedIn}", 2)
+
 		const validationMsg = (signedIn && !errorMsg) ? "Successully Signed In" : errorMsg
 		const url = new URL(window.location.href, window.location.origin)
 		hasNoAccount = url.searchParams.get("option") === "sign-up"
-		
+
 		<self [m:auto c:white]>
 			<form @submit.prevent()=handleSubmit>
 				<p[d:grid g:.5em m:auto]> 
-					
+
 					if hasNoAccount
 						<h4 [ta:center mb:0]> "Sign Up"
 						<p [fs:small m:0 auto .1em]> "Already have an account? 
@@ -72,12 +76,12 @@ tag login
 				<input type="email" name="email" placeholder="email" autocomplete="off" required focus [bc:orangered]=errorMsg />
 				<input type="password" name="password" placeholder="password" autocomplete="off" required [bc:orangered]=errorMsg />
 				
-				if hasNoAccount then <button type="submit" id="sign-up" [bgc:orange]> "Sign Up"
-				else <button type="submit" id="sign-in" [bgc:orange]> "Sign In"
+				if hasNoAccount then <button type="submit" id="sign-up" [bgc:orange] disabled=signedIn> "Sign Up"
+				else <button type="submit" id="sign-in" [bgc:orange] disabled=signedIn> "Sign In"
 
 				<section [d:grid g:.4em]>
 					<p [fs:small m:0 ta:center]> "or"
-					<button type="button" id="anonymous-auth" @mousedown=handleSubmit> "Sign In Anonymously"
-					<button [d:flex ai:center jc:center] type="button" id="google-auth" @mousedown=handleSubmit>
+					<button type="button" id="anonymous-auth" @mousedown=handleSubmit disabled=signedIn> "Sign In Anonymously"
+					<button [d:flex ai:center jc:center] type="button" id="google-auth" @mousedown=handleSubmit disabled=signedIn>
 						<img [w:2rem] src=googleLogo /> "Sign In with Google"
 

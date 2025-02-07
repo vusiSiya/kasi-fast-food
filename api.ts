@@ -41,10 +41,10 @@ export async function getGeneralItem(id: string): Promise<Item | null> {
 	return items?.find(item => item.id === id)
 }
 
-export async function getSingleCartItem(id: string): Promise<CartItem> {
+export async function getSingleCartItem(id: string): Promise<CartItem | Partial<CartItem>> {
 	const cartItems = await _catch<CartItem[]>(getCartItems)
 	const item = cartItems?.find(item => item.id === id)
-	return item || null
+	return item 
 }
 
 export async function getCartItems() : Promise<CartItem[] | Partial<CartItem>[]> {
@@ -113,10 +113,11 @@ export async function _catch<T>( func: Function): Promise<T | null> {
 	}
 }
 
-export function redirect(path: string): void {
+export function redirect(path: string, delay?: number): void {
 	const url = new URL(path, window.location.origin)
 	const newMetaTag = document.createElement("meta")
+	const waitTime = delay || 0
 	newMetaTag.httpEquiv = "Refresh"
-	newMetaTag.content=`0; URL=${url.href}`
+	newMetaTag.content=`${waitTime}; URL=${url.href}`
 	document.head.append(newMetaTag)
 }

@@ -26,10 +26,11 @@ tag nav-bar
 	prop showMenu = false
 	prop showOptions = false
 	prop screenIsSmall = false
+	prop count = 0
 
 	def handleSignOut e
 		const {textContent} = e.target
-		if checkAuthState and (textContent === "Logout")
+		if checkAuthState! and (textContent === "Logout")
 			auth.currentUser.isAnonymous && await auth.currentUser.delete!
 			await signOut(auth)
 			redirect("/")
@@ -39,7 +40,7 @@ tag nav-bar
 		const signedIn = checkAuthState!
 		const user = auth.currentUser
 		const count = await getTotalCount!
-		const protectedRoute = signedIn ? "/items-on-cart" : "/not-signed-in"
+		const protectedRoute = signedIn ? "/items-on-cart?auth={signedIn}" : "/not-signed-in"
 		const {orientation} = window.screen
 		screenIsSmall = (orientation.type === "portrait-primary")
 
@@ -85,7 +86,6 @@ tag small-screen-menu
 				<a route-to=(signedIn ? "/" : "/login")
 					@mousedown=handleSignOut> signedIn ? "Logout" : "Login"
 				<i .fa-regular .fa-user .login[max-width:1.3rem fs:x-small]>
-
 
 				
 tag big-screen-menu

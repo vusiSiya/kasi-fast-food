@@ -42,8 +42,14 @@ tag item-detail
 		
 	def fetch
 		const id = this.route.params.id
-		const [cartItemResult, generalItemResult] = await Promise.allSettled([getSingleCartItem(id), getGeneralItem(id)])
-		item = cartItemResult.value || generalItemResult.value
+
+		if checkAuthState!
+			const [cartItemResult, generalItemResult] = await Promise.allSettled([getSingleCartItem(id), getGeneralItem(id)])
+			item = cartItemResult.value || generalItemResult.value
+
+		else 
+			item = await getGeneralItem(id)
+
 		return
 
 	def unmount
