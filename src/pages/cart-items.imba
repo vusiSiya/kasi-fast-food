@@ -32,11 +32,12 @@ tag cart-items
 		catch err
 			console.error(err.message)
 
-	def render
+
+	def render	
 		const url = new URL(window.location.href)
-		const signedIn = checkAuthState! || url.searchParams.get("auth") === "true"
-		if !signedIn then redirect("not-signed-in", 2)
-			
+		const authenticated = url.searchParams.get("auth") === "true"
+		if !authenticated then redirect("not-signed-in", 2)
+
 		this.data = await _catch<CartItem[]>(getCartItems)
 
 		const totalPrice = data && data.reduce(&, 0) do(sum, item) 

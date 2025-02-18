@@ -26,7 +26,6 @@ tag nav-bar
 	prop showMenu = false
 	prop showOptions = false
 	prop screenIsSmall = false
-	prop count = 0
 
 	def handleSignOut e
 		const {textContent} = e.target
@@ -51,7 +50,7 @@ tag nav-bar
 				if screenIsSmall 
 					<small-screen-menu 
 						signedIn=signedIn
-						reveal=showMenu
+						bind:reveal=showMenu
 						safe-route=protectedRoute
 						handleSignOut=handleSignOut
 						totalCount=count
@@ -59,7 +58,7 @@ tag nav-bar
 				else 
 					<big-screen-menu
 						user=user
-						reveal=showOptions
+						bind:reveal=showOptions
 						safe-route=protectedRoute
 						handleSignOut=handleSignOut
 						totalCount=count
