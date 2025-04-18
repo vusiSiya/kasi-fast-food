@@ -21,7 +21,15 @@ tag item-detail
 
 	def handleChange e 
 		item.count = Number(e.target.value)
-		await updateItemCount(item.id, item.count)
+
+		if (item.count < 1)
+			item.count = 0
+			await removeItem(item.id)
+		else if (item.count > 1 && item.count <= 15)
+			await updateItemCount(item.id, item.count)
+		else
+			item.count = 15;
+		imba.commit!
 
 	def handleClick e
 		const {id} = e.target 
@@ -40,17 +48,16 @@ tag item-detail
 			catch err
 				errorMsg = err.message
 		
+
 	def fetch
 		const id = this.route.params.id
 
 		if checkAuthState!
 			const [cartItemResult, generalItemResult] = await Promise.allSettled([getSingleCartItem(id), getGeneralItem(id)])
 			item = cartItemResult.value || generalItemResult.value
-
 		else 
 			item = await getGeneralItem(id)
-
-		return
+		imba.commit!
 
 	def unmount
 		item = null
@@ -77,7 +84,7 @@ tag item-detail
 								!checkAuthState() && <p .prompt> "You need to {<a.login route-to="/login"> "login"} first"
 
 							else
-								if (item.count < 4) 
+								if (item.count < 4 && item.count > 0) 
 									<button.update-count
 										id="update-plus"
 										@mousedown.flag('busy', 'div').wait(300ms)=handleClick
@@ -88,7 +95,13 @@ tag item-detail
 										@mousedown.flag('busy', 'div').wait(300ms)=handleClick
 									> "-"							
 								else
-									<input.item-count-input type="number" value=item.count @change=handleChange />
+									<input.item-count-input 
+										type="number" 
+										min="0"
+										max="15"
+										value=item.count.toString()
+										@change.flag('busy', 'div').wait(200ms)=handleChange 
+									/>
 									
 								<i.remove-item .fa-solid .fa-trash-can
 									id="remove"
@@ -96,6 +109,6 @@ tag item-detail
 									@mousedown.flag('busy', 'div').wait(200ms)=handleClick
 								>
 							if errorMsg
-								<p [c:red m:0]> "An Error Occured"
+								<p [c:red m:0]> "an error occured"
 								<[d:none]> setTimeout(&, 500) do errorMsg = null 
 

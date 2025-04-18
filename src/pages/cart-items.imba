@@ -13,6 +13,7 @@ css .total-price bgc: #fffff1 @hover:black c: black @hover: white
 
 tag cart-items
 	prop showSpinner = true 
+	data = []
 
 	def handleClick e
 		try
@@ -27,11 +28,19 @@ tag cart-items
 		try
 			const {id, value} = e.target
 			const item = data.find do(item) item.id === id
-			item.count = Number(value)	
-			await updateItemCount(item.id, item.count)
+			item.count = Number(value)
+
+			if (item.count < 1)
+				item.count = 0
+				await removeItem(item.id)
+			else if (item.count > 1 && item.count <= 15)
+				await updateItemCount(item.id, item.count)
+			else
+				item.count = 15;
+			imba.commit!
+
 		catch err
 			console.error(err.message)
-
 
 	def render	
 		const url = new URL(window.location.href)
@@ -71,9 +80,11 @@ tag cart-items
 								<div [d:flex ai:center g: .5em]>
 									<input.item-count-input
 										type="number"
+										min="0"
+										max="15"
 										id=item.id 	
-										value=item.count
-										@change=handleChange
+										value=item.count.toString()
+										@change.flag('busy', 'input').wait(150ms)=handleChange
 									/>
 									<i.remove-item .fa-solid .fa-trash-can 
 										id=item.id
