@@ -15,24 +15,35 @@ css .prompt fs:small fw:bold d:block
 
 
 tag item-detail
-	prop item = null
-	prop errorMsg
 	prop showSpinner = true
+	item = null
+	errorMsg = null
+
+	def unmount
+		item = null
 
 	def handleChange e 
-		item.count = Number(e.target.value)
+		try
+			item.count = Number(e.target.value)
 
-		if (item.count < 1)
-			item.count = 0
-			await removeItem(item.id)
-		else if (item.count > 1 && item.count <= 15)
-			await updateItemCount(item.id, item.count)
-		else
-			item.count = 15;
-		imba.commit!
+			if (item.count > 1 && item.count <= 15)
+				await updateItemCount(item.id, item.count)
+			else if (item.count > 15)
+				const newCount = 15
+				await updateItemCount(item.id, newCount)
+				item.count = newCount
+				throw new Error("Enter a value from 1 - 15")
+			else if (item.count < 1)
+				item.count = 0
+				await removeItem(item.id)
+
+		catch err
+			errorMsg = err.message
+			
 
 	def handleClick e
 		const {id} = e.target 
+		
 		if checkAuthState!
 			try
 				if id === "remove"
@@ -44,26 +55,25 @@ tag item-detail
 				else
 					(id === "update-plus") ? item.count++ : item.count--;
 					(item.count < 1 ) ? await removeItem(item.id) : await updateItemCount(item.id, item.count)
+					item.count = item.count
 					return
 			catch err
 				errorMsg = err.message
-		
+
 
 	def fetch
 		const id = this.route.params.id
-
 		if checkAuthState!
 			const [cartItemResult, generalItemResult] = await Promise.allSettled([getSingleCartItem(id), getGeneralItem(id)])
 			item = cartItemResult.value || generalItemResult.value
 		else 
 			item = await getGeneralItem(id)
-		imba.commit!
+			
 
-	def unmount
-		item = null
-		
 	def render
-		fetch!
+		fetch()
+		const limitError = "Enter a value from 1 - 15"
+
 		<self.container [d:vflex g:0]>
 			<a route-to="/items" [m:1rem 2rem @!760:1rem c:white] > "← back to menu"
 			if !item
@@ -74,6 +84,11 @@ tag item-detail
 					<div.item-content>
 						<h2.item-name> item.name
 						<p.item-price> "R {item.price}"
+
+						<error-message 
+							bind:msg=errorMsg 
+							specialMsg=limitError
+						/>
 
 						<div [d:flex flex-wrap:wrap ai:center g: .75em]>
 							if !item.count
@@ -99,8 +114,8 @@ tag item-detail
 										type="number" 
 										min="0"
 										max="15"
-										value=item.count.toString()
-										@change.flag('busy', 'div').wait(200ms)=handleChange 
+										value=item.count
+										@change.flag('busy', 'input').wait(200ms)=handleChange 
 									/>
 									
 								<i.remove-item .fa-solid .fa-trash-can
@@ -108,7 +123,5 @@ tag item-detail
 									title="Delete"
 									@mousedown.flag('busy', 'div').wait(200ms)=handleClick
 								>
-							if errorMsg
-								<p [c:red m:0]> "an error occured"
-								<[d:none]> setTimeout(&, 500) do errorMsg = null 
 
+							

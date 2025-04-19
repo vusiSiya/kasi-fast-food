@@ -1,3 +1,4 @@
+import "./components/error-message.imba"
 import "./components/sign-in-prompt.imba"
 import "./components/loading-spinner.imba"
 import "./components/nav-bar.imba"

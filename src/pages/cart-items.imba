@@ -11,18 +11,21 @@ import type {CartItem} from "../../types"
 css .total-price bgc: #fffff1 @hover:black c: black @hover: white
 	p:.5em fw: bold rd:.28rem 
 
+
 tag cart-items
-	prop showSpinner = true 
+	showSpinner = true 
 	data = []
+	error = {id:0, msg: null}
 
 	def handleClick e
 		try
 			const {id} = e.target
 			const item = data.find do(item) item.id === id
+			this.error.id = id
 			await removeItem(id)
 			item.count = 0 
 		catch err
-			console.error(err.message)
+			this.error.msg = err.message	
 
 	def handleChange e
 		try
@@ -30,17 +33,21 @@ tag cart-items
 			const item = data.find do(item) item.id === id
 			item.count = Number(value)
 
-			if (item.count < 1)
+			if (item.count > 1 && item.count <= 15)
+				await updateItemCount(item.id, item.count)
+			else if (item.count > 15)
+				const newCount = 15
+				await updateItemCount(item.id, newCount)
+				item.count = newCount
+				this.error.id = item.id
+				throw new Error("Enter a value from 1 - 15")
+
+			else if (item.count < 1)
 				item.count = 0
 				await removeItem(item.id)
-			else if (item.count > 1 && item.count <= 15)
-				await updateItemCount(item.id, item.count)
-			else
-				item.count = 15;
-			imba.commit!
 
 		catch err
-			console.error(err.message)
+			this.error.msg = err.message		
 
 	def render	
 		const url = new URL(window.location.href)
@@ -51,6 +58,8 @@ tag cart-items
 
 		const totalPrice = data && data.reduce(&, 0) do(sum, item) 
 			sum + item.price * item.count
+		
+		const limitError = "Enter a value from 1 - 15"
 
 		<self[d:grid g:.5em]>
 			<div [d:flex ai:center]>	
@@ -77,13 +86,19 @@ tag cart-items
 								<h3.item-name> item.name
 								<p.item-price> "R {item.price}"
 
+								if (error.msg && error.id === item.id)
+									<error-message 
+										bind:msg=error.msg 
+										specialMsg=limitError
+									/>
+
 								<div [d:flex ai:center g: .5em]>
 									<input.item-count-input
 										type="number"
 										min="0"
 										max="15"
 										id=item.id 	
-										value=item.count.toString()
+										value=item.count
 										@change.flag('busy', 'input').wait(150ms)=handleChange
 									/>
 									<i.remove-item .fa-solid .fa-trash-can 
@@ -91,3 +106,4 @@ tag cart-items
 										title="Delete"
 										@mousedown.flag('busy', 'div').wait(300ms)=handleClick
 									>
+								
