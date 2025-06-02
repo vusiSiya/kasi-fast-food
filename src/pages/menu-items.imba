@@ -1,7 +1,7 @@
 
 
 tag menu-items
-	prop items
+	prop items = []
 
 	<self .container[d:grid @!700:vflex jc:center g:2rem gtc:repeat(3, auto) w:100% m:2rem auto 0]>
 		if items

@@ -13,9 +13,8 @@ css .total-price bgc: #fffff1 @hover:black c: black @hover: white
 
 
 tag cart-items
-	showSpinner = true 
-	data = []
-	error = {id:0, msg: null}
+	prop data = []
+	error = {id:0, msg: ""}
 
 	def handleClick e
 		try
@@ -31,31 +30,33 @@ tag cart-items
 		try
 			const {id, value} = e.target
 			const item = data.find do(item) item.id === id
-			item.count = Number(value)
+			let newCount = Number(value)
 
-			if (item.count > 1 && item.count <= 15)
-				await updateItemCount(item.id, item.count)
-			else if (item.count > 15)
-				const newCount = 15
+			if (newCount > 0 && newCount <= 15)
+				await updateItemCount(item.id, newCount)
+			else if (newCount < 0 || newCount > 15)
+				newCount = newCount < 1 ? 1 : 15
 				await updateItemCount(item.id, newCount)
 				item.count = newCount
 				this.error.id = item.id
 				throw new Error("Enter a value from 1 - 15")
-
-			else if (item.count < 1)
-				item.count = 0
+			else if (newCount == 0)
+				newCount = 0
 				await removeItem(item.id)
+				item.count = newCount;
+			
 
 		catch err
 			this.error.msg = err.message		
+
 
 	def render	
 		const url = new URL(window.location.href)
 		const authenticated = url.searchParams.get("auth") === "true"
 		if !authenticated then redirect("not-signed-in", 2)
 
-		this.data = await _catch<CartItem[]>(getCartItems)
-
+		# this.data = await _catch<CartItem[]>(getCartItems)
+		
 		const totalPrice = data && data.reduce(&, 0) do(sum, item) 
 			sum + item.price * item.count
 		
@@ -69,10 +70,9 @@ tag cart-items
 					" R {totalPrice || 0}"
 					
 			<div.container [d:vflex]>
-				if !data && showSpinner
+				if !data
 					<loading-spinner> 
-					<[d:none]> setTimeout(&, 1200) do showSpinner = false
-
+					
 				else if !totalPrice
 					<section [d:grid ji:center m:5em auto p:2rem c:white]>
 						<p [m:auto 0 fs:large]> "Nothing here  ¯\_(ツ)_/¯"

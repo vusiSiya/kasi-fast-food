@@ -6,7 +6,7 @@ import {
 	getGeneralItem,
 	_catch
 } from "../../api"
-import {checkAuthState, auth} from "../../auth"
+import {checkAuthState} from "../../auth"
 
 css .update-count bgc:white px:.75rem py:.25rem
 	fs:small bd:1px solid black rd:.25rem c:black
@@ -15,25 +15,24 @@ css .prompt fs:small fw:bold d:block
 
 
 tag item-detail
-	prop showSpinner = true
+	prop allItems
+	prop cartItems
 	item = null
-	errorMsg = null
-
-	def unmount
-		item = null
+	errorMsg = ""
+	
 
 	def handleChange e 
 		try
 			item.count = Number(e.target.value)
-
-			if (item.count > 1 && item.count <= 15)
+			if (item.count > 0 && item.count <= 15)
 				await updateItemCount(item.id, item.count)
-			else if (item.count > 15)
-				const newCount = 15
-				await updateItemCount(item.id, newCount)
-				item.count = newCount
+
+			else if (item.count < 0 || item.count > 15)
+				let count = item.count < 1 ? 1 : 15
+				await updateItemCount(item.id, count)
+				item.count = count
 				throw new Error("Enter a value from 1 - 15")
-			else if (item.count < 1)
+			else if (item.count == 0)
 				item.count = 0
 				await removeItem(item.id)
 
@@ -43,35 +42,40 @@ tag item-detail
 
 	def handleClick e
 		const {id} = e.target 
-		
-		if checkAuthState!
-			try
+		const isLoggedIn = checkAuthState!
+		let isWithinRange = false
+
+		try
+			if isLoggedIn
 				if id === "remove"
 					await removeItem(item.id)	
 					item.count = 0
 				else if id === "add"
 					await addItemToCart(item.id)
 					item.count = 1
-				else
-					(id === "update-plus") ? item.count++ : item.count--;
-					(item.count < 1 ) ? await removeItem(item.id) : await updateItemCount(item.id, item.count)
-					item.count = item.count
-					return
-			catch err
-				errorMsg = err.message
+				else if (id === "update-plus")
+					const count = (item.count < 4) ? item.count + 1 : 1
+					await updateItemCount(item.id, count)
+					item.count = count;
+				else if (id === "update-minus")
+					const count = (item.count) < 4 ? item.count - 1 : 1
+					await updateItemCount(item.id, count)
+					item.count = count
 
+				if (item.count == 0)
+					await removeItem(item.id)
+					item.count = 0
+				return	
+		catch err
+			errorMsg = err.message
 
-	def fetch
-		const id = this.route.params.id
-		if checkAuthState!
-			const [cartItemResult, generalItemResult] = await Promise.allSettled([getSingleCartItem(id), getGeneralItem(id)])
-			item = cartItemResult.value || generalItemResult.value
-		else 
-			item = await getGeneralItem(id)
-			
 
 	def render
-		fetch()
+		const id = this.route.params.id
+		const cartItem =  cartItems && cartItems.find do(item) item.id == id
+		const generalItem = allItems && allItems.find do(item) item.id == id
+		item = cartItem || generalItem 
+
 		const limitError = "Enter a value from 1 - 15"
 
 		<self.container [d:vflex g:0]>

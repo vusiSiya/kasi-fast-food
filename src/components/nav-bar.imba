@@ -1,12 +1,13 @@
 
 import { signOut } from "firebase/auth" 
 import { auth, checkAuthState } from "../../auth"
-import { getTotalCount, redirect } from "../../api"
+import { getTotalCount, getCartItems, _catch, redirect } from "../../api"
 
 
 css section d:flex g:1rem ai:flex-end m:.5em jc:space-between w:100%
-css a bgc:white c:black p:.4em rd:.28em td:none ta:center 
-css section > div > a@hover bgc:black3 c:white
+css a bgc:white c:black p:.4em td:none rd:.28em ta:center w:100%;
+
+# css section > div > a@hover bgc:black3 c:white
 
 css .login bgc:orange c:white ta:center p:.55em .15em
 css .login, img.profile bd:1px solid white rd:100% w:2rem bxs@hover: 0 0 8px 2px grey
@@ -26,6 +27,7 @@ tag nav-bar
 	prop showMenu = false
 	prop showOptions = false
 	prop screenIsSmall = false
+	prop count = 0
 
 	def handleSignOut e
 		const {textContent} = e.target
@@ -38,11 +40,10 @@ tag nav-bar
 	def render
 		const signedIn = checkAuthState!
 		const user = auth.currentUser
-		const count = await getTotalCount!
 		const protectedRoute = signedIn ? "/items-on-cart?auth={signedIn}" : "/not-signed-in"
 		const {orientation} = window.screen
 		screenIsSmall = (orientation.type === "portrait-primary")
-
+		
 		<self>
 			<section>
 				<div [align-self:flex-start]>
@@ -73,18 +74,18 @@ tag small-screen-menu
 	prop totalCount = 0
 
 	<self [pos: relative]>
+		css a.active bg:#263238 c:white
+		css a@hover bg:#60787ff7 c:white
+		css a ta:center
+
 		<button.menu-bar @mousedown=(reveal = !reveal)>
 			<i.fa-solid .fa-bars>
-		<div.select [d:grid fs:medium fw:normal p:0 min-width:7rem]=reveal .grid=reveal>
-			<p> <a route-to="/items"> "Menu"
-				<i .fa-solid .fa-burger>
-			<p [gap:2px]> <a route-to=safe-route> "Cart"
-				<i.fa-solid .fa-truck-fast [fs:small]>
-				<span.count .small-cart> totalCount
-			<p> 
-				<a route-to=(signedIn ? "/" : "/login")
-					@mousedown=handleSignOut> signedIn ? "Logout" : "Login"
-				<i .fa-regular .fa-user .login[max-width:1.3rem fs:x-small]>
+		<div.select [d:grid fs:medium fw:normal p:.5rem rd:.28rem min-width=7rem]=reveal .grid=reveal>
+			<a route-to="/items"> "Menu"
+			<a route-to=safe-route> "Cart"
+				<span.count .small-cart> totalCount || 0
+			<a route-to=(signedIn ? "/" : "/login")
+				@mousedown=handleSignOut> signedIn ? "Logout" : "Login"
 
 				
 tag big-screen-menu
@@ -95,11 +96,14 @@ tag big-screen-menu
 	prop totalCount = 0
 
 	<self [d:flex ai:flex-end g:2rem]>
+		css a.active bg:#263238 c:white
+		css a@hover bg:#60787ff7 c:white
+
 		<section [jc:end pr:1rem m:0]>
 			<a [fw:bold] route-to="/items"> "Menu"
 			<a [d:flex ai:center fs:small g:.5rem] route-to=safe-route> 
 				<i.fa-solid .fa-truck-fast>
-				<span.count> totalCount
+				<span.count> totalCount || 0
 				
 			if user
 				<div [d:flex pos:relative] @mousedown=(reveal = !reveal)> 
