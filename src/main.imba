@@ -24,7 +24,19 @@ tag app
 			if menuElement	
 				nav.showMenu = false
 				imba.commit!
-	
+		
+		if window.navigator.userAgent.includes("Firefox") then return
+		const entries = window.navigation.entries!
+		const {entry, from} = window.navigation.activation
+
+		if (entry != null && from != null)
+			const isRedirectBackTraversal = entry.index != -1 && (from.index - entry.index) > 1 
+			if (isRedirectBackTraversal)
+				const current = window.navigation.currentEntry
+				window.history.pushState({}, "", from.url)
+		return	
+
+
 	def render
 		if !items.length
 			this.items = await getAllItems!

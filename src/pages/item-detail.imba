@@ -2,9 +2,6 @@ import {
 	removeItem,
 	addItemToCart,
 	updateItemCount,
-	getSingleCartItem,
-	getGeneralItem,
-	_catch
 } from "../../api"
 import {checkAuthState} from "../../auth"
 
@@ -20,13 +17,11 @@ tag item-detail
 	item = null
 	errorMsg = ""
 	
-
 	def handleChange e 
 		try
 			item.count = Number(e.target.value)
 			if (item.count > 0 && item.count <= 15)
 				await updateItemCount(item.id, item.count)
-
 			else if (item.count < 0 || item.count > 15)
 				let count = item.count < 1 ? 1 : 15
 				await updateItemCount(item.id, count)
@@ -35,7 +30,6 @@ tag item-detail
 			else if (item.count == 0)
 				item.count = 0
 				await removeItem(item.id)
-
 		catch err
 			errorMsg = err.message
 			

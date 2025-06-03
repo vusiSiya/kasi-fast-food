@@ -113,7 +113,7 @@ export async function _catch<T>( func: Function): Promise<T | null> {
 	}
 }
 
-export function redirect(path: string, delay?: number): void {
+export function htmlRedirect(path: string, delay?: number): void {
 	const url = new URL(path, window.location.origin)
 	const newMetaTag = document.createElement("meta")
 	const waitTime = delay || 0

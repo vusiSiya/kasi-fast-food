@@ -7,7 +7,7 @@ import {
 } from "firebase/auth"
 import {auth, provider, checkAuthState } from "../../auth"
 import googleLogo from "../../Images/google-logo.png"
-import {redirect}  from "../../api"
+import {htmlRedirect}  from "../../api"
 
 
 css button fw:bold p:1em 1.5em bd:none rd:.5rem c:inherit 
@@ -47,12 +47,12 @@ tag login
 			window.location.reload!
 
 		if e.submitter then e.target.reset!
-		if !errorMsg then redirect("items-on-cart?auth={signedIn}", 2)
-
+		if !errorMsg then htmlRedirect("items-on-cart", 2)
+		
 
 	def render
 		signedIn = checkAuthState!
-		if signedIn then redirect("items-on-cart?auth={signedIn}", 2)
+		if signedIn then htmlRedirect("items-on-cart", 2)
 
 		const validationMsg = (signedIn && !errorMsg) ? "Successully Signed In" : errorMsg
 		const url = new URL(window.location.href, window.location.origin)

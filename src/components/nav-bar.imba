@@ -1,11 +1,11 @@
 
 import { signOut } from "firebase/auth" 
 import { auth, checkAuthState } from "../../auth"
-import { getTotalCount, getCartItems, _catch, redirect } from "../../api"
+import { htmlRedirect } from "../../api"
 
 
 css section d:flex g:1rem ai:flex-end m:.5em jc:space-between w:100%
-css a bgc:white c:black p:.4em td:none rd:.28em ta:center w:100%;
+css a bgc:white c:black p:.4em td:none rd:.28em ta:center
 
 # css section > div > a@hover bgc:black3 c:white
 
@@ -34,13 +34,17 @@ tag nav-bar
 		if checkAuthState! and (textContent === "Logout")
 			auth.currentUser.isAnonymous && await auth.currentUser.delete!
 			await signOut(auth)
-			redirect("/")
-
-
+			
+			if window.navigator.userAgent.includes("Firefox") then htmlRedirect("/")
+			const home = window.navigation.entries().find do(e) e.index === 0
+			window.navigation.traverseTo(home.key)
+				
+		return
+		
 	def render
 		const signedIn = checkAuthState!
 		const user = auth.currentUser
-		const protectedRoute = signedIn ? "/items-on-cart?auth={signedIn}" : "/not-signed-in"
+		const protectedRoute = signedIn ? "/items-on-cart" : "/not-signed-in"
 		const {orientation} = window.screen
 		screenIsSmall = (orientation.type === "portrait-primary")
 		
@@ -76,7 +80,7 @@ tag small-screen-menu
 	<self [pos: relative]>
 		css a.active bg:#263238 c:white
 		css a@hover bg:#60787ff7 c:white
-		css a ta:center
+		css a ta:start w:100%
 
 		<button.menu-bar @mousedown=(reveal = !reveal)>
 			<i.fa-solid .fa-bars>

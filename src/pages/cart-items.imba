@@ -1,13 +1,8 @@
 import { 
-	getCartItems,
-	redirect,
-	_catch,
 	removeItem,
 	updateItemCount 
 } from "../../api"
 import {checkAuthState} from "../../auth"
-import type {CartItem} from "../../types"
-
 css .total-price bgc: #fffff1 @hover:black c: black @hover: white
 	p:.5em fw: bold rd:.28rem 
 
@@ -15,6 +10,7 @@ css .total-price bgc: #fffff1 @hover:black c: black @hover: white
 tag cart-items
 	prop data = []
 	error = {id:0, msg: ""}
+	showLoader = true
 
 	def handleClick e
 		try
@@ -43,20 +39,12 @@ tag cart-items
 			else if (newCount == 0)
 				newCount = 0
 				await removeItem(item.id)
-				item.count = newCount;
-			
-
+				item.count = newCount
 		catch err
 			this.error.msg = err.message		
 
 
 	def render	
-		const url = new URL(window.location.href)
-		const authenticated = url.searchParams.get("auth") === "true"
-		if !authenticated then redirect("not-signed-in", 2)
-
-		# this.data = await _catch<CartItem[]>(getCartItems)
-		
 		const totalPrice = data && data.reduce(&, 0) do(sum, item) 
 			sum + item.price * item.count
 		
@@ -70,8 +58,10 @@ tag cart-items
 					" R {totalPrice || 0}"
 					
 			<div.container [d:vflex]>
-				if !data
+				if !data && showLoader
 					<loading-spinner> 
+					<[d:none]> setTimeout(&, 1200) do showLoader = false
+ 
 					
 				else if !totalPrice
 					<section [d:grid ji:center m:5em auto p:2rem c:white]>
