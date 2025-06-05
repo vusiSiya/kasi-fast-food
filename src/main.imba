@@ -9,14 +9,15 @@ import "./pages/item-detail.imba"
 import "./pages/menu-items.imba"
 import "./components/styles.imba"
 import { getAllItems, getCartItems, _catch} from "../api"
-
+import {auth} from "../auth.ts";
 
 tag app
 	items = []
-	cartItems = null
+	cartItems = []
 	count = 0
 
 	def mount
+		this.items = await getAllItems!
 		window.screen.orientation.onchange = do imba.commit!
 		window.document.body.onclick = do()
 			const nav = window.document.querySelector("nav-bar")
@@ -36,14 +37,10 @@ tag app
 				window.history.pushState({}, "", from.url)
 		return	
 
-
 	def render
-		if !items.length
-			this.items = await getAllItems!
-		
-		this.cartItems = await _catch(getCartItems)
-		this.count = cartItems && cartItems.reduce(&, 0) do(sum, item)
-			return sum + item.count
+		if auth.currentUser != null
+			this.cartItems = await getCartItems!
+			this.count = cartItems.reduce(&, 0) do(sum, item) sum + item.count
 
 		<self>
 			<nav-bar bind:count=count>

@@ -1,8 +1,10 @@
+import {auth} from "../../auth"
 import { 
 	removeItem,
-	updateItemCount 
+	updateItemCount,
+	getCartItems
 } from "../../api"
-import {checkAuthState} from "../../auth"
+
 css .total-price bgc: #fffff1 @hover:black c: black @hover: white
 	p:.5em fw: bold rd:.28rem 
 
@@ -11,7 +13,7 @@ tag cart-items
 	prop data = []
 	error = {id:0, msg: ""}
 	showLoader = true
-
+	
 	def handleClick e
 		try
 			const {id} = e.target
@@ -28,27 +30,25 @@ tag cart-items
 			const item = data.find do(item) item.id === id
 			let newCount = Number(value)
 
-			if (newCount > 0 && newCount <= 15)
-				await updateItemCount(item.id, newCount)
-			else if (newCount < 0 || newCount > 15)
+			if (newCount < 0 || newCount > 15)
 				newCount = newCount < 1 ? 1 : 15
 				await updateItemCount(item.id, newCount)
 				item.count = newCount
 				this.error.id = item.id
 				throw new Error("Enter a value from 1 - 15")
+			else if (newCount > 0 && newCount <= 15)
+				await updateItemCount(item.id, newCount)
 			else if (newCount == 0)
 				newCount = 0
 				await removeItem(item.id)
-				item.count = newCount
+			item.count = newCount
 		catch err
-			this.error.msg = err.message		
+			this.error.msg = err.message	
 
 
-	def render	
+	def render
 		const totalPrice = data && data.reduce(&, 0) do(sum, item) 
 			sum + item.price * item.count
-		
-		const limitError = "Enter a value from 1 - 15"
 
 		<self[d:grid g:.5em]>
 			<div [d:flex ai:center]>	
@@ -61,7 +61,6 @@ tag cart-items
 				if !data && showLoader
 					<loading-spinner> 
 					<[d:none]> setTimeout(&, 1200) do showLoader = false
- 
 					
 				else if !totalPrice
 					<section [d:grid ji:center m:5em auto p:2rem c:white]>

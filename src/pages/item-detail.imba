@@ -12,27 +12,26 @@ css .prompt fs:small fw:bold d:block
 
 
 tag item-detail
-	prop allItems
-	prop cartItems
+	prop allItems = null
+	prop cartItems = null
 	item = null
 	errorMsg = ""
 	
 	def handleChange e 
 		try
-			item.count = Number(e.target.value)
-			if (item.count > 0 && item.count <= 15)
+			let newCount = Number(e.target.value)
+			if (newCount < 0 || newCount > 15)
+				item.count = newCount < 1 ? 1 : 15
 				await updateItemCount(item.id, item.count)
-			else if (item.count < 0 || item.count > 15)
-				let count = item.count < 1 ? 1 : 15
-				await updateItemCount(item.id, count)
-				item.count = count
 				throw new Error("Enter a value from 1 - 15")
-			else if (item.count == 0)
-				item.count = 0
+			else if (newCount > 0 && newCount <= 15)
+				await updateItemCount(item.id, newCount)
+			else if (newCount === 0)
 				await removeItem(item.id)
+			item.count = newCount
+			imba.commit!
 		catch err
 			errorMsg = err.message
-			
 
 	def handleClick e
 		const {id} = e.target 
@@ -55,25 +54,23 @@ tag item-detail
 					const count = (item.count) < 4 ? item.count - 1 : 1
 					await updateItemCount(item.id, count)
 					item.count = count
-
 				if (item.count == 0)
 					await removeItem(item.id)
 					item.count = 0
-				return	
 		catch err
 			errorMsg = err.message
 
-
 	def render
 		const id = this.route.params.id
-		const cartItem =  cartItems && cartItems.find do(item) item.id == id
-		const generalItem = allItems && allItems.find do(item) item.id == id
+		const cartItem =  cartItems && cartItems.find do(item) item.id === id
+		const generalItem = this.allItems && this.allItems.find do(item) item.id === id
 		item = cartItem || generalItem 
 
 		const limitError = "Enter a value from 1 - 15"
 
 		<self.container [d:vflex g:0]>
 			<a route-to="/items" [m:1rem 2rem @!760:1rem c:white] > "← back to menu"
+			
 			if !item
 				<loading-spinner>
 			else
