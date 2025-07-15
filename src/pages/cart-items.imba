@@ -1,8 +1,7 @@
 import {auth} from "../../auth"
 import { 
 	removeItem,
-	updateItemCount,
-	getCartItems
+	updateItemCount
 } from "../../api"
 
 css .total-price bgc: #fffff1 @hover:black c: black @hover: white
@@ -50,6 +49,8 @@ tag cart-items
 		const totalPrice = data && data.reduce(&, 0) do(sum, item) 
 			sum + item.price * item.count
 
+		const limitError = "Enter a value from 1 - 15"
+		
 		<self[d:grid g:.5em]>
 			<div [d:flex ai:center]>	
 				<h1 [m:.8em 3.2rem c:white]> "On your cart" 
@@ -60,7 +61,10 @@ tag cart-items
 			<div.container [d:vflex]>
 				if !data && showLoader
 					<loading-spinner> 
-					<[d:none]> setTimeout(&, 1200) do showLoader = false
+					<[d:none]> 
+						setTimeout(&, 1200) do 
+							showLoader = false
+							this.error.msg = ""
 					
 				else if !totalPrice
 					<section [d:grid ji:center m:5em auto p:2rem c:white]>

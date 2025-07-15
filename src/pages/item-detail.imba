@@ -63,7 +63,7 @@ tag item-detail
 	def render
 		const id = this.route.params.id
 		const cartItem =  cartItems && cartItems.find do(item) item.id === id
-		const generalItem = this.allItems && this.allItems.find do(item) item.id === id
+		const generalItem = allItems && allItems.find do(item) item.id === id
 		item = cartItem || generalItem 
 
 		const limitError = "Enter a value from 1 - 15"

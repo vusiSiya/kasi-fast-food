@@ -12,7 +12,7 @@ import { getAllItems, getCartItems, _catch} from "../api"
 import {auth} from "../auth.ts";
 
 tag app
-	items = []
+	items = null
 	cartItems = []
 	count = 0
 
